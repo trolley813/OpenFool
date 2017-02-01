@@ -12,6 +12,7 @@ TARGET = OpenFool
 TEMPLATE = app
 VERSION = 0.0.2
 
+CONFIG += c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
