@@ -37,6 +37,7 @@ DISTFILES += \
     LICENSE \
     README.md \
     OpenFool_en.ts \
-    OpenFool_ru.ts
+    OpenFool_ru.ts \
+    CHANGELOG.md
 
 TRANSLATIONS = OpenFool_en.ts OpenFool_ru.ts
