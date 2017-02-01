@@ -35,4 +35,8 @@ RESOURCES += \
 
 DISTFILES += \
     LICENSE \
-    README.md
+    README.md \
+    OpenFool_en.ts \
+    OpenFool_ru.ts
+
+TRANSLATIONS = OpenFool_en.ts OpenFool_ru.ts

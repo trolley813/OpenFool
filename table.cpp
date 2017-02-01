@@ -529,6 +529,6 @@ void Table::_updateDeckCardsLabel()
         QString suitNames[]
             = {tr("Spades"), tr("Clubs"), tr("Diamonds"), tr("Hearts")};
         _deckCardsItem->setText(
-            QString("Trump: %1").arg(suitNames[_trumpSuit]));
+            QString(tr("Trump: %1")).arg(suitNames[_trumpSuit]));
     }
 }
