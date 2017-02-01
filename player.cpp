@@ -149,6 +149,7 @@ void Player::tryBeat()
         if (_table->beats(c, attack)) {
             int r = c.rank();
             QList<Card> newHand = _hand;
+            newHand.removeAt(i);
             int newVal = handValue(newHand)
                          + RANK_PRESENT_BONUS * ranksPresent[r - 1];
             if (newVal > maxVal) {
@@ -159,7 +160,8 @@ void Player::tryBeat()
     }
     int PENALTY = 800, TAKE_PENALTY = 900;
     if (((currentHandValue() - maxVal < PENALTY)
-         || (handValue(handIfTake) - maxVal < TAKE_PENALTY)) && cardIdx >= 0) {
+         || (handValue(handIfTake) - maxVal < TAKE_PENALTY
+             && _table->cardsRemaining())) && cardIdx >= 0) {
         Card c = _hand[cardIdx];
         _hand.removeAt(cardIdx);
         emit cardBeaten(c);

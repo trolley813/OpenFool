@@ -208,8 +208,7 @@ void Table::newGame()
                 &Player::done);
     }
 
-    // Temp: auto moves
-    // TODO: Player interaction
+    // Actual game
     QEventLoop playerWaitingLoop;
     while (!isGameOver()) {
         int opponents = !_outOfPlay[_currentAttacker]
@@ -238,7 +237,8 @@ void Table::newGame()
             if (currentDefender()->hand().length() == 0
                 || _attackCards.length() == DEAL_LIMIT)
                 break;
-            if (currentThrower()->index()) {
+            if (currentThrower()->index()
+                && currentThrower()->hand().length()) {
                 currentThrower()->throwOrDone();
             } else {
                 connect(currentThrower(), SIGNAL(cardThrown(Card)),
