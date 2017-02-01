@@ -119,7 +119,7 @@ void Player::throwOrDone()
         }
     }
     int PENALTY = 400;
-    if (currentHandValue() - maxVal > PENALTY && cardIdx >= 0) {
+    if (currentHandValue() - maxVal < PENALTY && cardIdx >= 0) {
         Card c = _hand[cardIdx];
         _hand.removeAt(cardIdx);
         emit cardThrown(c);
