@@ -4,9 +4,10 @@
 #include <wincrypt.h>
 #endif
 #include <QDebug>
+#include <random>
+#include <functional>
 
 static std::mt19937 rng;
-static std::seed_seq seq;
 static std::array<uint8_t, 2496> seedData;
 
 CardDeck::CardDeck(QObject *parent, bool pristine, Rank lowestRank, int jokers)
@@ -24,7 +25,7 @@ CardDeck::CardDeck(QObject *parent, bool pristine, Rank lowestRank, int jokers)
     std::random_device rd;
     std::generate_n(seedData.data(), seedData.size(), std::ref(rd));
 #endif
-    seq = std::seed_seq(std::begin(seedData), std::end(seedData));
+    std::seed_seq seq(std::begin(seedData), std::end(seedData));
     rng = std::mt19937(seq);
     if (!pristine) {
         shuffle();
