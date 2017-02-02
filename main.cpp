@@ -7,6 +7,8 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    a.setQuitOnLastWindowClosed(true);
+
     QTranslator qtTranslator;
     qtTranslator.load("qt_" + QLocale::system().name().left(2),
                       QLibraryInfo::location(QLibraryInfo::TranslationsPath));

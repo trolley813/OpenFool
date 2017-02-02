@@ -161,7 +161,7 @@ void Player::tryBeat()
     int PENALTY = 800, TAKE_PENALTY = 900;
     if (((currentHandValue() - maxVal < PENALTY)
          || (handValue(handIfTake) - maxVal < TAKE_PENALTY
-             && _table->cardsRemaining())) && cardIdx >= 0) {
+             || _table->cardsRemaining() == 0)) && cardIdx >= 0) {
         Card c = _hand[cardIdx];
         _hand.removeAt(cardIdx);
         emit cardBeaten(c);

@@ -237,8 +237,7 @@ void Table::newGame()
             if (currentDefender()->hand().length() == 0
                 || _attackCards.length() == DEAL_LIMIT)
                 break;
-            if (currentThrower()->index()
-                && currentThrower()->hand().length()) {
+            if (currentThrower()->index()) {
                 currentThrower()->throwOrDone();
             } else {
                 connect(currentThrower(), SIGNAL(cardThrown(Card)),
@@ -258,6 +257,7 @@ void Table::newGame()
         _currentAttacker += (1 + playerTook);
         _currentAttacker %= PLAYERS_COUNT;
         _currentThrower = _currentAttacker;
+        emit setGameStatusText(tr("%1's turn").arg(currentAttacker()->name()));
         if (!currentDefender()->index()) {
             _actionButton->setText(tr("Take"));
             _actionButton->setEnabled(true);
@@ -312,7 +312,6 @@ void Table::endTurn(int playerIdx)
             ci->setFaceUp(playerIdx == 0);
             _players[playerIdx]->addCard(c);
             int ind = _players[playerIdx]->hand().length() - 1;
-
             ci->setZValue(ind);
             QPropertyAnimation *cardPos = new QPropertyAnimation(ci, "pos");
             QPointF delta = playerIdx ? DELTA_AI : DELTA_HUMAN;
@@ -483,7 +482,7 @@ void Table::drawCardsFromDeck(int playerIdx, int cardCount)
         _players[playerIdx]->addCard(c);
         CardItem *cardItem = _cardItems[c];
         // qDebug() << c.fileName();
-        int ind = _players[playerIdx]->hand().length();
+        int ind = _players[playerIdx]->hand().length() - 1;
         cardItem->setZValue(ind);
         cardItem->setRotation(0);
         QPropertyAnimation *cardPos = new QPropertyAnimation(cardItem, "pos");
