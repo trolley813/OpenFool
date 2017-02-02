@@ -9,6 +9,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
+                             "hyst329", "OpenFool", this);
     table = new Table(this);
     ui->graphicsView->setScene(table);
     QLabel *gameLabel = new QLabel(tr("Game status"));

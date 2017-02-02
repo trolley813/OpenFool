@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSettings>
 #include "table.h"
 
 namespace Ui
@@ -34,6 +35,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     Table *table;
+    QSettings *settings;
 };
 
 #endif // MAINWINDOW_H
