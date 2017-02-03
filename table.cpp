@@ -40,7 +40,7 @@ Table::Table(QObject *parent) : QGraphicsScene(parent)
 {
     _deck = new CardDeck(this);
     setBackgroundBrush(
-        QBrush(QColor(86, 156, 30, 230), Qt::BrushStyle::SolidPattern));
+        QBrush(QColor(86, 156, 30, 230), Qt::BrushStyle::Dense1Pattern));
     setSceneRect(QRectF(QPointF(-5 * CARD_WIDTH, -3 * CARD_HEIGHT),
                         QPointF(+5 * CARD_WIDTH, +3 * CARD_HEIGHT)));
     for (Card c : _deck->cards()) {

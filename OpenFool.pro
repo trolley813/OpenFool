@@ -20,16 +20,19 @@ SOURCES += main.cpp\
     card.cpp \
     carditem.cpp \
     table.cpp \
-    player.cpp
+    player.cpp \
+    settingsdialog.cpp
 
 HEADERS  += mainwindow.h \
     carddeck.h \
     card.h \
     carditem.h \
     table.h \
-    player.h
+    player.h \
+    settingsdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    settingsdialog.ui
 
 RESOURCES += \
     resources.qrc

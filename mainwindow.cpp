@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "settingsdialog.h"
 #include "ui_mainwindow.h"
 #include <QMessageBox>
 #include <QDesktopServices>
@@ -36,7 +37,10 @@ void MainWindow::on_actionStats_triggered()
                              tr("But it is planned in future versions."));
 }
 
-void MainWindow::on_actionSettings_triggered() {}
+void MainWindow::on_actionSettings_triggered() {
+    SettingsDialog* sd = new SettingsDialog(this);
+    sd->show();
+}
 
 void MainWindow::on_actionQuit_triggered() { QApplication::quit(); }
 
