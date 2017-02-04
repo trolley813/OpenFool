@@ -36,11 +36,11 @@ const QPointF CARD_FIELD_LOCATIONS[DEAL_LIMIT]
        {0.5 * CARD_WIDTH, 0.5 * CARD_HEIGHT},
        {2 * CARD_WIDTH, 0.5 * CARD_HEIGHT}};
 
-Table::Table(QObject *parent) : QGraphicsScene(parent)
+Table::Table(QSettings *settings, QObject *parent) : QGraphicsScene(parent)
 {
     _deck = new CardDeck(this);
     setBackgroundBrush(
-        QBrush(QColor(86, 156, 30, 230), Qt::BrushStyle::Dense1Pattern));
+        QBrush(QColor(86, 156, 30, 230), Qt::BrushStyle::SolidPattern));
     setSceneRect(QRectF(QPointF(-5 * CARD_WIDTH, -3 * CARD_HEIGHT),
                         QPointF(+5 * CARD_WIDTH, +3 * CARD_HEIGHT)));
     for (Card c : _deck->cards()) {
@@ -54,9 +54,11 @@ Table::Table(QObject *parent) : QGraphicsScene(parent)
     }
     QFont mainFont("Times", CARD_HEIGHT / 10, QFont::Bold);
     for (int i = 0; i < PLAYERS_COUNT; i++) {
-        _players << new Player(this, i, PLAYER_NAMES[i]);
+        _playerNames << settings->value(QString("players/name%1").arg(i + 1),
+                                        PLAYER_NAMES[i]).toString();
+        _players << new Player(this, i, _playerNames[i]);
         QGraphicsSimpleTextItem *nameItem
-            = new QGraphicsSimpleTextItem(PLAYER_NAMES[i]);
+            = new QGraphicsSimpleTextItem(_playerNames[i]);
         nameItem->setPos(PLAYER_LOCATIONS[i] - QPointF(0, 0.15 * CARD_HEIGHT));
         this->addItem(nameItem);
         _nameItems << nameItem;

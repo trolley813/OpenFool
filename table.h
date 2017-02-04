@@ -6,6 +6,7 @@
 #include <QGraphicsSimpleTextItem>
 #include <QMap>
 #include <QPushButton>
+#include <QSettings>
 #include "carddeck.h"
 
 class Player;
@@ -14,7 +15,7 @@ class Table : public QGraphicsScene
 {
     Q_OBJECT
 public:
-    Table(QObject *parent = nullptr);
+    Table(QSettings *settings, QObject *parent = nullptr);
     void newGame();
     void endTurn(int playerIdx);
     int cardsRemaining() { return _deck->cards().length(); }
@@ -56,6 +57,7 @@ protected:
     QList<Card> _attackCards;
     QList<Card> _defenseCards;
     QPushButton *_actionButton;
+    QList<QString> _playerNames;
 
 protected slots:
     void _updateDeckCardsLabel();

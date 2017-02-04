@@ -1,9 +1,12 @@
 #ifndef SETTINGSDIALOG_H
 #define SETTINGSDIALOG_H
 
+#include <QAbstractButton>
 #include <QDialog>
+#include <QSettings>
 
-namespace Ui {
+namespace Ui
+{
 class SettingsDialog;
 }
 
@@ -12,11 +15,17 @@ class SettingsDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SettingsDialog(QWidget *parent = 0);
+    explicit SettingsDialog(QSettings *settings, QWidget *parent = 0);
     ~SettingsDialog();
+    void saveSettings();
+public slots:
+    void accept() override;
+    void apply();
+    void onClick(QAbstractButton *button);
 
 private:
     Ui::SettingsDialog *ui;
+    QSettings *settings;
 };
 
 #endif // SETTINGSDIALOG_H

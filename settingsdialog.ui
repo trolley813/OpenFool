@@ -29,6 +29,103 @@
        <string>Deck</string>
       </attribute>
      </widget>
+     <widget class="QWidget" name="tabPlayers">
+      <attribute name="title">
+       <string>Players</string>
+      </attribute>
+      <widget class="QLineEdit" name="lineEditPlayer1Name">
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>10</y>
+         <width>201</width>
+         <height>20</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="labelPlayer1Name">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>161</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Player 1 (human) name:</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEditPlayer2Name">
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>40</y>
+         <width>201</width>
+         <height>20</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="labelPlayer2Name">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>40</y>
+         <width>161</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Player 2 (left opponent) name:</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEditPlayer3Name">
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>70</y>
+         <width>201</width>
+         <height>20</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="labelPlayer3Name">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>70</y>
+         <width>161</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Player 3 (partner) name:</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="lineEditPlayer4Name">
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>100</y>
+         <width>201</width>
+         <height>20</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="labelPlayer4Name">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>100</y>
+         <width>161</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Player 4 (right opponent) name:</string>
+       </property>
+      </widget>
+     </widget>
      <widget class="QWidget" name="tabAppearance">
       <attribute name="title">
        <string>Appearance</string>
@@ -42,7 +139,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -71,6 +168,22 @@
    <signal>rejected()</signal>
    <receiver>SettingsDialog</receiver>
    <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>clicked(QAbstractButton*)</signal>
+   <receiver>SettingsDialog</receiver>
+   <slot>onClick(QAbstractButton*)</slot>
    <hints>
     <hint type="sourcelabel">
      <x>316</x>

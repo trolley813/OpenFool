@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
                              "hyst329", "OpenFool", this);
-    table = new Table(this);
+    table = new Table(settings, this);
     ui->graphicsView->setScene(table);
     QLabel *gameLabel = new QLabel(tr("Game status"));
     ui->statusBar->addWidget(gameLabel);
@@ -37,8 +37,9 @@ void MainWindow::on_actionStats_triggered()
                              tr("But it is planned in future versions."));
 }
 
-void MainWindow::on_actionSettings_triggered() {
-    SettingsDialog* sd = new SettingsDialog(this);
+void MainWindow::on_actionSettings_triggered()
+{
+    SettingsDialog *sd = new SettingsDialog(settings, this);
     sd->show();
 }
 
