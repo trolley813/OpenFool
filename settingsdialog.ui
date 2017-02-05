@@ -17,17 +17,56 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabRules">
       <attribute name="title">
        <string>Rules</string>
       </attribute>
      </widget>
-     <widget class="QWidget" name="tabDeck">
+     <widget class="QWidget" name="tabCards">
       <attribute name="title">
-       <string>Deck</string>
+       <string>Cards</string>
       </attribute>
+      <widget class="QGroupBox" name="groupBoxDeck">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>181</width>
+         <height>211</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Select cards</string>
+       </property>
+       <widget class="QRadioButton" name="radioButtonRus">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>161</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Russian (Atlas deck)</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="radioButtonInt">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>40</y>
+          <width>161</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>International</string>
+        </property>
+       </widget>
+      </widget>
      </widget>
      <widget class="QWidget" name="tabPlayers">
       <attribute name="title">

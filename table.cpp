@@ -44,7 +44,8 @@ Table::Table(QSettings *settings, QObject *parent) : QGraphicsScene(parent)
     setSceneRect(QRectF(QPointF(-5 * CARD_WIDTH, -3 * CARD_HEIGHT),
                         QPointF(+5 * CARD_WIDTH, +3 * CARD_HEIGHT)));
     for (Card c : _deck->cards()) {
-        CardItem *ci = new CardItem(c, "rus");
+        CardItem *ci
+            = new CardItem(c, settings->value("cards/deck", "rus").toString());
         ci->setPos(TALON_LOCATION);
         ci->hide();
         QObject::connect(ci, SIGNAL(cardClicked(Card)), this,

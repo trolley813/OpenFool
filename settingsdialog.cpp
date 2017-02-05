@@ -17,6 +17,11 @@ SettingsDialog::SettingsDialog(QSettings *settings, QWidget *parent)
 
     ui->checkBoxGL->setChecked(
         settings->value("rendering/opengl", false).toBool());
+
+    ui->radioButtonRus->setChecked(settings->value("cards/deck", "rus")
+                                   == "rus");
+    ui->radioButtonInt->setChecked(settings->value("cards/deck", "rus")
+                                   == "int");
 }
 
 SettingsDialog::~SettingsDialog() { delete ui; }
@@ -29,6 +34,11 @@ void SettingsDialog::saveSettings()
     settings->setValue("players/name4", ui->lineEditPlayer4Name->text());
 
     settings->setValue("rendering/opengl", ui->checkBoxGL->isChecked());
+
+    if (ui->radioButtonRus->isChecked())
+        settings->setValue("cards/deck", "rus");
+    if (ui->radioButtonInt->isChecked())
+        settings->setValue("cards/deck", "int");
 }
 
 void SettingsDialog::accept()
