@@ -4,9 +4,11 @@
 CardItem::CardItem(Card card, QString deckDesign, QGraphicsItem *parent)
     : QGraphicsSvgItem(parent), _card(card)
 {
-    face = new QSvgRenderer(
-        QString(":/decks/%1/res/%2.svg").arg(deckDesign).arg(card.fileName()));
-    back = new QSvgRenderer(QString(":/decks/%1/res/back.svg").arg(deckDesign));
+    face = new QSvgRenderer(QString(":/decks/%1/res/%1/%2.svg")
+                                .arg(deckDesign)
+                                .arg(card.fileName()));
+    back = new QSvgRenderer(
+        QString(":/decks/%1/res/%1/back.svg").arg(deckDesign));
     setFaceUp(false);
 }
 
