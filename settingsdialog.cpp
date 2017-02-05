@@ -5,6 +5,7 @@ SettingsDialog::SettingsDialog(QSettings *settings, QWidget *parent)
     : QDialog(parent), ui(new Ui::SettingsDialog), settings(settings)
 {
     ui->setupUi(this);
+
     ui->lineEditPlayer1Name->setText(
         settings->value("players/name1", "South").toString());
     ui->lineEditPlayer2Name->setText(
@@ -13,6 +14,9 @@ SettingsDialog::SettingsDialog(QSettings *settings, QWidget *parent)
         settings->value("players/name3", "North").toString());
     ui->lineEditPlayer4Name->setText(
         settings->value("players/name4", "East").toString());
+
+    ui->checkBoxGL->setChecked(
+        settings->value("rendering/opengl", false).toBool());
 }
 
 SettingsDialog::~SettingsDialog() { delete ui; }
@@ -23,6 +27,8 @@ void SettingsDialog::saveSettings()
     settings->setValue("players/name2", ui->lineEditPlayer2Name->text());
     settings->setValue("players/name3", ui->lineEditPlayer3Name->text());
     settings->setValue("players/name4", ui->lineEditPlayer4Name->text());
+
+    settings->setValue("rendering/opengl", ui->checkBoxGL->isChecked());
 }
 
 void SettingsDialog::accept()

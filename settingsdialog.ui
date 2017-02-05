@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tabRules">
       <attribute name="title">
@@ -130,6 +130,19 @@
       <attribute name="title">
        <string>Appearance</string>
       </attribute>
+      <widget class="QCheckBox" name="checkBoxGL">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>201</width>
+         <height>17</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Use OpenGL for rendering</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </item>
