@@ -5,7 +5,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QLabel>
-#include <QGLWidget>
+#include <QOpenGLWidget>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
                              "hyst329", "OpenFool", this);
     if (settings->value("rendering/opengl", false).toBool())
-        ui->graphicsView->setViewport(new QGLWidget);
+        ui->graphicsView->setViewport(new QOpenGLWidget);
     table = new Table(settings, this);
     ui->graphicsView->setScene(table);
     QLabel *gameLabel = new QLabel(tr("Game status"));

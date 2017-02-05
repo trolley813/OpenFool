@@ -17,7 +17,11 @@ OpenFool - free and open source (GPL v3) Fool (Durak) card game implementation.
 
 ## How to build from sources
 ### Prerequisites
-- Qt 5.7 or later (probably _should_ work with 5.6)
+- Qt 5.7 or later (probably _should_ work with 5.6). You need the following modules
+    - Qt Core
+    - Qt GUI
+    - Qt Widgets
+    - Qt SVG
 - Qt Creator (optional)
 - C++ compiler (GCC/Clang/Visual C++ etc.)
 
@@ -37,5 +41,19 @@ mkdir build # Alongside with source dir, not inside it
 cd build
 qmake ../OpenFool
 # On Windows, you will probably use `mingw32-make` instead of `make`
-make release # or `make debug`
+make release # or `make debug`, or simply `make`
 ```
+
+## Troubleshooting
+If you're experiencing problems with rendering, especially on Windows
+(i. e. wrong overlapping, Z-fighting etc.), tick
+**Use OpenGL for rendering** on *Settings* page.
+
+If you've noticed a bug, please create an issue.
+
+## Contributing
+You're welcome to contribute to the project. It's done via the standard
+GitHub mechanism:
+1. Fork the repository
+2. Make your changes
+3. Create a pull request
