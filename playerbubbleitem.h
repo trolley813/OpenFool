@@ -15,6 +15,9 @@ public:
     QString text() const;
     void setText(const QString &text);
 
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *widget) override;
+
 protected:
     QGraphicsSimpleTextItem *_textItem;
     QString _text;

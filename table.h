@@ -8,6 +8,7 @@
 #include <QPushButton>
 #include <QSettings>
 #include "carddeck.h"
+#include "playerbubbleitem.h"
 
 class Player;
 
@@ -58,6 +59,7 @@ protected:
     QList<Card> _defenseCards;
     QPushButton *_actionButton;
     QList<QString> _playerNames;
+    QList<PlayerBubbleItem *> _playerBubbles;
 
 protected slots:
     void _updateDeckCardsLabel();

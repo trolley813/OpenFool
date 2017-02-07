@@ -66,6 +66,11 @@ Table::Table(QSettings *settings, QObject *parent) : QGraphicsScene(parent)
         _nameItems << nameItem;
         nameItem->setFont(mainFont);
         nameItem->hide();
+        PlayerBubbleItem *bubble = new PlayerBubbleItem(
+            PLAYER_LOCATIONS[i] - QPointF(0, 0.5 * CARD_HEIGHT));
+        this->addItem(bubble);
+        _playerBubbles << bubble;
+        bubble->hide();
         _outOfPlay << false;
     }
     _deckCardsItem
@@ -354,6 +359,8 @@ void Table::endTurn(int playerIdx)
     }
     _isPlayerTaking = false;
     updateNameLabels();
+    for (PlayerBubbleItem *bubble : _playerBubbles)
+        bubble->hide();
 }
 
 QList<Player *> Table::players() const { return _players; }
@@ -407,12 +414,16 @@ void Table::onPlayerDone(int playerIdx)
         return;
     qDebug() << QString("Player %1 says done").arg(playerIdx);
     _playersSaidDone++;
+    _playerBubbles[playerIdx]->setText(tr("Done"));
+    _playerBubbles[playerIdx]->show();
 }
 
 void Table::onPlayerThrows(int playerIdx, Card c)
 {
     qDebug() << QString("Player %1 throws %2").arg(playerIdx).arg(c.fileName());
     _playersSaidDone = 0;
+    for (PlayerBubbleItem *bubble : _playerBubbles)
+        bubble->hide();
     _attackCards.append(c);
     // Reposition throwed card
     CardItem *ci = _cardItems[c];
@@ -443,12 +454,15 @@ void Table::onPlayerBeats(int playerIdx, Card c)
                     .arg(playerIdx)
                     .arg(c.fileName());
     _playersSaidDone = 0;
+    for (PlayerBubbleItem *bubble : _playerBubbles)
+        bubble->hide();
     _defenseCards.append(c);
     // Reposition throwed card
     CardItem *ci = _cardItems[c];
     ci->setFaceUp(true);
     ci->setZValue(1);
-    // ci->setPos(CARD_FIELD_LOCATIONS[_attackCards.length() - 1] + DELTA_AI *
+    // ci->setPos(CARD_FIELD_LOCATIONS[_attackCards.length() - 1] + DELTA_AI
+    // *
     // 2);
     QEventLoop loop;
     QPropertyAnimation *cardPos = new QPropertyAnimation(ci, "pos");
@@ -475,6 +489,8 @@ void Table::onPlayerTakes(int playerIdx)
     _playersSaidDone = 0;
     _isPlayerTaking = true;
     updateNameLabels();
+    _playerBubbles[playerIdx]->setText(tr("I take"));
+    _playerBubbles[playerIdx]->show();
 }
 
 void Table::drawCardsFromDeck(int playerIdx, int cardCount)
