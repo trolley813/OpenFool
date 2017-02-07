@@ -12,6 +12,7 @@
 #include <QGraphicsProxyWidget>
 #include <QEventLoop>
 #include <QMessageBox>
+#include <QApplication>
 
 const int CARD_WIDTH = 360, CARD_HEIGHT = 540;
 const QPointF TALON_LOCATION(-4 * CARD_WIDTH, 0);
@@ -219,6 +220,10 @@ void Table::newGame()
         if (currentAttacker()->index()) {
             currentAttacker()->startTurn();
         } else {
+            for (Player *p : _players) {
+                disconnect(p, SIGNAL(cardThrown(Card)), &playerWaitingLoop,
+                           SLOT(quit()));
+            }
             connect(currentAttacker(), SIGNAL(cardThrown(Card)),
                     &playerWaitingLoop, SLOT(quit()));
             playerWaitingLoop.exec();

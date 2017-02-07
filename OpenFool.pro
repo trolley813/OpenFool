@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     carditem.cpp \
     table.cpp \
     player.cpp \
-    settingsdialog.cpp
+    settingsdialog.cpp \
+    playerbubbleitem.cpp
 
 HEADERS  += mainwindow.h \
     carddeck.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     carditem.h \
     table.h \
     player.h \
-    settingsdialog.h
+    settingsdialog.h \
+    playerbubbleitem.h
 
 FORMS    += mainwindow.ui \
     settingsdialog.ui
