@@ -141,70 +141,76 @@
 <context>
     <name>Table</name>
     <message>
-        <location filename="table.cpp" line="78"/>
+        <location filename="table.cpp" line="84"/>
         <source>Action</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="163"/>
-        <location filename="table.cpp" line="263"/>
+        <location filename="table.cpp" line="169"/>
+        <location filename="table.cpp" line="273"/>
         <source>%1&apos;s turn</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="201"/>
-        <location filename="table.cpp" line="265"/>
+        <location filename="table.cpp" line="207"/>
+        <location filename="table.cpp" line="275"/>
         <source>Take</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="207"/>
-        <location filename="table.cpp" line="271"/>
+        <location filename="table.cpp" line="213"/>
+        <location filename="table.cpp" line="281"/>
+        <location filename="table.cpp" line="417"/>
         <source>Done</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="282"/>
+        <location filename="table.cpp" line="292"/>
         <source>Game is not over</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="282"/>
+        <location filename="table.cpp" line="292"/>
         <source>You win</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="282"/>
+        <location filename="table.cpp" line="292"/>
         <source>You lose</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="282"/>
+        <location filename="table.cpp" line="292"/>
         <source>Draw</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="532"/>
+        <location filename="table.cpp" line="492"/>
+        <source>I take</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="table.cpp" line="553"/>
         <source>Spades</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="532"/>
+        <location filename="table.cpp" line="553"/>
         <source>Clubs</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="532"/>
+        <location filename="table.cpp" line="553"/>
         <source>Diamonds</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="532"/>
+        <location filename="table.cpp" line="553"/>
         <source>Hearts</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="534"/>
+        <location filename="table.cpp" line="555"/>
         <source>Trump: %1</source>
         <translation></translation>
     </message>

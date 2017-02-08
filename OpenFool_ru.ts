@@ -145,70 +145,76 @@
 <context>
     <name>Table</name>
     <message>
-        <location filename="table.cpp" line="78"/>
+        <location filename="table.cpp" line="84"/>
         <source>Action</source>
         <translation>Действие</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="163"/>
-        <location filename="table.cpp" line="263"/>
+        <location filename="table.cpp" line="169"/>
+        <location filename="table.cpp" line="273"/>
         <source>%1&apos;s turn</source>
         <translation>Ходит %1</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="201"/>
-        <location filename="table.cpp" line="265"/>
+        <location filename="table.cpp" line="207"/>
+        <location filename="table.cpp" line="275"/>
         <source>Take</source>
         <translation>Беру</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="207"/>
-        <location filename="table.cpp" line="271"/>
+        <location filename="table.cpp" line="213"/>
+        <location filename="table.cpp" line="281"/>
+        <location filename="table.cpp" line="417"/>
         <source>Done</source>
         <translation>Бито</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="282"/>
+        <location filename="table.cpp" line="292"/>
         <source>Game is not over</source>
         <translation>Игра не закончена</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="282"/>
+        <location filename="table.cpp" line="292"/>
         <source>You win</source>
         <translation>Вы выиграли</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="282"/>
+        <location filename="table.cpp" line="292"/>
         <source>You lose</source>
         <translation>Вы проиграли</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="282"/>
+        <location filename="table.cpp" line="292"/>
         <source>Draw</source>
         <translation>Ничья</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="532"/>
+        <location filename="table.cpp" line="492"/>
+        <source>I take</source>
+        <translation>Беру</translation>
+    </message>
+    <message>
+        <location filename="table.cpp" line="553"/>
         <source>Spades</source>
         <translation>Пики</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="532"/>
+        <location filename="table.cpp" line="553"/>
         <source>Clubs</source>
         <translation>Трефы</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="532"/>
+        <location filename="table.cpp" line="553"/>
         <source>Diamonds</source>
         <translation>Бубны</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="532"/>
+        <location filename="table.cpp" line="553"/>
         <source>Hearts</source>
         <translation>Черви</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="534"/>
+        <location filename="table.cpp" line="555"/>
         <source>Trump: %1</source>
         <translation>Козырь: %1</translation>
     </message>
