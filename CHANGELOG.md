@@ -1,4 +1,7 @@
 # Changelog
+## 0.0.4 (2017-02-08)
+- Added player bubbles with info text such as "I take", "Done"
+
 ## 0.0.3 (2017-02-05)
 - Fixed bug with rendering on Windows
 - Added settings dialog (deck, rendering settings and player names)
