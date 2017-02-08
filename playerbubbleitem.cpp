@@ -12,10 +12,11 @@ PlayerBubbleItem::PlayerBubbleItem(QPointF pos, QGraphicsItem *parent)
                            parent)
 {
     _textItem = new QGraphicsSimpleTextItem(this);
+    _pos = pos;
     _textItem->setPos(
         pos
         + QPointF((BUBBLE_WIDTH - _textItem->boundingRect().width()) / 2,
-                  (BUBBLE_HEIGHT - -_textItem->boundingRect().height()) / 2));
+                  (BUBBLE_HEIGHT + -_textItem->boundingRect().height()) / 2));
     _textItem->setFont(BUBBLE_FONT);
     _textItem->setBrush(
         QBrush(QColor(10, 10, 10, 255), Qt::BrushStyle::SolidPattern));
@@ -31,6 +32,10 @@ void PlayerBubbleItem::setText(const QString &text)
 {
     _text = text;
     _textItem->setText(text);
+    _textItem->setPos(
+        _pos
+        + QPointF((BUBBLE_WIDTH - _textItem->boundingRect().width()) / 2,
+                  (BUBBLE_HEIGHT + -_textItem->boundingRect().height()) / 2));
 }
 
 void PlayerBubbleItem::paint(QPainter *painter,

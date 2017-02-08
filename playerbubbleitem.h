@@ -21,6 +21,7 @@ public:
 protected:
     QGraphicsSimpleTextItem *_textItem;
     QString _text;
+    QPointF _pos;
 };
 
 #endif // PLAYERBUBBLEITEM_H
