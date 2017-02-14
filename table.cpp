@@ -541,7 +541,14 @@ void Table::updateNameLabels()
 
 QList<Card> Table::attackCards() const { return _attackCards; }
 
-Player *Table::currentThrower() { return _players[_currentThrower]; }
+Player *Table::currentThrower()
+{
+    // if target player is out of play, then his/her partner throws
+    if (_outOfPlay[_currentThrower]) {
+        return _players[(_currentThrower + 2) % PLAYERS_COUNT];
+    }
+    return _players[_currentThrower];
+}
 
 void Table::_updateDeckCardsLabel()
 {
