@@ -158,9 +158,9 @@ void Player::tryBeat()
             }
         }
     }
-    int PENALTY = 800, TAKE_PENALTY_BASE = 900, TAKE_PENALTY_DELTA = 40;
+    int PENALTY = 800, TAKE_PENALTY_BASE = 2000, TAKE_PENALTY_DELTA = 40;
     if (((currentHandValue() - maxVal < PENALTY)
-         || (handValue(handIfTake) - maxVal < TAKE_PENALTY_BASE + TAKE_PENALTY_DELTA * _table->cardsRemaining()
+         || (handValue(handIfTake) - maxVal < TAKE_PENALTY_BASE - TAKE_PENALTY_DELTA * _table->cardsRemaining()
              || _table->cardsRemaining() == 0)) && cardIdx >= 0) {
         Card c = _hand[cardIdx];
         _hand.removeAt(cardIdx);
