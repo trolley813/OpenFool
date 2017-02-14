@@ -118,8 +118,9 @@ void Player::throwOrDone()
             cardIdx = i;
         }
     }
-    int PENALTY = 400;
-    if (currentHandValue() - maxVal < PENALTY && cardIdx >= 0) {
+    int PENALTY_BASE = 400, PENALTY_DELTA = 20;
+    if (currentHandValue() - maxVal < PENALTY_BASE - PENALTY_DELTA * _table->cardsRemaining()
+            && cardIdx >= 0) {
         Card c = _hand[cardIdx];
         _hand.removeAt(cardIdx);
         emit cardThrown(c);
