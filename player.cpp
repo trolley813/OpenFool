@@ -11,6 +11,9 @@ int Player::handValue(QList<Card> hand)
 {
     const int UNBALANCED_HAND_PENALTY = 200;
     const int MANY_CARDS_PENALTY = 600;
+    const int OUT_OF_PLAY = 30000;
+    if (!_table->cardsRemaining() && !hand.length())
+        return OUT_OF_PLAY;
     const double bonuses[5] = {0, 0, 0.5, 0.75, 1.25}; // for cards of same rank
     int res = 0;
     int countsByRank[13] = {0}, countsBySuit[4] = {0};
@@ -119,8 +122,9 @@ void Player::throwOrDone()
         }
     }
     int PENALTY_BASE = 400, PENALTY_DELTA = 20;
-    if (currentHandValue() - maxVal < PENALTY_BASE - PENALTY_DELTA * _table->cardsRemaining()
-            && cardIdx >= 0) {
+    if (currentHandValue() - maxVal
+            < PENALTY_BASE - PENALTY_DELTA * _table->cardsRemaining()
+        && cardIdx >= 0) {
         Card c = _hand[cardIdx];
         _hand.removeAt(cardIdx);
         emit cardThrown(c);
@@ -161,7 +165,9 @@ void Player::tryBeat()
     }
     int PENALTY = 800, TAKE_PENALTY_BASE = 2000, TAKE_PENALTY_DELTA = 40;
     if (((currentHandValue() - maxVal < PENALTY)
-         || (handValue(handIfTake) - maxVal < TAKE_PENALTY_BASE - TAKE_PENALTY_DELTA * _table->cardsRemaining()
+         || (handValue(handIfTake) - maxVal
+                 < TAKE_PENALTY_BASE
+                       - TAKE_PENALTY_DELTA * _table->cardsRemaining()
              || _table->cardsRemaining() == 0)) && cardIdx >= 0) {
         Card c = _hand[cardIdx];
         _hand.removeAt(cardIdx);
