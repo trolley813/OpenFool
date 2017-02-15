@@ -292,6 +292,8 @@ void Table::newGame()
         = {tr("Game is not over"), tr("You win"), tr("You lose"), tr("Draw")};
     QMessageBox::information(nullptr, "Game Over",
                              messages[youWon + 2 * opponentsWon]);
+    // Disable the action button after finishing the game
+    _actionButton->setEnabled(false);
 }
 
 void Table::endTurn(int playerIdx)
