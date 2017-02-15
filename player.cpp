@@ -121,7 +121,7 @@ void Player::throwOrDone()
             cardIdx = i;
         }
     }
-    int PENALTY_BASE = 400, PENALTY_DELTA = 20;
+    int PENALTY_BASE = 1200, PENALTY_DELTA = 50;
     if (currentHandValue() - maxVal
             < PENALTY_BASE - PENALTY_DELTA * _table->cardsRemaining()
         && cardIdx >= 0) {
