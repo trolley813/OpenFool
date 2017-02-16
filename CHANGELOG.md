@@ -1,4 +1,8 @@
 # Changelog
+## 0.0.5 (2017-02-16)
+- Improved AI
+- (Probably) fixed bug, when the game could not finish
+
 ## 0.0.4 (2017-02-08)
 - Added player bubbles with info text such as "I take", "Done"
 
