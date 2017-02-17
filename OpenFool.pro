@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = OpenFool
 TEMPLATE = app
-VERSION = 0.0.5
+VERSION = 0.0.6
 
 CONFIG += c++11
 
@@ -44,6 +44,11 @@ DISTFILES += \
     README.md \
     OpenFool_en.ts \
     OpenFool_ru.ts \
-    CHANGELOG.md
+    CHANGELOG.md \
+    android/AndroidManifest.xml \
+    android/res/values/libs.xml \
+    android/build.gradle
 
 TRANSLATIONS = OpenFool_en.ts OpenFool_ru.ts
+
+ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
