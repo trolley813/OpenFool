@@ -1,4 +1,8 @@
 # Changelog
+## 0.0.6 (2017-02-17)
+- Android version (VERY EXPERIMENTAL)
+- Now binaries ship with Qt 5.8
+
 ## 0.0.5 (2017-02-16)
 - Improved AI
 - (Probably) fixed bug, when the game could not finish
