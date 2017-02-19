@@ -1,4 +1,9 @@
 # Changelog
+## 0.0.7 (2017-02-19)
+- application icon
+- language can be selected from settings
+- fixed bug with card throw limit
+
 ## 0.0.6 (2017-02-17)
 - Android version (VERY EXPERIMENTAL)
 - Now binaries ship with Qt 5.8
