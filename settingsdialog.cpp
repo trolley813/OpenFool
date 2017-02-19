@@ -1,6 +1,10 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 
+static QMap<QString, QString> LANGUAGES = {
+    {"en", QObject::tr("English")}, {"ru", QObject::tr("Russian")},
+};
+
 SettingsDialog::SettingsDialog(QSettings *settings, QWidget *parent)
     : QDialog(parent), ui(new Ui::SettingsDialog), settings(settings)
 {
@@ -22,6 +26,11 @@ SettingsDialog::SettingsDialog(QSettings *settings, QWidget *parent)
                                    == "rus");
     ui->radioButtonInt->setChecked(settings->value("cards/deck", "rus")
                                    == "int");
+
+    for (auto language : LANGUAGES)
+        ui->comboBoxLanguage->addItem(language);
+    ui->comboBoxLanguage->setCurrentIndex(LANGUAGES.keys().indexOf(
+        settings->value("general/language", "").toString()));
 }
 
 SettingsDialog::~SettingsDialog() { delete ui; }
@@ -39,6 +48,9 @@ void SettingsDialog::saveSettings()
         settings->setValue("cards/deck", "rus");
     if (ui->radioButtonInt->isChecked())
         settings->setValue("cards/deck", "int");
+
+    settings->setValue("general/language",
+                       LANGUAGES.key(ui->comboBoxLanguage->currentText()));
 }
 
 void SettingsDialog::accept()
