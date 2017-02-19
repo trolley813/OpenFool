@@ -233,6 +233,7 @@ void Table::newGame()
                     &playerWaitingLoop, SLOT(quit()));
             playerWaitingLoop.exec();
         }
+        int throwLimit = qMin(DEAL_LIMIT, currentDefender()->hand().length());
         while (_playersSaidDone < opponents) {
             int currentPlayersDone = _playersSaidDone;
             if (!_isPlayerTaking
@@ -248,7 +249,7 @@ void Table::newGame()
                 }
             }
             if (currentDefender()->hand().length() == 0
-                || _attackCards.length() == DEAL_LIMIT)
+                || _attackCards.length() == throwLimit)
                 break;
             if (currentThrower()->index()) {
                 currentThrower()->throwOrDone();
