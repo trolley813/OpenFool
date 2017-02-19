@@ -71,6 +71,19 @@
     </message>
 </context>
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="settingsdialog.cpp" line="5"/>
+        <source>English</source>
+        <translation>Английский</translation>
+    </message>
+    <message>
+        <location filename="settingsdialog.cpp" line="5"/>
+        <source>Russian</source>
+        <translation>Русский</translation>
+    </message>
+</context>
+<context>
     <name>SettingsDialog</name>
     <message>
         <location filename="settingsdialog.ui" line="14"/>
@@ -141,6 +154,11 @@
         <source>Use OpenGL for rendering</source>
         <translation>Использовать OpenGL для отрисовки</translation>
     </message>
+    <message>
+        <location filename="settingsdialog.ui" line="195"/>
+        <source>Language:</source>
+        <translation>Язык:</translation>
+    </message>
 </context>
 <context>
     <name>Table</name>
@@ -151,70 +169,70 @@
     </message>
     <message>
         <location filename="table.cpp" line="169"/>
-        <location filename="table.cpp" line="273"/>
+        <location filename="table.cpp" line="274"/>
         <source>%1&apos;s turn</source>
         <translation>Ходит %1</translation>
     </message>
     <message>
         <location filename="table.cpp" line="207"/>
-        <location filename="table.cpp" line="275"/>
+        <location filename="table.cpp" line="276"/>
         <source>Take</source>
         <translation>Беру</translation>
     </message>
     <message>
         <location filename="table.cpp" line="213"/>
-        <location filename="table.cpp" line="281"/>
-        <location filename="table.cpp" line="417"/>
+        <location filename="table.cpp" line="282"/>
+        <location filename="table.cpp" line="420"/>
         <source>Done</source>
         <translation>Бито</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="292"/>
+        <location filename="table.cpp" line="293"/>
         <source>Game is not over</source>
         <translation>Игра не закончена</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="292"/>
+        <location filename="table.cpp" line="293"/>
         <source>You win</source>
         <translation>Вы выиграли</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="292"/>
+        <location filename="table.cpp" line="293"/>
         <source>You lose</source>
         <translation>Вы проиграли</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="292"/>
+        <location filename="table.cpp" line="293"/>
         <source>Draw</source>
         <translation>Ничья</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="492"/>
+        <location filename="table.cpp" line="495"/>
         <source>I take</source>
         <translation>Беру</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="553"/>
+        <location filename="table.cpp" line="563"/>
         <source>Spades</source>
         <translation>Пики</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="553"/>
+        <location filename="table.cpp" line="563"/>
         <source>Clubs</source>
         <translation>Трефы</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="553"/>
+        <location filename="table.cpp" line="563"/>
         <source>Diamonds</source>
         <translation>Бубны</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="553"/>
+        <location filename="table.cpp" line="563"/>
         <source>Hearts</source>
         <translation>Черви</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="555"/>
+        <location filename="table.cpp" line="565"/>
         <source>Trump: %1</source>
         <translation>Козырь: %1</translation>
     </message>

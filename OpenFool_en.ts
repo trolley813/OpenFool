@@ -71,6 +71,19 @@
     </message>
 </context>
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="settingsdialog.cpp" line="5"/>
+        <source>English</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="settingsdialog.cpp" line="5"/>
+        <source>Russian</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>SettingsDialog</name>
     <message>
         <location filename="settingsdialog.ui" line="14"/>
@@ -137,6 +150,11 @@
         <source>Use OpenGL for rendering</source>
         <translation></translation>
     </message>
+    <message>
+        <location filename="settingsdialog.ui" line="195"/>
+        <source>Language:</source>
+        <translation></translation>
+    </message>
 </context>
 <context>
     <name>Table</name>
@@ -147,70 +165,70 @@
     </message>
     <message>
         <location filename="table.cpp" line="169"/>
-        <location filename="table.cpp" line="273"/>
+        <location filename="table.cpp" line="274"/>
         <source>%1&apos;s turn</source>
         <translation></translation>
     </message>
     <message>
         <location filename="table.cpp" line="207"/>
-        <location filename="table.cpp" line="275"/>
+        <location filename="table.cpp" line="276"/>
         <source>Take</source>
         <translation></translation>
     </message>
     <message>
         <location filename="table.cpp" line="213"/>
-        <location filename="table.cpp" line="281"/>
-        <location filename="table.cpp" line="417"/>
+        <location filename="table.cpp" line="282"/>
+        <location filename="table.cpp" line="420"/>
         <source>Done</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="292"/>
+        <location filename="table.cpp" line="293"/>
         <source>Game is not over</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="292"/>
+        <location filename="table.cpp" line="293"/>
         <source>You win</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="292"/>
+        <location filename="table.cpp" line="293"/>
         <source>You lose</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="292"/>
+        <location filename="table.cpp" line="293"/>
         <source>Draw</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="492"/>
+        <location filename="table.cpp" line="495"/>
         <source>I take</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="553"/>
+        <location filename="table.cpp" line="563"/>
         <source>Spades</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="553"/>
+        <location filename="table.cpp" line="563"/>
         <source>Clubs</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="553"/>
+        <location filename="table.cpp" line="563"/>
         <source>Diamonds</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="553"/>
+        <location filename="table.cpp" line="563"/>
         <source>Hearts</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="table.cpp" line="555"/>
+        <location filename="table.cpp" line="565"/>
         <source>Trump: %1</source>
         <translation></translation>
     </message>
