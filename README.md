@@ -6,12 +6,13 @@ OpenFool - free and open source (GPL v3) Fool (Durak) card game implementation.
 ### Implemented
 - 4-players partnership game
 - 52-card decks: Standard Russian (designed by A. Charlemagne in 19th century, public domain - from Wikimedia),
-    international (by David Bellot - LGPL v3)
+    international (by Chris Aguilar - LGPL v3)
 - Customisable player names (both AI and human)
 - Standard rules for throwing in
 
 ### Planned
 - Individual game, arbitrary number of players (2-6)
+- French deck (by David Bellot)
 - Statistics
 - Ability to change conventions
 
