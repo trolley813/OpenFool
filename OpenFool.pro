@@ -47,8 +47,17 @@ DISTFILES += \
     CHANGELOG.md \
     android/AndroidManifest.xml \
     android/res/values/libs.xml \
-    android/build.gradle
+    android/build.gradle \
+    icons/icon_32.png \
+    icons/icon_64.png \
+    icons/icon_128.png \
+    icons/icon_128_win.ico \
+    android/res/drawable-ldpi/icon.png \
+    android/res/drawable-hdpi/icon.png \
+    android/res/drawable-mdpi/icon.png
 
 TRANSLATIONS = OpenFool_en.ts OpenFool_ru.ts
 
 ANDROID_PACKAGE_SOURCE_DIR = $$PWD/android
+
+RC_ICONS = icons/icon_128_win.ico
