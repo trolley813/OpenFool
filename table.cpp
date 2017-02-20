@@ -406,7 +406,8 @@ void Table::onCardClick(Card c)
     if (!currentThrower()->index()) {
         currentThrower()->throwCard(c);
     }
-    if (!currentDefender()->index()) {
+    if (!currentDefender()->index()
+        && _attackCards.length() != _defenseCards.length()) {
         currentDefender()->beatWithCard(c);
     }
 }
