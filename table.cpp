@@ -97,6 +97,8 @@ Table::Table(QSettings *settings, QObject *parent) : QGraphicsScene(parent)
                 [=](Card c) { this->onPlayerBeats(i, c); });
         connect(_players[i], &Player::take, [=]() { this->onPlayerTakes(i); });
     }
+    connect(QApplication::instance(), SIGNAL(aboutToQuit()), this,
+            SLOT(onQuitRequest()));
 }
 
 void Table::newGame()
@@ -219,9 +221,12 @@ void Table::newGame()
 
     // Actual game
     QEventLoop playerWaitingLoop;
+    connect(QApplication::instance(), &QCoreApplication::aboutToQuit,
+            [&playerWaitingLoop] { playerWaitingLoop.exit(1); });
     while (!isGameOver()) {
         int opponents = !_outOfPlay[_currentAttacker]
                         + !_outOfPlay[(_currentAttacker + 2) % PLAYERS_COUNT];
+        int code = 0;
         if (currentAttacker()->index()) {
             currentAttacker()->startTurn();
         } else {
@@ -231,7 +236,9 @@ void Table::newGame()
             }
             connect(currentAttacker(), SIGNAL(cardThrown(Card)),
                     &playerWaitingLoop, SLOT(quit()));
-            playerWaitingLoop.exec();
+            code = playerWaitingLoop.exec();
+            if (code)
+                return;
         }
         int throwLimit = qMin(DEAL_LIMIT, currentDefender()->hand().length());
         while (_playersSaidDone < opponents) {
@@ -245,7 +252,9 @@ void Table::newGame()
                             &playerWaitingLoop, SLOT(quit()));
                     connect(currentDefender(), SIGNAL(take()),
                             &playerWaitingLoop, SLOT(quit()));
-                    playerWaitingLoop.exec();
+                    code = playerWaitingLoop.exec();
+                    if (code)
+                        return;
                 }
             }
             if (currentDefender()->hand().length() == 0
@@ -258,7 +267,9 @@ void Table::newGame()
                         &playerWaitingLoop, SLOT(quit()));
                 connect(currentThrower(), SIGNAL(done()), &playerWaitingLoop,
                         SLOT(quit()));
-                playerWaitingLoop.exec();
+                code = playerWaitingLoop.exec();
+                if (code)
+                    return;
             }
             if (_playersSaidDone > currentPlayersDone) {
                 _currentThrower += 2;
@@ -496,6 +507,8 @@ void Table::onPlayerTakes(int playerIdx)
     _playerBubbles[playerIdx]->setText(tr("I take"));
     _playerBubbles[playerIdx]->show();
 }
+
+void Table::onQuitRequest() { qDebug() << "Quit requested"; }
 
 void Table::drawCardsFromDeck(int playerIdx, int cardCount)
 {

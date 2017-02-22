@@ -40,6 +40,7 @@ public slots:
     void onPlayerThrows(int playerIdx, Card c);
     void onPlayerBeats(int playerIdx, Card c);
     void onPlayerTakes(int playerIdx);
+    void onQuitRequest();
 
 protected:
     CardDeck *_deck;
