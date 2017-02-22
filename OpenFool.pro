@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = OpenFool
 TEMPLATE = app
-VERSION = 0.0.7
+VERSION = 0.0.8
 
 CONFIG += c++11
 
