@@ -1,4 +1,9 @@
 # Changelog
+## 0.0.8 (2017-02-23)
+- Fixed bug: app now properly exits if quit during the game
+- Fixed bug when cards went to the same place when playing too fast
+- Added background color selection
+
 ## 0.0.7 (2017-02-19)
 - application icon
 - language can be selected from settings
