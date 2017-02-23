@@ -23,9 +23,13 @@ public slots:
     void apply();
     void onClick(QAbstractButton *button);
 
+private slots:
+    void on_pushButtonSelectColor_clicked();
+
 private:
     Ui::SettingsDialog *ui;
     QSettings *settings;
+    QColor backgroundColor;
 };
 
 #endif // SETTINGSDIALOG_H

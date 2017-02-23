@@ -1,9 +1,12 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
+#include <QColorDialog>
 
 static QMap<QString, QString> LANGUAGES = {
     {"en", QObject::tr("English")}, {"ru", QObject::tr("Russian")},
 };
+
+const QColor DEFAULT_BACKGROUND(86, 156, 30, 230);
 
 SettingsDialog::SettingsDialog(QSettings *settings, QWidget *parent)
     : QDialog(parent), ui(new Ui::SettingsDialog), settings(settings)
@@ -31,6 +34,8 @@ SettingsDialog::SettingsDialog(QSettings *settings, QWidget *parent)
         ui->comboBoxLanguage->addItem(language);
     ui->comboBoxLanguage->setCurrentIndex(LANGUAGES.keys().indexOf(
         settings->value("general/language", "").toString()));
+    backgroundColor = settings->value("rendering/background",
+                                      DEFAULT_BACKGROUND).value<QColor>();
 }
 
 SettingsDialog::~SettingsDialog() { delete ui; }
@@ -51,6 +56,7 @@ void SettingsDialog::saveSettings()
 
     settings->setValue("general/language",
                        LANGUAGES.key(ui->comboBoxLanguage->currentText()));
+    settings->setValue("rendering/background", backgroundColor);
 }
 
 void SettingsDialog::accept()
@@ -65,4 +71,10 @@ void SettingsDialog::onClick(QAbstractButton *button)
 {
     if (ui->buttonBox->standardButton(button) == QDialogButtonBox::Apply)
         apply();
+}
+
+void SettingsDialog::on_pushButtonSelectColor_clicked()
+{
+    backgroundColor = QColorDialog::getColor(backgroundColor, this,
+                                             tr("Select background color"));
 }
