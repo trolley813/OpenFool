@@ -36,12 +36,15 @@ const QPointF CARD_FIELD_LOCATIONS[DEAL_LIMIT]
        {-1 * CARD_WIDTH, 0.5 * CARD_HEIGHT},
        {0.5 * CARD_WIDTH, 0.5 * CARD_HEIGHT},
        {2 * CARD_WIDTH, 0.5 * CARD_HEIGHT}};
+const QColor DEFAULT_BACKGROUND(86, 156, 30, 230);
 
 Table::Table(QSettings *settings, QObject *parent) : QGraphicsScene(parent)
 {
     _deck = new CardDeck(this);
     setBackgroundBrush(
-        QBrush(QColor(86, 156, 30, 230), Qt::BrushStyle::SolidPattern));
+        QBrush(settings->value("rendering/background", DEFAULT_BACKGROUND)
+                   .value<QColor>(),
+               Qt::BrushStyle::SolidPattern));
     setSceneRect(QRectF(QPointF(-5 * CARD_WIDTH, -3 * CARD_HEIGHT),
                         QPointF(+5 * CARD_WIDTH, +3 * CARD_HEIGHT)));
     for (Card c : _deck->cards()) {
