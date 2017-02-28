@@ -47,7 +47,7 @@ Table::Table(QSettings *settings, QObject *parent) : QGraphicsScene(parent)
                Qt::BrushStyle::SolidPattern));
     setSceneRect(QRectF(QPointF(-5 * CARD_WIDTH, -3 * CARD_HEIGHT),
                         QPointF(+5 * CARD_WIDTH, +3 * CARD_HEIGHT)));
-    _sortingMode = settings->value("rendering/sorting", SortingMode::ESM_UNSORTED).toInt();
+    _sortingMode = (SortingMode) settings->value("rendering/sorting", SortingMode::ESM_UNSORTED).toInt();
     for (Card c : _deck->cards()) {
         CardItem *ci
             = new CardItem(c, settings->value("cards/deck", "rus").toString());
