@@ -203,3 +203,8 @@ void Player::beatWithCard(Card c)
         emit cardBeaten(c);
     }
 }
+
+void Player::sortCards(SortingMode sortingMode)
+{
+    // TODO: actual sorting
+}

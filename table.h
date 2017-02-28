@@ -11,6 +11,7 @@
 #include "playerbubbleitem.h"
 
 class Player;
+enum SortingMode : unsigned char;
 
 class Table : public QGraphicsScene
 {
@@ -61,6 +62,7 @@ protected:
     QPushButton *_actionButton;
     QList<QString> _playerNames;
     QList<PlayerBubbleItem *> _playerBubbles;
+    SortingMode _sortingMode;
 
 protected slots:
     void _updateDeckCardsLabel();
