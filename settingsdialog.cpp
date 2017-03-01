@@ -29,6 +29,15 @@ SettingsDialog::SettingsDialog(QSettings *settings, QWidget *parent)
                                    == "rus");
     ui->radioButtonInt->setChecked(settings->value("cards/deck", "rus")
                                    == "int");
+    ui->radioButtonFra->setChecked(settings->value("cards/deck", "rus")
+                                   == "fra");
+
+    ui->radioButtonUnsorted->setChecked(settings->value("rendering/sorting", 0)
+                                        == 0);
+    ui->radioButtonAscending->setChecked(settings->value("rendering/sorting", 0)
+                                        == 1);
+    ui->radioButtonDescending->setChecked(settings->value("rendering/sorting", 0)
+                                        == 2);
 
     for (auto language : LANGUAGES)
         ui->comboBoxLanguage->addItem(language);
@@ -53,6 +62,15 @@ void SettingsDialog::saveSettings()
         settings->setValue("cards/deck", "rus");
     if (ui->radioButtonInt->isChecked())
         settings->setValue("cards/deck", "int");
+    if (ui->radioButtonFra->isChecked())
+        settings->setValue("cards/deck", "fra");
+
+    if(ui->radioButtonUnsorted->isChecked())
+        settings->setValue("rendering/sorting", 0);
+    if(ui->radioButtonAscending->isChecked())
+        settings->setValue("rendering/sorting", 1);
+    if(ui->radioButtonDescending->isChecked())
+        settings->setValue("rendering/sorting", 2);
 
     settings->setValue("general/language",
                        LANGUAGES.key(ui->comboBoxLanguage->currentText()));

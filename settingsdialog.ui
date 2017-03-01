@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabRules">
       <attribute name="title">
@@ -34,7 +34,7 @@
          <x>10</x>
          <y>10</y>
          <width>181</width>
-         <height>211</height>
+         <height>81</height>
         </rect>
        </property>
        <property name="title">
@@ -50,7 +50,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Russian (Atlas deck)</string>
+         <string>Russian (Atlas &amp;deck)</string>
         </property>
        </widget>
        <widget class="QRadioButton" name="radioButtonInt">
@@ -63,7 +63,72 @@
          </rect>
         </property>
         <property name="text">
-         <string>International</string>
+         <string>&amp;International</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="radioButtonFra">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>60</y>
+          <width>161</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>&amp;French</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBoxSorting">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>100</y>
+         <width>181</width>
+         <height>101</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Sorting</string>
+       </property>
+       <widget class="QRadioButton" name="radioButtonUnsorted">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>107</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>&amp;Unsorted</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="radioButtonAscending">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>40</y>
+          <width>107</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>A&amp;scending</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="radioButtonDescending">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>60</y>
+          <width>107</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>D&amp;escending</string>
         </property>
        </widget>
       </widget>
