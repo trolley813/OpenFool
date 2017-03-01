@@ -1,4 +1,8 @@
 # Changelog
+## 0.0.9 (2017-03-01)
+- Added French card deck (by David Bellot)
+- Added card sorting
+
 ## 0.0.8 (2017-02-23)
 - Fixed bug: app now properly exits if quit during the game
 - Fixed bug when cards went to the same place when playing too fast
