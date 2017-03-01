@@ -4,6 +4,12 @@
 #include <QObject>
 #include "table.h"
 
+enum SortingMode : unsigned char {
+    ESM_UNSORTED,
+    ESM_ASCENDING,
+    ESM_DESCENDING
+};
+
 class Player : public QObject
 {
     Q_OBJECT
@@ -22,6 +28,7 @@ public:
     void clearHand();
     void throwCard(Card c);
     void beatWithCard(Card c);
+    void sortCards(SortingMode sortingMode);
 signals:
     void done();
     void cardThrown(Card);
