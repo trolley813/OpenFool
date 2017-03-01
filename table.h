@@ -31,6 +31,7 @@ public:
     QList<Card> defenseCards() const;
     bool isGameOver();
     void updateNameLabels();
+    void sortPlayerCards(int playerIdx);
 
 signals:
     void setGameStatusText(QString);

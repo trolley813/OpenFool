@@ -47,7 +47,9 @@ Table::Table(QSettings *settings, QObject *parent) : QGraphicsScene(parent)
                Qt::BrushStyle::SolidPattern));
     setSceneRect(QRectF(QPointF(-5 * CARD_WIDTH, -3 * CARD_HEIGHT),
                         QPointF(+5 * CARD_WIDTH, +3 * CARD_HEIGHT)));
-    _sortingMode = (SortingMode) settings->value("rendering/sorting", SortingMode::ESM_UNSORTED).toInt();
+    _sortingMode
+        = SortingMode(settings->value("rendering/sorting",
+                                      SortingMode::ESM_UNSORTED).toInt());
     for (Card c : _deck->cards()) {
         CardItem *ci
             = new CardItem(c, settings->value("cards/deck", "rus").toString());
@@ -356,6 +358,8 @@ void Table::endTurn(int playerIdx)
         animGroup->start();
     }
     loop.exec();
+    if (playerIdx >= 0)
+        sortPlayerCards(playerIdx);
     _attackCards.clear();
     _defenseCards.clear();
     // Draw cards to players
@@ -465,6 +469,8 @@ void Table::onPlayerThrows(int playerIdx, Card c)
         cia->setZValue(i);
     }
     updateNameLabels();
+    // No need to sort here
+}
 }
 
 void Table::onPlayerBeats(int playerIdx, Card c)
@@ -500,6 +506,7 @@ void Table::onPlayerBeats(int playerIdx, Card c)
         cia->setZValue(i);
     }
     updateNameLabels();
+    // No need to sort here
 }
 
 void Table::onPlayerTakes(int playerIdx)
@@ -540,6 +547,7 @@ void Table::drawCardsFromDeck(int playerIdx, int cardCount)
     animGroup->start(QAbstractAnimation::DeleteWhenStopped);
     connect(animGroup, SIGNAL(finished()), &loop, SLOT(quit()));
     loop.exec();
+    sortPlayerCards(playerIdx);
 }
 
 QList<Card> Table::defenseCards() const { return _defenseCards; }
@@ -558,6 +566,20 @@ void Table::updateNameLabels()
                                    .arg(_players[i]->hand().length())
                                    .arg(_outOfPlay[i] ? "+" : ""));
     }
+}
+
+void Table::sortPlayerCards(int playerIdx)
+{
+    // Sort the cards
+    _players[playerIdx]->sortCards(_sortingMode);
+    // Reposition all cards of a player
+    QPointF delta = playerIdx ? DELTA_AI : DELTA_HUMAN;
+    for (int i = 0; i < _players[playerIdx]->hand().length(); i++) {
+        CardItem *cia = _cardItems[_players[playerIdx]->hand()[i]];
+        cia->setPos(PLAYER_LOCATIONS[playerIdx] + i * delta);
+        cia->setZValue(i);
+    }
+    updateNameLabels();
 }
 
 QList<Card> Table::attackCards() const { return _attackCards; }
