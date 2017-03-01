@@ -120,57 +120,82 @@
         <translation>Международные</translation>
     </message>
     <message>
-        <location filename="settingsdialog.ui" line="73"/>
+        <location filename="settingsdialog.ui" line="79"/>
+        <source>French</source>
+        <translation>Французские</translation>
+    </message>
+    <message>
+        <location filename="settingsdialog.ui" line="93"/>
+        <source>Sorting</source>
+        <translation>Сортировка</translation>
+    </message>
+    <message>
+        <location filename="settingsdialog.ui" line="105"/>
+        <source>Unsorted</source>
+        <translation>Без сортировки</translation>
+    </message>
+    <message>
+        <location filename="settingsdialog.ui" line="118"/>
+        <source>Ascending</source>
+        <translation>По возрастанию</translation>
+    </message>
+    <message>
+        <location filename="settingsdialog.ui" line="131"/>
+        <source>Descending</source>
+        <translation>По убыванию</translation>
+    </message>
+    <message>
+        <location filename="settingsdialog.ui" line="138"/>
         <source>Players</source>
         <translation>Игроки</translation>
     </message>
     <message>
-        <location filename="settingsdialog.ui" line="95"/>
+        <location filename="settingsdialog.ui" line="160"/>
         <source>Player 1 (human) name:</source>
         <translation>Имя игрока 1 (человек):</translation>
     </message>
     <message>
-        <location filename="settingsdialog.ui" line="118"/>
+        <location filename="settingsdialog.ui" line="183"/>
         <source>Player 2 (left opponent) name:</source>
         <translation>Имя игрока 2 (оппонент слева):</translation>
     </message>
     <message>
-        <location filename="settingsdialog.ui" line="141"/>
+        <location filename="settingsdialog.ui" line="206"/>
         <source>Player 3 (partner) name:</source>
         <translation>Имя игрока 3 (партнер):</translation>
     </message>
     <message>
-        <location filename="settingsdialog.ui" line="164"/>
+        <location filename="settingsdialog.ui" line="229"/>
         <source>Player 4 (right opponent) name:</source>
         <translation>Имя игрока 4 (оппонент справа):</translation>
     </message>
     <message>
-        <location filename="settingsdialog.ui" line="170"/>
+        <location filename="settingsdialog.ui" line="235"/>
         <source>Appearance</source>
         <translation>Внешний вид</translation>
     </message>
     <message>
-        <location filename="settingsdialog.ui" line="182"/>
+        <location filename="settingsdialog.ui" line="247"/>
         <source>Use OpenGL for rendering</source>
         <translation>Использовать OpenGL для отрисовки</translation>
     </message>
     <message>
-        <location filename="settingsdialog.ui" line="195"/>
+        <location filename="settingsdialog.ui" line="260"/>
         <source>Language:</source>
         <translation>Язык:</translation>
     </message>
     <message>
-        <location filename="settingsdialog.ui" line="218"/>
+        <location filename="settingsdialog.ui" line="283"/>
         <source>Background Color:</source>
         <translation>Цвет фона:</translation>
     </message>
     <message>
-        <location filename="settingsdialog.ui" line="231"/>
+        <location filename="settingsdialog.ui" line="296"/>
         <source>Select...</source>
         <translation>Выбрать...</translation>
     </message>
     <message>
-        <location filename="settingsdialog.cpp" line="79"/>
+        <location filename="settingsdialog.cpp" line="97"/>
         <source>Select background color</source>
         <translation>Выберите цвет фона</translation>
     </message>
@@ -178,76 +203,76 @@
 <context>
     <name>Table</name>
     <message>
-        <location filename="table.cpp" line="87"/>
+        <location filename="table.cpp" line="90"/>
         <source>Action</source>
         <translation>Действие</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="174"/>
-        <location filename="table.cpp" line="288"/>
+        <location filename="table.cpp" line="177"/>
+        <location filename="table.cpp" line="291"/>
         <source>%1&apos;s turn</source>
         <translation>Ходит %1</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="212"/>
-        <location filename="table.cpp" line="290"/>
+        <location filename="table.cpp" line="215"/>
+        <location filename="table.cpp" line="293"/>
         <source>Take</source>
         <translation>Беру</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="218"/>
-        <location filename="table.cpp" line="296"/>
-        <location filename="table.cpp" line="435"/>
+        <location filename="table.cpp" line="221"/>
+        <location filename="table.cpp" line="299"/>
+        <location filename="table.cpp" line="440"/>
         <source>Done</source>
         <translation>Бито</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="307"/>
+        <location filename="table.cpp" line="310"/>
         <source>Game is not over</source>
         <translation>Игра не закончена</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="307"/>
+        <location filename="table.cpp" line="310"/>
         <source>You win</source>
         <translation>Вы выиграли</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="307"/>
+        <location filename="table.cpp" line="310"/>
         <source>You lose</source>
         <translation>Вы проиграли</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="307"/>
+        <location filename="table.cpp" line="310"/>
         <source>Draw</source>
         <translation>Ничья</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="510"/>
+        <location filename="table.cpp" line="517"/>
         <source>I take</source>
         <translation>Беру</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="580"/>
+        <location filename="table.cpp" line="602"/>
         <source>Spades</source>
         <translation>Пики</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="580"/>
+        <location filename="table.cpp" line="602"/>
         <source>Clubs</source>
         <translation>Трефы</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="580"/>
+        <location filename="table.cpp" line="602"/>
         <source>Diamonds</source>
         <translation>Бубны</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="580"/>
+        <location filename="table.cpp" line="602"/>
         <source>Hearts</source>
         <translation>Черви</translation>
     </message>
     <message>
-        <location filename="table.cpp" line="582"/>
+        <location filename="table.cpp" line="604"/>
         <source>Trump: %1</source>
         <translation>Козырь: %1</translation>
     </message>
