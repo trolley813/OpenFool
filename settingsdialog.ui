@@ -50,7 +50,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>Russian (Atlas &amp;deck)</string>
+         <string>Russian (Atlas deck)</string>
         </property>
        </widget>
        <widget class="QRadioButton" name="radioButtonInt">
@@ -63,7 +63,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>&amp;International</string>
+         <string>International</string>
         </property>
        </widget>
        <widget class="QRadioButton" name="radioButtonFra">
@@ -76,7 +76,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>&amp;French</string>
+         <string>French</string>
         </property>
        </widget>
       </widget>
@@ -102,7 +102,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>&amp;Unsorted</string>
+         <string>Unsorted</string>
         </property>
        </widget>
        <widget class="QRadioButton" name="radioButtonAscending">
@@ -115,7 +115,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>A&amp;scending</string>
+         <string>Ascending</string>
         </property>
        </widget>
        <widget class="QRadioButton" name="radioButtonDescending">
@@ -128,7 +128,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>D&amp;escending</string>
+         <string>Descending</string>
         </property>
        </widget>
       </widget>
