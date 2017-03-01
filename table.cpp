@@ -471,7 +471,6 @@ void Table::onPlayerThrows(int playerIdx, Card c)
     updateNameLabels();
     // No need to sort here
 }
-}
 
 void Table::onPlayerBeats(int playerIdx, Card c)
 {

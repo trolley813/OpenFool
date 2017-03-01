@@ -206,5 +206,21 @@ void Player::beatWithCard(Card c)
 
 void Player::sortCards(SortingMode sortingMode)
 {
-    // TODO: actual sorting
+    if (sortingMode == ESM_UNSORTED) {
+        // No need to sort
+        return;
+    }
+    // Cycle through suits: hearts, clubs, diamonds, spades
+    // Trump suit is always the highest one
+    int suitValues[4][4] = {{300, 100, 0, 200},
+                            {100, 300, 200, 0},
+                            {200, 0, 300, 100},
+                            {0, 200, 100, 300}};
+    int *suitValuesTrump = suitValues[_table->trumpSuit()];
+    std::sort(_hand.begin(), _hand.end(), [suitValuesTrump, sortingMode](
+                                              Card c1, Card c2) {
+        return (sortingMode == ESM_ASCENDING)
+               == ((c1.rank() + 11) % 13 + suitValuesTrump[c1.suit()]
+                   < (c2.rank() + 11) % 13 + suitValuesTrump[c2.suit()]);
+    });
 }
