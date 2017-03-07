@@ -14,6 +14,8 @@ VERSION = 0.0.9
 
 CONFIG += c++11
 
+VPATH += src
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     carddeck.cpp \
