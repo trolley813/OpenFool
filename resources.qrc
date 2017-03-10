@@ -164,4 +164,8 @@
         <file>res/int/13s.svg</file>
         <file>res/int/back.svg</file>
     </qresource>
+    <qresource prefix="/">
+        <file>qml/Main.qml</file>
+        <file>qml/MainForm.ui.qml</file>
+    </qresource>
 </RCC>

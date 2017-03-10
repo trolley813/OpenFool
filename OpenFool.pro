@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = OpenFool
 TEMPLATE = app
-VERSION = 0.0.9
+VERSION = 0.1.0
 
 CONFIG += c++11
 
@@ -56,7 +56,9 @@ DISTFILES += \
     icons/icon_128_win.ico \
     android/res/drawable-ldpi/icon.png \
     android/res/drawable-hdpi/icon.png \
-    android/res/drawable-mdpi/icon.png
+    android/res/drawable-mdpi/icon.png \
+    qml/MainForm.ui.qml \
+    qml/Main.qml
 
 TRANSLATIONS = OpenFool_en.ts OpenFool_ru.ts
 

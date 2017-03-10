@@ -2,11 +2,13 @@
 #include <QApplication>
 #include <QTranslator>
 #include <QLibraryInfo>
-#include <QDebug>
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    // QApplication a(argc, argv);
+    QGuiApplication a(argc, argv);
 
     a.setQuitOnLastWindowClosed(true);
 
@@ -28,8 +30,11 @@ int main(int argc, char *argv[])
         QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     a.installTranslator(&openFoolTranslator);
 
-    MainWindow w;
-    w.show();
+    //    MainWindow w;
+    //    w.show();
+
+    QQmlApplicationEngine engine;
+    engine.load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
 
     return a.exec();
 }
