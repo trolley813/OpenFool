@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by main on 13.03.2017.
@@ -46,6 +47,9 @@ public class Player extends Actor {
     }
 
     class DoneEvent extends Event {
+    }
+
+    class TakeEvent extends Event {
     }
 
     public Player(GameScreen gameScreen, String name, int index) {
@@ -192,4 +196,47 @@ public class Player extends Actor {
         }
     }
 
+
+    public void tryBeat() {
+        int RANK_PRESENT_BONUS = 300;
+        boolean[] ranksPresent = new boolean[13];
+        ArrayList<Card> handIfTake = new ArrayList<Card>(hand);
+        for (Card c : gameScreen.getAttackCards()) {
+            ranksPresent[c.getRank().getValue() - 1] = true;
+            handIfTake.add(c);
+        }
+        for (Card c : gameScreen.getDefenseCards()) {
+            ranksPresent[c.getRank().getValue() - 1] = true;
+            handIfTake.add(c);
+        }
+        int maxVal = Integer.MIN_VALUE;
+        int cardIdx = -1;
+        Card attack = gameScreen.getAttackCards()[Arrays.asList(gameScreen.getDefenseCards()).indexOf(null)];
+        for (int i = 0; i < hand.size(); i++) {
+            Card c = hand.get(i);
+            if (c.beats(attack, gameScreen.getTrumpSuit())) {
+                Rank r = c.getRank();
+                ArrayList<Card> newHand = new ArrayList<Card>(hand);
+                newHand.remove(i);
+                int newVal = handValue(newHand)
+                        + RANK_PRESENT_BONUS * (ranksPresent[r.getValue() - 1] ? 1 : 0);
+                if (newVal > maxVal) {
+                    maxVal = newVal;
+                    cardIdx = i;
+                }
+            }
+        }
+        int PENALTY = 800, TAKE_PENALTY_BASE = 2000, TAKE_PENALTY_DELTA = 40;
+        if (((currentHandValue() - maxVal < PENALTY)
+                || (handValue(handIfTake) - maxVal
+                < TAKE_PENALTY_BASE
+                - TAKE_PENALTY_DELTA * gameScreen.cardsRemaining()
+                || gameScreen.cardsRemaining() == 0)) && cardIdx >= 0) {
+            Card c = hand.get(cardIdx);
+            hand.remove(cardIdx);
+            fire(new CardBeatenEvent(c));
+        } else {
+            fire(new TakeEvent());
+        }
+    }
 }

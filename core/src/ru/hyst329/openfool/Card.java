@@ -19,6 +19,15 @@ public class Card {
         return rank;
     }
 
+    public boolean beats(Card other, Suit trumpSuit) {
+        int thisRankValue = (this.rank.getValue() + 11) % 13;
+        int otherRankValue = (other.rank.getValue() + 11) % 13;
+        if (this.suit == other.suit) {
+            return thisRankValue >= otherRankValue;
+        }
+        else return this.suit == trumpSuit;
+    }
+
     public String toString() {
         return String.format(Locale.ENGLISH, "%d%c", rank.getValue(),
                 suit.name().toLowerCase().charAt(0));
