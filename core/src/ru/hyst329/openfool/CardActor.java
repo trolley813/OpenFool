@@ -22,6 +22,27 @@ public class CardActor extends Actor {
         this.back = new Sprite(game.assetManager.get(String.format("%s/back.png", deckStyle), Texture.class));
     }
 
+    @Override
+    protected void positionChanged() {
+        face.setCenter(getX(), getY());
+        back.setCenter(getX(), getY());
+        super.positionChanged();
+    }
+
+    @Override
+    protected void rotationChanged() {
+        face.setRotation(getRotation());
+        back.setRotation(getRotation());
+        super.rotationChanged();
+    }
+
+    @Override
+    protected void sizeChanged() {
+        face.setSize(getWidth(), getHeight());
+        back.setSize(getWidth(), getHeight());
+        super.sizeChanged();
+    }
+
     public boolean isFaceUp() {
         return faceUp;
     }
@@ -32,6 +53,8 @@ public class CardActor extends Actor {
 
     @Override
     public void draw(Batch batch, float alpha) {
+        face.setScale(this.getScaleX(), this.getScaleY());
+        back.setScale(this.getScaleX(), this.getScaleY());
         (faceUp ? face : back).draw(batch);
     }
 

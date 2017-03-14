@@ -1,11 +1,12 @@
 package ru.hyst329.openfool;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.Locale;
 
@@ -16,9 +17,13 @@ import java.util.Locale;
 
 public class MainMenuScreen implements Screen {
     final OpenFoolGame game;
+    private final Stage stage;
 
     public MainMenuScreen(OpenFoolGame game) {
         this.game = game;
+        // Initialise the stage
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
@@ -30,8 +35,11 @@ public class MainMenuScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0.5f, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.act(delta);
         game.batch.begin();
+        boolean canStart = false;
         if (game.assetManager.update()) {
+            canStart = true;
             Sprite king = new Sprite(game.assetManager.get("rus/13h.png", Texture.class));
             Sprite queen = new Sprite(game.assetManager.get("rus/12c.png", Texture.class));
             Sprite jack = new Sprite(game.assetManager.get("rus/11d.png", Texture.class));
@@ -47,12 +55,16 @@ public class MainMenuScreen implements Screen {
             king.draw(game.batch);
             queen.draw(game.batch);
             jack.draw(game.batch);
-            game.font.draw(game.batch, "OpenFool", 400, 50);
+            game.font.draw(game.batch, "OpenFool\nTap (click) anywhere to start" +
+                    "\n(menu isn't implemented yet)", 320, 80);
         } else {
             game.font.draw(game.batch, String.format(Locale.ENGLISH, "Loading assets %d%%",
                     Math.round(game.assetManager.getProgress() * 100)), 20, 20);
         }
         game.batch.end();
+        if (Gdx.input.isTouched() && canStart) {
+            newGame();
+        }
     }
 
     @Override
@@ -81,7 +93,7 @@ public class MainMenuScreen implements Screen {
     }
 
     public void newGame() {
-        game.setScreen(new GameScreen());
+        game.setScreen(new GameScreen(game));
         dispose();
     }
 }

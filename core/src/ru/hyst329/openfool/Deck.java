@@ -9,9 +9,10 @@ import java.util.Collections;
  */
 
 public class Deck {
-    ArrayList<Card> cards;
+    private ArrayList<Card> cards;
 
     public Deck() {
+        this.cards = new ArrayList<Card>();
         this.reset();
         this.shuffle();
     }
@@ -36,5 +37,9 @@ public class Deck {
         catch (IndexOutOfBoundsException e) {
             return null;
         }
+    }
+
+    public ArrayList<Card> getCards() {
+        return cards;
     }
 }

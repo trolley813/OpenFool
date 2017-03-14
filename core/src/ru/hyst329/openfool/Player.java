@@ -102,7 +102,7 @@ public class Player extends Actor {
         return res;
     }
 
-    int currentHandValue() {
+    public int currentHandValue() {
         return handValue(hand);
     }
 
