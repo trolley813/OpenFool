@@ -12,7 +12,7 @@ import java.util.Arrays;
  */
 
 public class Player extends Actor {
-    private ArrayList<Card> hand;
+    private ArrayList<Card> hand = new ArrayList<Card>();
     private GameScreen gameScreen;
     private String name;
     private int index;
@@ -56,7 +56,6 @@ public class Player extends Actor {
         this.gameScreen = gameScreen;
         this.name = name;
         this.index = index;
-
     }
 
     public int handValue(ArrayList<Card> hand) {

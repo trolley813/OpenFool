@@ -6,8 +6,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -20,9 +23,9 @@ public class GameScreen implements Screen, EventListener {
     private OpenFoolGame game;
     private Suit trumpSuit;
     private Player[] players;
-    private Card[] attackCards, defenseCards;
-    private HashMap<Card, CardActor> cardActors;
-    private Deck deck;
+    private Card[] attackCards = new Card[DEAL_LIMIT], defenseCards = new Card[DEAL_LIMIT];
+    private HashMap<Card, CardActor> cardActors = new HashMap<Card, CardActor>();
+    private Deck deck = new Deck();
 
     private static final int DEAL_LIMIT = 6;
     private static final int PLAYER_COUNT = 4;
@@ -31,7 +34,10 @@ public class GameScreen implements Screen, EventListener {
     private static final float CARD_SCALE_PLAYER = 0.3f;
 
     private static final float[] DECK_POSITION = {60, 240};
-
+    private static final float[] PLAYER_POSITION = {240, 80};
+    private static final float[] AI_POSITION = {60, 400};
+    private static final float[] PLAYER_DELTA = {60, 0};
+    private static final float[] AI_DELTA = {5, -5};
 
     public GameScreen(OpenFoolGame game) {
         this.game = game;
@@ -39,12 +45,13 @@ public class GameScreen implements Screen, EventListener {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         // Initialise card actors
-        deck = new Deck();
-        cardActors = new HashMap<Card, CardActor>();
-        for (Card c: deck.getCards()) {
+        ArrayList<Card> cards = deck.getCards();
+        for (int i = 0; i < cards.size(); i++) {
+            Card c = cards.get(i);
             CardActor cardActor = new CardActor(game, c, "rus");
             cardActors.put(c, cardActor);
             stage.addActor(cardActor);
+            cardActor.setZIndex(i);
         }
         // Initialise players
         // TODO: Replace with settings
@@ -55,11 +62,17 @@ public class GameScreen implements Screen, EventListener {
             stage.addActor(players[i]);
         }
         // Starting the game
-        for (CardActor cardActor: cardActors.values()) {
+        for (CardActor cardActor : cardActors.values()) {
             cardActor.setFaceUp(false);
             cardActor.setScale(CARD_SCALE_TABLE);
             cardActor.setPosition(DECK_POSITION[0], DECK_POSITION[1]);
         }
+        for (int i = 0; i < PLAYER_COUNT; i++) {
+            drawCardsToPlayer(i, DEAL_LIMIT);
+        }
+        CardActor trump = cardActors.get(deck.getCards().get(0));
+        trump.setRotation(-90.0f);
+        trump.setFaceUp(true);
     }
 
     @Override
@@ -114,16 +127,16 @@ public class GameScreen implements Screen, EventListener {
 
     @Override
     public boolean handle(Event event) {
-        if(event.getClass().isAssignableFrom(Player.CardThrownEvent.class)) {
+        if (event.getClass().isAssignableFrom(Player.CardThrownEvent.class)) {
             // TODO: Handle when card is thrown
         }
-        if(event.getClass().isAssignableFrom(Player.CardBeatenEvent.class)) {
+        if (event.getClass().isAssignableFrom(Player.CardBeatenEvent.class)) {
             // TODO: Handle when card is beaten
         }
-        if(event.getClass().isAssignableFrom(Player.TakeEvent.class)) {
+        if (event.getClass().isAssignableFrom(Player.TakeEvent.class)) {
             // TODO: Handle when player takes
         }
-        if(event.getClass().isAssignableFrom(Player.DoneEvent.class)) {
+        if (event.getClass().isAssignableFrom(Player.DoneEvent.class)) {
             // TODO: Handle when player says done
         }
         return true;
@@ -132,11 +145,30 @@ public class GameScreen implements Screen, EventListener {
     public Card[] getAttackCards() {
         return attackCards;
     }
+
     public Card[] getDefenseCards() {
         return defenseCards;
     }
 
-    public void drawCardsToPlayer(int playerIndex) {
-
+    public void drawCardsToPlayer(int playerIndex, int cardCount) {
+        for (int i = 0; i < cardCount; i++) {
+            if (deck.getCards().isEmpty())
+                break;
+            Card card = deck.draw();
+            Player player = players[playerIndex];
+            player.addCard(card);
+            CardActor cardActor = cardActors.get(card);
+            cardActor.setFaceUp(playerIndex == 0);
+            float[] position = playerIndex == 0 ? PLAYER_POSITION : AI_POSITION;
+            if (playerIndex > 0)
+                position[0] += (playerIndex - 1) * 640 / (PLAYER_COUNT - 2);
+            float[] delta = playerIndex == 0 ? PLAYER_DELTA : AI_DELTA;
+            int index = player.getHand().size() - 1;
+            float posX = position[0] + index * delta[0];
+            float posY = position[1] + index * delta[1];
+            cardActor.addAction(Actions.moveTo(posX, posY, 0.4f));
+            cardActor.setScale(playerIndex == 0 ? CARD_SCALE_PLAYER : CARD_SCALE_AI);
+            cardActor.setZIndex(index);
+        }
     }
 }
