@@ -89,6 +89,9 @@ public class GameScreen implements Screen, EventListener {
         Gdx.gl.glClearColor(0.5f, 1, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // TODO: Actual game logic
+        int opponents = (outOfPlay[currentAttackerIndex] ? 1 : 0)
+                + (outOfPlay[(currentAttackerIndex + 2) % PLAYER_COUNT] ? 1 : 0);
+
         // Draw stage
         stage.act(delta);
         stage.draw();
@@ -195,6 +198,7 @@ public class GameScreen implements Screen, EventListener {
             float posX = position[0] + index * delta[0];
             float posY = position[1] + index * delta[1];
             cardActor.addAction(Actions.moveTo(posX, posY, 0.4f));
+            cardActor.setRotation(0.0f);
             cardActor.setScale(playerIndex == 0 ? CARD_SCALE_PLAYER : CARD_SCALE_AI);
             cardActor.setZIndex(index);
         }
