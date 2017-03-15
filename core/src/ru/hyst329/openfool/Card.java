@@ -24,8 +24,7 @@ public class Card {
         int otherRankValue = (other.rank.getValue() + 11) % 13;
         if (this.suit == other.suit) {
             return thisRankValue >= otherRankValue;
-        }
-        else return this.suit == trumpSuit;
+        } else return this.suit == trumpSuit;
     }
 
     public String toString() {

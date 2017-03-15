@@ -20,8 +20,8 @@ public class Deck {
     public void reset() {
         this.cards.clear();
         this.cards = new ArrayList<Card>();
-        for (Rank r: Rank.values())
-            for (Suit s: Suit.values())
+        for (Rank r : Rank.values())
+            for (Suit s : Suit.values())
                 cards.add(new Card(s, r));
     }
 
@@ -33,8 +33,7 @@ public class Deck {
     public Card draw() {
         try {
             return cards.remove(cards.size() - 1);
-        }
-        catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             return null;
         }
     }

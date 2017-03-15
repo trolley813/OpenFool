@@ -201,12 +201,16 @@ public class Player extends Actor {
         boolean[] ranksPresent = new boolean[13];
         ArrayList<Card> handIfTake = new ArrayList<Card>(hand);
         for (Card c : gameScreen.getAttackCards()) {
-            ranksPresent[c.getRank().getValue() - 1] = true;
-            handIfTake.add(c);
+            if (c != null) {
+                ranksPresent[c.getRank().getValue() - 1] = true;
+                handIfTake.add(c);
+            }
         }
         for (Card c : gameScreen.getDefenseCards()) {
-            ranksPresent[c.getRank().getValue() - 1] = true;
-            handIfTake.add(c);
+            if (c != null) {
+                ranksPresent[c.getRank().getValue() - 1] = true;
+                handIfTake.add(c);
+            }
         }
         int maxVal = Integer.MIN_VALUE;
         int cardIdx = -1;
@@ -236,6 +240,36 @@ public class Player extends Actor {
             fire(new CardBeatenEvent(c));
         } else {
             fire(new TakeEvent());
+        }
+    }
+
+    public void clearHand() {
+        hand.clear();
+    }
+
+    public void throwCard(Card c) {
+        boolean[] ranksPresent = new boolean[13];
+        for (Card card : gameScreen.getAttackCards()) {
+            if (card != null)
+                ranksPresent[card.getRank().getValue() - 1] = true;
+        }
+        for (Card card : gameScreen.getDefenseCards()) {
+            if (card != null)
+                ranksPresent[card.getRank().getValue() - 1] = true;
+        }
+        if (hand.contains(c)
+                && (ranksPresent[c.getRank().getValue() - 1] ||
+                Arrays.equals(gameScreen.getAttackCards(), new Card[6]))) {
+            hand.remove(c);
+            fire(new CardThrownEvent(c));
+        }
+    }
+
+    public void beatWithCard(Card c) {
+        Card attack = gameScreen.getAttackCards()[Arrays.asList(gameScreen.getDefenseCards()).indexOf(null)];
+        if (hand.contains(c) && c.beats(attack, gameScreen.getTrumpSuit())) {
+            hand.remove(c);
+            fire(new CardBeatenEvent(c));
         }
     }
 }
