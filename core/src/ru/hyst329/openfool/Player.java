@@ -155,10 +155,12 @@ public class Player extends Actor {
     public void throwOrDone() {
         boolean[] ranksPresent = new boolean[13];
         for (Card c : gameScreen.getAttackCards()) {
-            ranksPresent[c.getRank().getValue() - 1] = true;
+            if (c != null)
+                ranksPresent[c.getRank().getValue() - 1] = true;
         }
         for (Card c : gameScreen.getDefenseCards()) {
-            ranksPresent[c.getRank().getValue() - 1] = true;
+            if (c != null)
+                ranksPresent[c.getRank().getValue() - 1] = true;
         }
         // TODO: Remove duplication
         double[] bonuses = {0, 0, 1, 1.5, 2.5};
