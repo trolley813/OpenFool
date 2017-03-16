@@ -282,4 +282,12 @@ public class Player extends Actor {
             fire(new CardBeatenEvent(c));
         }
     }
+
+    public void sayDone() {
+        fire(new DoneEvent());
+    }
+
+    public void sayTake() {
+        fire(new TakeEvent());
+    }
 }
