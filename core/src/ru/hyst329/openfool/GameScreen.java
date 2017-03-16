@@ -6,13 +6,20 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+
+import static ru.hyst329.openfool.GameScreen.GameState.BEATEN;
+import static ru.hyst329.openfool.GameScreen.GameState.BEATING;
+import static ru.hyst329.openfool.GameScreen.GameState.DRAWING;
+import static ru.hyst329.openfool.GameScreen.GameState.FINISHED;
+import static ru.hyst329.openfool.GameScreen.GameState.READY;
+import static ru.hyst329.openfool.GameScreen.GameState.THROWING;
 
 /**
  * Created by main on 13.03.2017.
@@ -20,7 +27,33 @@ import java.util.HashMap;
  */
 
 public class GameScreen implements Screen, EventListener {
+    enum GameState {
+        READY,
+        DRAWING,
+        THROWING,
+        THROWN,
+        BEATING,
+        BEATEN,
+        FINISHED
+    }
+
+    class GameStateChangedAction extends Action {
+        private GameState newState;
+
+        public GameStateChangedAction(GameState newState) {
+            this.newState = newState;
+        }
+
+        @Override
+        public boolean act(float delta) {
+            gameState = newState;
+            return true;
+        }
+    }
+
     private Stage stage;
+    private Group deckGroup, discardPileGroup, tableGroup;
+    private Group[] playerGroups;
     private OpenFoolGame game;
     private Suit trumpSuit;
     private Player[] players;
@@ -47,19 +80,34 @@ public class GameScreen implements Screen, EventListener {
     private static final float[] AI_DELTA = {5, -5};
     private boolean[] outOfPlay = new boolean[PLAYER_COUNT];
     private ArrayList<Card> discardPile = new ArrayList<Card>();
+    private GameState gameState = DRAWING, oldGameState = FINISHED;
 
     public GameScreen(OpenFoolGame game) {
         this.game = game;
         // Initialise the stage
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+        // Initialise groups
+        tableGroup = new Group();
+        stage.addActor(tableGroup);
+        deckGroup = new Group();
+        stage.addActor(deckGroup);
+        discardPileGroup = new Group();
+        stage.addActor(discardPileGroup);
+        playerGroups = new Group[PLAYER_COUNT];
+        for (int i = 0; i < PLAYER_COUNT; i++)
+        {
+            playerGroups[i] = new Group();
+            stage.addActor(playerGroups[i]);
+        }
         // Initialise card actors
         ArrayList<Card> cards = deck.getCards();
         for (int i = 0; i < cards.size(); i++) {
             Card c = cards.get(i);
             CardActor cardActor = new CardActor(game, c, "rus");
             cardActors.put(c, cardActor);
-            stage.addActor(cardActor);
+            cardActor.addListener(this);
+            deckGroup.addActor(cardActor);
             cardActor.setZIndex(i);
         }
         // Initialise players
@@ -68,6 +116,7 @@ public class GameScreen implements Screen, EventListener {
         players = new Player[PLAYER_COUNT];
         for (int i = 0; i < PLAYER_COUNT; i++) {
             players[i] = new Player(this, playerNames[i], i);
+            players[i].addListener(this);
             stage.addActor(players[i]);
         }
         // Starting the game
@@ -121,10 +170,11 @@ public class GameScreen implements Screen, EventListener {
                 }
             }));
         }
-        System.out.println(String.format("%s (%d) has the lowest trump %s",
+        System.out.println(String.format("%s (%s) has the lowest trump %s",
                 players[firstAttacker].getName(), players[firstAttacker].getIndex(), lowestTrump));
         currentAttackerIndex = firstAttacker;
         currentThrowerIndex = firstAttacker;
+        gameState = READY;
     }
 
     @Override
@@ -140,33 +190,70 @@ public class GameScreen implements Screen, EventListener {
         int opponents = (outOfPlay[currentAttackerIndex] ? 0 : 1)
                 + (outOfPlay[(currentAttackerIndex + 2) % PLAYER_COUNT] ? 0 : 1);
         int throwLimit = Math.min(DEAL_LIMIT, getCurrentDefender().getHand().size());
-        System.out.println(opponents + " opponents, " + playersSaidDone + " said done");
-        while (playersSaidDone < opponents) {
-            int currentPlayersDone = playersSaidDone;
-            if (getCurrentAttacker().getIndex() != 0) {
-                getCurrentAttacker().startTurn();
-            }
-            if (!isPlayerTaking) {
-                if (getCurrentDefender().getIndex() != 0) {
-                    getCurrentDefender().tryBeat();
-                }
-            }
-            if (getCurrentDefender().getHand().size() == 0
-                    || attackCards[throwLimit - 1] != null)
-                break;
-            if (getCurrentThrower().getIndex() != 0) {
-                getCurrentThrower().throwOrDone();
-            }
-            if (playersSaidDone > currentPlayersDone) {
-                currentThrowerIndex += 2;
-                currentThrowerIndex %= PLAYER_COUNT;
-            }
+//        System.out.println(opponents + " opponents, " + playersSaidDone + " said done");
+//        while (playersSaidDone < opponents) {
+//            int currentPlayersDone = playersSaidDone;
+//            if (getCurrentAttacker().getIndex() != 0 &&
+//                    gameState == GameState.READY) {
+//                getCurrentAttacker().startTurn();
+//            }
+//            if (!isPlayerTaking) {
+//                if (getCurrentDefender().getIndex() != 0 &&
+//                        gameState == GameState.THROWN) {
+//                    getCurrentDefender().tryBeat();
+//                }
+//            }
+//            if (getCurrentDefender().getHand().size() == 0
+//                    || attackCards[throwLimit - 1] != null)
+//                break;
+//            if (getCurrentThrower().getIndex() != 0 &&
+//                    gameState == GameState.BEATEN) {
+//                getCurrentThrower().throwOrDone();
+//            }
+//            if (playersSaidDone > currentPlayersDone) {
+//                currentThrowerIndex += 2;
+//                currentThrowerIndex %= PLAYER_COUNT;
+//            }
+//        }
+        if (playersSaidDone == opponents && gameState != DRAWING
+                && gameState != BEATING && gameState != THROWING) {
+            gameState = FINISHED;
         }
-        boolean playerTook = isPlayerTaking;
-        endTurn(isPlayerTaking ? getCurrentDefender().getIndex() : -1);
-        currentAttackerIndex += (playerTook ? 2 : 1);
-        currentAttackerIndex %= PLAYER_COUNT;
-        currentThrowerIndex = currentAttackerIndex;
+        if (oldGameState != gameState) {
+            System.out.printf("Game state is %s\n", gameState);
+            oldGameState = gameState;
+        }
+        switch (gameState) {
+            case READY:
+//                if (getCurrentAttacker().getIndex() != 0) {
+                    getCurrentAttacker().startTurn();
+//                }
+                break;
+            case THROWN:
+//                if (getCurrentDefender().getIndex() != 0) {
+                    getCurrentDefender().tryBeat();
+                    if (isPlayerTaking)
+                        gameState = BEATEN;
+//                }
+                if (getCurrentDefender().getHand().size() == 0
+                    || defenseCards[throwLimit - 1] != null)
+                        gameState = FINISHED;
+                break;
+            case BEATEN:
+//                if (getCurrentThrower().getIndex() != 0) {
+                    getCurrentThrower().throwOrDone();
+//                }
+                break;
+            case FINISHED:
+                boolean playerTook = isPlayerTaking;
+                endTurn(isPlayerTaking ? getCurrentDefender().getIndex() : -1);
+                currentAttackerIndex += (playerTook ? 2 : 1);
+                currentAttackerIndex %= PLAYER_COUNT;
+                currentThrowerIndex = currentAttackerIndex;
+                break;
+            default:
+                break;
+        }
         // Draw stage
         stage.act(delta);
         stage.draw();
@@ -215,6 +302,7 @@ public class GameScreen implements Screen, EventListener {
     }
 
     public void endTurn(int playerIndex) {
+        playersSaidDone = 0;
         ArrayList<Card> tableCards = new ArrayList<Card>();
         for (int i = 0; i < attackCards.length; i++) {
             if (attackCards[i] != null) {
@@ -230,6 +318,8 @@ public class GameScreen implements Screen, EventListener {
             for (Card card : tableCards) {
                 CardActor cardActor = cardActors.get(card);
                 discardPile.add(card);
+                discardPileGroup.addActor(cardActor);
+                cardActor.setFaceUp(false);
                 cardActor.setZIndex(discardPile.size() - 1);
                 cardActor.addAction(
                         Actions.moveTo(DISCARD_PILE_POSITION[0], DISCARD_PILE_POSITION[1], 0.6f));
@@ -250,6 +340,7 @@ public class GameScreen implements Screen, EventListener {
                 cardActor.addAction(Actions.moveTo(posX, posY, 0.4f));
                 cardActor.setRotation(0.0f);
                 cardActor.setScale(playerIndex == 0 ? CARD_SCALE_PLAYER : CARD_SCALE_AI);
+                playerGroups[playerIndex].addActor(cardActor);
                 cardActor.setZIndex(index);
             }
         }
@@ -270,6 +361,7 @@ public class GameScreen implements Screen, EventListener {
             }
         }
         isPlayerTaking = false;
+        gameState = READY;
     }
 
     public boolean isGameOver() {
@@ -296,24 +388,31 @@ public class GameScreen implements Screen, EventListener {
             playersSaidDone = 0;
             playersSaidDone = 0;
             int throwIndex = 0;
-            while (defenseCards[throwIndex] != null) throwIndex++;
-            Card throwCard = ((Player.CardBeatenEvent) event).getCard();
+            while (attackCards[throwIndex] != null) throwIndex++;
+            Card throwCard = ((Player.CardThrownEvent) event).getCard();
+            attackCards[throwIndex] = throwCard;
             CardActor throwCardActor = cardActors.get(throwCard);
             throwCardActor.setFaceUp(true);
-            throwCardActor.setZIndex(1);
+            tableGroup.addActor(throwCardActor);
+            throwCardActor.setZIndex(2 * throwIndex);
+            throwCardActor.setScale(CARD_SCALE_TABLE);
             float[] throwPos = TABLE_POSITION.clone();
             throwPos[0] += 90 * throwIndex;
-            throwCardActor.addAction(Actions.moveTo(throwPos[0] + TABLE_DELTA[0], throwPos[1] + TABLE_DELTA[1]));
+            throwCardActor.addAction(Actions.sequence(
+                    new GameStateChangedAction(GameState.THROWING),
+                    Actions.moveTo(throwPos[0], throwPos[1], 0.4f),
+                    Actions.delay(0.2f),
+                    new GameStateChangedAction(GameState.THROWN)));
             Player thrower = (Player) event.getTarget();
-            System.out.printf(String.format("%s (%d) throws %s",
-                    thrower.getName(), thrower.getIndex(), throwCard));
+            System.out.printf("%s (%s) throws %s\n", thrower.getName(), thrower.getIndex(), throwCard);
             for (int i = 0; i < thrower.getHand().size(); i++) {
                 CardActor cardActor = cardActors.get(thrower.getHand().get(i));
                 float[] position = (thrower.getIndex() == 0 ? PLAYER_POSITION : AI_POSITION).clone();
                 float[] delta = (thrower.getIndex() == 0 ? PLAYER_DELTA : AI_DELTA).clone();
                 float posX = position[0] + i * delta[0];
                 float posY = position[1] + i * delta[1];
-                cardActor.addAction(Actions.moveTo(posX, posY, 0.4f));
+                //cardActor.addAction(Actions.moveTo(posX, posY, 0.1f));
+                cardActor.setPosition(posX, posY);
                 cardActor.setRotation(0.0f);
                 cardActor.setScale(thrower.getIndex() == 0 ? CARD_SCALE_PLAYER : CARD_SCALE_AI);
                 cardActor.setZIndex(i);
@@ -322,25 +421,32 @@ public class GameScreen implements Screen, EventListener {
         if (event.getClass().isAssignableFrom(Player.CardBeatenEvent.class)) {
             // TODO: Handle when card is beaten
             playersSaidDone = 0;
-            int index = 0;
-            while (defenseCards[index] != null) index++;
+            int beatIndex = 0;
+            while (defenseCards[beatIndex] != null) beatIndex++;
             Card beatCard = ((Player.CardBeatenEvent) event).getCard();
+            defenseCards[beatIndex] = beatCard;
             CardActor beatCardActor = cardActors.get(beatCard);
             beatCardActor.setFaceUp(true);
-            beatCardActor.setZIndex(1);
+            tableGroup.addActor(beatCardActor);
+            beatCardActor.setZIndex(2 * beatIndex + 1);
+            beatCardActor.setScale(CARD_SCALE_TABLE);
             float[] beatPos = TABLE_POSITION.clone();
-            beatPos[0] += 90 * index;
-            beatCardActor.addAction(Actions.moveTo(beatPos[0] + TABLE_DELTA[0], beatPos[1] + TABLE_DELTA[1]));
+            beatPos[0] += 90 * beatIndex;
+            beatCardActor.addAction(Actions.sequence(
+                    new GameStateChangedAction(GameState.BEATING),
+                    Actions.moveTo(beatPos[0] + TABLE_DELTA[0], beatPos[1] + TABLE_DELTA[1], 0.4f),
+                    Actions.delay(0.2f),
+                    new GameStateChangedAction(GameState.BEATEN)));
             Player beater = (Player) event.getTarget();
-            System.out.printf(String.format("%s (%d) beats with %s",
-                    beater.getName(), beater.getIndex(), beatCard));
+            System.out.printf("%s (%s) beats with %s\n", beater.getName(), beater.getIndex(), beatCard);
             for (int i = 0; i < beater.getHand().size(); i++) {
                 CardActor cardActor = cardActors.get(beater.getHand().get(i));
                 float[] position = (beater.getIndex() == 0 ? PLAYER_POSITION : AI_POSITION).clone();
                 float[] delta = (beater.getIndex() == 0 ? PLAYER_DELTA : AI_DELTA).clone();
                 float posX = position[0] + i * delta[0];
                 float posY = position[1] + i * delta[1];
-                cardActor.addAction(Actions.moveTo(posX, posY, 0.4f));
+                //cardActor.addAction(Actions.moveTo(posX, posY, 0.1f));
+                cardActor.setPosition(posX, posY);
                 cardActor.setRotation(0.0f);
                 cardActor.setScale(beater.getIndex() == 0 ? CARD_SCALE_PLAYER : CARD_SCALE_AI);
                 cardActor.setZIndex(i);
@@ -351,16 +457,18 @@ public class GameScreen implements Screen, EventListener {
             playersSaidDone = 0;
             isPlayerTaking = true;
             Player player = (Player) event.getTarget();
-            System.out.printf(String.format("%s (%d) decides to take",
-                    player.getName(), player.getIndex()));
+            System.out.printf("%s (%s) decides to take\n",
+                    player.getName(), player.getIndex());
 
         }
         if (event.getClass().isAssignableFrom(Player.DoneEvent.class)) {
             // TODO: Handle when player says done
             playersSaidDone++;
+            currentThrowerIndex += 2;
+            currentThrowerIndex %= PLAYER_COUNT;
             Player player = (Player) event.getTarget();
-            System.out.printf(String.format("%s (%d) says done",
-                    player.getName(), player.getIndex()));
+            System.out.printf("%s (%s) says done\n",
+                    player.getName(), player.getIndex());
         }
         return true;
     }
@@ -374,11 +482,16 @@ public class GameScreen implements Screen, EventListener {
     }
 
     public void drawCardsToPlayer(int playerIndex, int cardCount) {
+        Player player = players[playerIndex];
+        player.addAction(Actions.sequence(
+                new GameStateChangedAction(GameState.DRAWING),
+                Actions.delay(0.39f),
+                new GameStateChangedAction(READY))
+        );
         for (int i = 0; i < cardCount; i++) {
             if (deck.getCards().isEmpty())
                 break;
             Card card = deck.draw();
-            Player player = players[playerIndex];
             player.addCard(card);
             CardActor cardActor = cardActors.get(card);
             cardActor.setFaceUp(playerIndex == 0);
@@ -392,6 +505,7 @@ public class GameScreen implements Screen, EventListener {
             cardActor.addAction(Actions.moveTo(posX, posY, 0.4f));
             cardActor.setRotation(0.0f);
             cardActor.setScale(playerIndex == 0 ? CARD_SCALE_PLAYER : CARD_SCALE_AI);
+            playerGroups[playerIndex].addActor(cardActor);
             cardActor.setZIndex(index);
         }
     }

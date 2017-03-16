@@ -171,11 +171,11 @@ public class Player extends Actor {
         int maxVal = Integer.MIN_VALUE;
         int cardIdx = -1;
         for (int i = 0; i < hand.size(); i++) {
-            ArrayList<Card> newHand = new ArrayList<Card>(hand);
             Card c = hand.get(i);
             Rank r = c.getRank();
             if (!ranksPresent[r.getValue() - 1])
                 continue;
+            ArrayList<Card> newHand = new ArrayList<Card>(hand);
             newHand.remove(i);
             int newVal = handValue(newHand)
                     + (int) Math.round(bonuses[countsByRank[r.getValue() - 1]]
@@ -216,7 +216,15 @@ public class Player extends Actor {
         }
         int maxVal = Integer.MIN_VALUE;
         int cardIdx = -1;
-        Card attack = gameScreen.getAttackCards()[Arrays.asList(gameScreen.getDefenseCards()).indexOf(null)];
+        System.out.print("Attack cards: ");
+        for (int i = 0; i < gameScreen.getAttackCards().length; i++) {
+            Card card = gameScreen.getAttackCards()[i];
+            System.out.printf("%s ", card == null ? "null" : card);
+        }
+        System.out.println();
+        int index = Arrays.asList(gameScreen.getDefenseCards()).indexOf(null);
+        Card attack = gameScreen.getAttackCards()[index];
+        System.out.printf("Index = %s attack is %s\n", index, attack == null ? "null" : attack);
         for (int i = 0; i < hand.size(); i++) {
             Card c = hand.get(i);
             if (c.beats(attack, gameScreen.getTrumpSuit())) {
