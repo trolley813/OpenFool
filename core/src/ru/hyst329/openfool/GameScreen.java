@@ -304,17 +304,18 @@ public class GameScreen implements Screen, EventListener {
             float[] position = (i == 0 ? PLAYER_POSITION : AI_POSITION).clone();
             if (i > 0)
                 position[0] += (i - 1) * 640 / (PLAYER_COUNT - 2);
-            position[1] += 400 * (i == 0 ? CARD_SCALE_PLAYER : CARD_SCALE_AI);
+            position[1] += 600 * (i == 0 ? CARD_SCALE_PLAYER : CARD_SCALE_AI);
             game.font.draw(game.batch, String.format("%s: %s", players[i].getName(), players[i].getHand().size()),
                     position[0], position[1]);
 
         }
+        game.font.draw(game.batch, String.format("%s %s", trumpSuit, cardsRemaining()), 20, 160);
+        game.batch.end();
         // Check if the game is over
         if (isGameOver()) {
             game.setScreen(new MainMenuScreen(game));
             dispose();
         }
-        game.batch.end();
     }
 
     @Override
@@ -417,7 +418,7 @@ public class GameScreen implements Screen, EventListener {
     }
 
     public int cardsRemaining() {
-        return 0;
+        return deck.getCards().size();
     }
 
     public Player[] getPlayers() {
