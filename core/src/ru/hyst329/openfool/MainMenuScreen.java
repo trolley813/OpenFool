@@ -40,9 +40,9 @@ public class MainMenuScreen implements Screen {
         boolean canStart = false;
         if (game.assetManager.update()) {
             canStart = true;
-            Sprite king = new Sprite(game.assetManager.get("rus/13h.png", Texture.class));
-            Sprite queen = new Sprite(game.assetManager.get("rus/12c.png", Texture.class));
-            Sprite jack = new Sprite(game.assetManager.get("rus/11d.png", Texture.class));
+            Sprite king = new Sprite(game.assetManager.get("decks/rus/13h.png", Texture.class));
+            Sprite queen = new Sprite(game.assetManager.get("decks/rus/12c.png", Texture.class));
+            Sprite jack = new Sprite(game.assetManager.get("decks/rus/11d.png", Texture.class));
             king.setScale(0.4f);
             queen.setScale(0.4f);
             jack.setScale(0.4f);

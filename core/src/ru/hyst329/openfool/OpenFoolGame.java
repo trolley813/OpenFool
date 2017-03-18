@@ -35,11 +35,11 @@ public class OpenFoolGame extends Game {
         for (String d : decks) {
             for (int i = 1; i <= 13; i++) {
                 for (char s : suits.toCharArray()) {
-                    assetManager.load(String.format(Locale.ENGLISH, "%s/%d%s.png", d, i, s),
+                    assetManager.load(String.format(Locale.ENGLISH, "decks/%s/%d%s.png", d, i, s),
                             Texture.class, param);
                 }
             }
-            assetManager.load(String.format(Locale.ENGLISH, "%s/back.png", d),
+            assetManager.load(String.format(Locale.ENGLISH, "decks/%s/back.png", d),
                     Texture.class, param);
         }
         this.setScreen(new MainMenuScreen(this));

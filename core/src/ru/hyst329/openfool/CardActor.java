@@ -18,8 +18,8 @@ public class CardActor extends Actor {
     public CardActor(OpenFoolGame game, Card card, String deckStyle) {
         this.game = game;
         this.card = card;
-        this.face = new Sprite(game.assetManager.get(String.format("%s/%s.png", deckStyle, card), Texture.class));
-        this.back = new Sprite(game.assetManager.get(String.format("%s/back.png", deckStyle), Texture.class));
+        this.face = new Sprite(game.assetManager.get(String.format("decks/%s/%s.png", deckStyle, card), Texture.class));
+        this.back = new Sprite(game.assetManager.get(String.format("decks/%s/back.png", deckStyle), Texture.class));
         setSize(face.getWidth(), face.getHeight());
         face.setOrigin(face.getWidth() / 2, face.getHeight() / 2);
         back.setOrigin(back.getWidth() / 2, back.getHeight() / 2);
