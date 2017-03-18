@@ -1,6 +1,8 @@
 package ru.hyst329.openfool;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
 import com.badlogic.gdx.graphics.Color;
@@ -20,14 +22,15 @@ public class OpenFoolGame extends Game {
     SpriteBatch batch;
     AssetManager assetManager;
     BitmapFont font;
+    Preferences preferences;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         assetManager = new AssetManager();
-        font = new BitmapFont();
-        font.setColor(Color.WHITE);
         VisUI.load();
+        font = VisUI.getSkin().getFont("default-font");
+        preferences = Gdx.app.getPreferences("OpenFool");
         TextureLoader.TextureParameter param;
         param = new TextureLoader.TextureParameter();
         param.minFilter = Texture.TextureFilter.MipMap;

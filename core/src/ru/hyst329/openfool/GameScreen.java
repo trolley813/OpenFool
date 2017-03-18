@@ -2,6 +2,7 @@ package ru.hyst329.openfool;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Event;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.sun.scenario.Settings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,6 +25,10 @@ import static ru.hyst329.openfool.GameScreen.GameState.DRAWING;
 import static ru.hyst329.openfool.GameScreen.GameState.FINISHED;
 import static ru.hyst329.openfool.GameScreen.GameState.READY;
 import static ru.hyst329.openfool.GameScreen.GameState.THROWING;
+import static ru.hyst329.openfool.ResultScreen.Result.DRAW;
+import static ru.hyst329.openfool.ResultScreen.Result.LOST;
+import static ru.hyst329.openfool.ResultScreen.Result.PARTNER_LOST;
+import static ru.hyst329.openfool.ResultScreen.Result.WON;
 
 /**
  * Created by main on 13.03.2017.
@@ -30,6 +36,8 @@ import static ru.hyst329.openfool.GameScreen.GameState.THROWING;
  */
 
 public class GameScreen implements Screen, EventListener {
+    private Color backgroundColor;
+
     enum GameState {
         READY,
         DRAWING,
@@ -97,6 +105,9 @@ public class GameScreen implements Screen, EventListener {
         // Initialise the stage
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
+        // Get background color
+        backgroundColor = new Color(game.preferences.getInteger(SettingsScreen.BACKGROUND_COLOR, 0x33cc4dff));
+        String deckStyle = game.preferences.getString(SettingsScreen.DECK, "rus");
         // Initialise groups
         tableGroup = new Group();
         stage.addActor(tableGroup);
@@ -140,11 +151,11 @@ public class GameScreen implements Screen, EventListener {
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (event.getTarget() instanceof CardActor) {
                     CardActor cardActor = ((CardActor) event.getTarget());
-                    System.out.printf("Trying to click %s", cardActor.getCard());
+                    System.out.printf("Trying to click %s\n", cardActor.getCard());
                     Card card = cardActor.getCard();
                     Player user = players[0];
                     if (!user.getHand().contains(card)) {
-                        System.out.printf("%s is not a user's card ", cardActor.getCard());
+                        System.out.printf("%s is not a user's card\n", cardActor.getCard());
                         return true;
                     }
                     if (getCurrentThrower() == user) {
@@ -162,7 +173,7 @@ public class GameScreen implements Screen, EventListener {
         };
         for (int i = 0; i < cards.size(); i++) {
             Card c = cards.get(i);
-            CardActor cardActor = new CardActor(game, c, "rus");
+            CardActor cardActor = new CardActor(game, c, deckStyle);
             cardActors.put(c, cardActor);
             cardActor.addListener(this);
             cardActor.addListener(listener);
@@ -244,7 +255,7 @@ public class GameScreen implements Screen, EventListener {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
+        Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         // TODO: Actual game logic
         int opponents = (outOfPlay[currentAttackerIndex] ? 0 : 1)
@@ -313,7 +324,10 @@ public class GameScreen implements Screen, EventListener {
         game.batch.end();
         // Check if the game is over
         if (isGameOver()) {
-            game.setScreen(new MainMenuScreen(game));
+            ResultScreen.Result gameResult = outOfPlay[0] ? WON : LOST;
+            if (outOfPlay[1] && outOfPlay[3] && gameResult == WON)
+                gameResult = outOfPlay[2] ? DRAW : PARTNER_LOST;
+            game.setScreen(new ResultScreen(game, gameResult));
             dispose();
         }
     }
