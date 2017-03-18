@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.kotcrab.vis.ui.VisUI;
 
 import java.util.Locale;
 
@@ -26,6 +27,7 @@ public class OpenFoolGame extends Game {
         assetManager = new AssetManager();
         font = new BitmapFont();
         font.setColor(Color.WHITE);
+        VisUI.load();
         TextureLoader.TextureParameter param;
         param = new TextureLoader.TextureParameter();
         param.minFilter = Texture.TextureFilter.MipMap;
@@ -54,5 +56,6 @@ public class OpenFoolGame extends Game {
     public void dispose() {
         batch.dispose();
         font.dispose();
+        VisUI.dispose();
     }
 }
