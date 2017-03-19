@@ -1,4 +1,9 @@
 # Changelog
+## 0.1.2 (2017-03-19)
+- Fixed issue #17 (throwing more cards then allowed).
+- Added localisation.
+- Fixed issue #22 (a problem running on devices with aspect ratio other than 5:3).
+
 ## 0.1.1 (2017-03-18)
 - Re-added settings (background color and deck selection)
 - Added result screen (won/lost/drawn).
