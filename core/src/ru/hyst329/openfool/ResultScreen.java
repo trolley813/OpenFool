@@ -37,23 +37,23 @@ public class ResultScreen implements Screen {
         switch (result) {
             case WON:
                 color = new Color(0.2f, 0.6f, 0.125f, 1);
-                header = "Victory!";
-                text = "Your team has defeated the opponents!";
+                header = game.localeBundle.get("VictoryHeader");
+                text = game.localeBundle.get("VictoryText");
                 break;
             case LOST:
                 color = new Color(0.6f, 0.2f, 0.125f, 1);
-                header = "Defeat :(";
-                text = "Your team has lost the game.";
+                header = game.localeBundle.get("DefeatHeader");
+                text = game.localeBundle.get("DefeatText");
                 break;
             case PARTNER_LOST:
                 color = new Color(0.6f, 0.4f, 0.125f, 1);
-                header = "Still a defeat...";
-                text = "You have managed to finish the game, but your partner hasn't.";
+                header = game.localeBundle.get("PartnerDefeatHeader");
+                text = game.localeBundle.get("PartnerDefeatText");
                 break;
             case DRAW:
                 color = new Color(0.6f, 0.6f, 0.125f, 1);
-                header = "It's a draw";
-                text = "You and your opponents achieved a peaceful result.";
+                header = game.localeBundle.get("DrawHeader");
+                text = game.localeBundle.get("DrawText");
                 break;
         }
         GlyphLayout headerLayout = new GlyphLayout(game.font, header);
