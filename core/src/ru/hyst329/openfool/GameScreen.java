@@ -291,7 +291,7 @@ public class GameScreen implements Screen, EventListener {
                 break;
             case BEATEN:
                 if (getCurrentDefender().getHand().size() == 0
-                        || defenseCards[throwLimit - 1] != null) {
+                        || attackCards[throwLimit - 1] != null) {
                     gameState = FINISHED;
                     break;
                 }
