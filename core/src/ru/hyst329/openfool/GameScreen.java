@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.sun.scenario.Settings;
 
@@ -103,7 +104,7 @@ public class GameScreen implements Screen, EventListener {
     public GameScreen(OpenFoolGame game) {
         this.game = game;
         // Initialise the stage
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(new FitViewport(800, 480));
         Gdx.input.setInputProcessor(stage);
         // Get background color
         backgroundColor = new Color(game.preferences.getInteger(SettingsScreen.BACKGROUND_COLOR, 0x33cc4dff));
@@ -334,7 +335,7 @@ public class GameScreen implements Screen, EventListener {
 
     @Override
     public void resize(int width, int height) {
-
+        stage.getViewport().update(width, height, true);
     }
 
     @Override

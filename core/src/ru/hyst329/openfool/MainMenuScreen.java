@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisProgressBar;
@@ -31,11 +32,11 @@ public class MainMenuScreen implements Screen {
     public MainMenuScreen(OpenFoolGame game) {
         this.game = game;
         // Initialise the stage
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(new FitViewport(800, 480));
         Gdx.input.setInputProcessor(stage);
 
 
-        newGameButton = new VisTextButton("New Game");
+        newGameButton = new VisTextButton(game.localeBundle.get("NewGame"));
         newGameButton.setBounds(40, 300, 250, 80);
         newGameButton.addListener(new ClickListener() {
             @Override
@@ -46,7 +47,7 @@ public class MainMenuScreen implements Screen {
             }
         });
         stage.addActor(newGameButton);
-        settingsButton = new VisTextButton("Settings");
+        settingsButton = new VisTextButton(game.localeBundle.get("Settings"));
         settingsButton.setBounds(40, 200, 250, 80);
         settingsButton.addListener(new ClickListener() {
             @Override
@@ -56,7 +57,7 @@ public class MainMenuScreen implements Screen {
             }
         });
         stage.addActor(settingsButton);
-        quitButton = new VisTextButton("Quit");
+        quitButton = new VisTextButton(game.localeBundle.get("Quit"));
         quitButton.setBounds(40, 100, 250, 80);
         quitButton.addListener(new ClickListener() {
             @Override
@@ -110,7 +111,7 @@ public class MainMenuScreen implements Screen {
             game.font.draw(game.batch, "OpenFool", 520, 80);
         } else {
             float progress = game.assetManager.getProgress();
-            game.font.draw(game.batch, String.format(Locale.ENGLISH, "Loading assets %d%%",
+            game.font.draw(game.batch, game.localeBundle.format("LoadingAssets",
                     Math.round(progress * 100)), 320, 100);
             progressBar.setValue(progress);
         }
@@ -124,7 +125,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
