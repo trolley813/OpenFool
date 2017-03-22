@@ -1,4 +1,5 @@
 # OpenFool
+![Travis](https://img.shields.io/travis/hyst329/OpenFool.svg)
 ![Github All Releases](https://img.shields.io/github/downloads/hyst329/OpenFool/total.svg)
 ![Github Releases](https://img.shields.io/github/downloads/hyst329/OpenFool/latest/total.svg)
 ![GitHub release](https://img.shields.io/github/release/hyst329/OpenFool.svg)
