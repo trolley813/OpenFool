@@ -1,12 +1,4 @@
 android {
-    signingConfigs {
-        config {
-            keyAlias 'AndroidSigning'
-            keyPassword 'robusi51'
-            storeFile file('C:/Users/main/keystores/android.jks')
-            storePassword 'Trolleybus10x'
-        }
-    }
     buildToolsVersion "25.0.1"
     compileSdkVersion 25
     sourceSets {
@@ -29,7 +21,6 @@ android {
         applicationId "ru.hyst329.openfool"
         minSdkVersion 9
         targetSdkVersion 25
-        signingConfig signingConfigs.config
     }
     productFlavors {
     }
