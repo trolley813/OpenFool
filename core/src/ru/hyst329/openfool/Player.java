@@ -5,6 +5,8 @@ import com.badlogic.gdx.scenes.scene2d.Event;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * Created by main on 13.03.2017.
@@ -50,6 +52,14 @@ public class Player extends Actor {
     }
 
     class TakeEvent extends Event {
+    }
+
+    enum SortingMode {
+        UNSORTED,
+        SUIT_ASCENDING,
+        SUIT_DESCENDING,
+        RANK_ASCENDING,
+        RANK_DESCENDING,
     }
 
     public Player(GameScreen gameScreen, String name, int index) {
@@ -290,4 +300,44 @@ public class Player extends Actor {
     public void sayTake() {
         fire(new TakeEvent());
     }
+
+    public void sortCards(final SortingMode sortingMode) {
+        if (sortingMode == SortingMode.UNSORTED) {
+            return;
+        }
+        Collections.sort(hand, new Comparator<Card>() {
+            @Override
+            public int compare(Card c1, Card c2) {
+                if (c1 == c2) {
+                    return 0;
+                }
+                else {
+                    int v1 = c1.getSuit().getValue() + (3 - gameScreen.getTrumpSuit().getValue());
+                    int v2 = c2.getSuit().getValue() + (3 - gameScreen.getTrumpSuit().getValue());
+                    int r1 = (c1.getRank().getValue() + 11) % 13;
+                    int r2 = (c2.getRank().getValue() + 11) % 13;
+                    switch (sortingMode) {
+                        case SUIT_ASCENDING:
+                            if (v1 < v2) return -1;
+                            if (v1 > v2) return 1;
+                            return (r1 < r2 ? -1 : 1);
+                        case SUIT_DESCENDING:
+                            if (v2 < v1) return -1;
+                            if (v2 > v1) return 1;
+                            return (r2 < r1 ? -1 : 1);
+                        case RANK_ASCENDING:
+                            if (r1 < r2) return -1;
+                            if (r1 > r2) return 1;
+                            return (v1 < v2 ? -1 : 1);
+                        case RANK_DESCENDING:
+                            if (r2 < r1) return -1;
+                            if (r2 > r1) return 1;
+                            return (v2 < v1 ? -1 : 1);
+                    }
+                }
+                return 0;
+            }
+        });
+    }
+
 }
