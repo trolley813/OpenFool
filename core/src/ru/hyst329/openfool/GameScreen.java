@@ -63,6 +63,18 @@ public class GameScreen implements Screen, EventListener {
         }
     }
 
+    class SortAction extends Action {
+        private final int playerIndex;
+
+        public SortAction(int playerIndex) { this.playerIndex = playerIndex; }
+        @Override
+        public boolean act(float delta) {
+            if (playerIndex == 0)
+                sortPlayerCards();
+            return true;
+        }
+    }
+
     private Stage stage;
     private Group deckGroup, discardPileGroup, tableGroup;
     private Group[] playerGroups;
@@ -100,6 +112,7 @@ public class GameScreen implements Screen, EventListener {
     private boolean[] outOfPlay = new boolean[PLAYER_COUNT];
     private ArrayList<Card> discardPile = new ArrayList<Card>();
     private GameState gameState = DRAWING, oldGameState = FINISHED;
+    private Player.SortingMode sortingMode;
 
     public GameScreen(OpenFoolGame game) {
         this.game = game;
@@ -109,6 +122,7 @@ public class GameScreen implements Screen, EventListener {
         // Get background color
         backgroundColor = new Color(game.preferences.getInteger(SettingsScreen.BACKGROUND_COLOR, 0x33cc4dff));
         String deckStyle = game.preferences.getString(SettingsScreen.DECK, "rus");
+        sortingMode = Player.SortingMode.fromInt(game.preferences.getInteger(SettingsScreen.SORTING_MODE, 1));
         // Initialise groups
         tableGroup = new Group();
         stage.addActor(tableGroup);
@@ -198,9 +212,7 @@ public class GameScreen implements Screen, EventListener {
             cardActor.setPosition(DECK_POSITION[0], DECK_POSITION[1]);
             // cardActor.setDebug(true);
         }
-        for (int i = 0; i < PLAYER_COUNT; i++) {
-            drawCardsToPlayer(i, DEAL_LIMIT);
-        }
+        // Determine trump
         Card trumpCard = deck.getCards().get(0);
         final CardActor trump = cardActors.get(trumpCard);
         trump.setRotation(-90.0f);
@@ -208,6 +220,10 @@ public class GameScreen implements Screen, EventListener {
         trump.moveBy(90 * CARD_SCALE_TABLE, 0);
         trumpSuit = trumpCard.getSuit();
         System.out.println(String.format("Trump suit is %s", trumpSuit.toString()));
+        // Draw cards
+        for (int i = 0; i < PLAYER_COUNT; i++) {
+            drawCardsToPlayer(i, DEAL_LIMIT);
+        }
         // Determine the first attacker and thrower
         Rank lowestTrump = Rank.ACE;
         Card lowestTrumpCard = new Card(Suit.SPADES, Rank.ACE);
@@ -384,8 +400,8 @@ public class GameScreen implements Screen, EventListener {
                         Actions.moveTo(DISCARD_PILE_POSITION[0], DISCARD_PILE_POSITION[1], 0.6f));
             }
         } else {
+            Player player = players[playerIndex];
             for (Card card : tableCards) {
-                Player player = players[playerIndex];
                 player.addCard(card);
                 CardActor cardActor = cardActors.get(card);
                 cardActor.setFaceUp(playerIndex == 0);
@@ -402,6 +418,10 @@ public class GameScreen implements Screen, EventListener {
                 playerGroups[playerIndex].addActor(cardActor);
                 cardActor.setZIndex(index);
             }
+            player.addAction(Actions.sequence(
+                    Actions.delay(0.39f),
+                    new SortAction(playerIndex)
+            ));
         }
         if (!deck.getCards().isEmpty()) {
             for (int i = 0; i < PLAYER_COUNT; i++) {
@@ -550,11 +570,14 @@ public class GameScreen implements Screen, EventListener {
 
     public void drawCardsToPlayer(int playerIndex, int cardCount) {
         Player player = players[playerIndex];
-        player.addAction(Actions.sequence(
-                new GameStateChangedAction(GameState.DRAWING),
-                Actions.delay(0.39f),
-                new GameStateChangedAction(READY))
-        );
+        if (!deck.getCards().isEmpty()) {
+            player.addAction(Actions.sequence(
+                    new GameStateChangedAction(GameState.DRAWING),
+                    Actions.delay(0.39f),
+                    new GameStateChangedAction(READY),
+                    new SortAction(playerIndex)
+            ));
+        }
         for (int i = 0; i < cardCount; i++) {
             if (deck.getCards().isEmpty())
                 break;
@@ -597,5 +620,25 @@ public class GameScreen implements Screen, EventListener {
             return players[(currentThrowerIndex + 2) % PLAYER_COUNT];
         }
         return players[currentThrowerIndex];
+    }
+
+    public void sortPlayerCards() {
+        // TODO: Generalise to other players
+        Player player = players[0];
+        player.sortCards(sortingMode);
+        // Reposition all cards
+        for (int i = 0; i < player.getHand().size(); i++) {
+            CardActor cardActor = cardActors.get(player.getHand().get(i));
+            float[] position = (player.getIndex() == 0 ? PLAYER_POSITION : AI_POSITION).clone();
+            float[] delta = (player.getIndex() == 0 ? PLAYER_DELTA : AI_DELTA).clone();
+            if (player.getIndex() > 0)
+                position[0] += (player.getIndex() - 1) * 640 / (PLAYER_COUNT - 2);
+            float posX = position[0] + i * delta[0];
+            float posY = position[1] + i * delta[1];
+            cardActor.setPosition(posX, posY);
+            cardActor.setRotation(0.0f);
+            cardActor.setScale(player.getIndex() == 0 ? CARD_SCALE_PLAYER : CARD_SCALE_AI);
+            cardActor.setZIndex(i);
+        }
     }
 }

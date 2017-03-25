@@ -55,11 +55,30 @@ public class Player extends Actor {
     }
 
     enum SortingMode {
-        UNSORTED,
-        SUIT_ASCENDING,
-        SUIT_DESCENDING,
-        RANK_ASCENDING,
-        RANK_DESCENDING,
+        UNSORTED(0),
+        SUIT_ASCENDING(1),
+        SUIT_DESCENDING(2),
+        RANK_ASCENDING(3),
+        RANK_DESCENDING(4);
+
+        private final int value;
+
+        SortingMode(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public static SortingMode fromInt(int value) {
+            for (SortingMode type : SortingMode.values()) {
+                if (type.getValue() == value) {
+                    return type;
+                }
+            }
+            return null;
+        }
     }
 
     public Player(GameScreen gameScreen, String name, int index) {
@@ -310,10 +329,9 @@ public class Player extends Actor {
             public int compare(Card c1, Card c2) {
                 if (c1 == c2) {
                     return 0;
-                }
-                else {
-                    int v1 = c1.getSuit().getValue() + (3 - gameScreen.getTrumpSuit().getValue());
-                    int v2 = c2.getSuit().getValue() + (3 - gameScreen.getTrumpSuit().getValue());
+                } else {
+                    int v1 = (c1.getSuit().getValue() + (3 - gameScreen.getTrumpSuit().getValue())) % 4;
+                    int v2 = (c2.getSuit().getValue() + (3 - gameScreen.getTrumpSuit().getValue())) % 4;
                     int r1 = (c1.getRank().getValue() + 11) % 13;
                     int r2 = (c2.getRank().getValue() + 11) % 13;
                     switch (sortingMode) {

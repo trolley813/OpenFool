@@ -35,6 +35,7 @@ public class SettingsScreen implements Screen {
     public static final String BACKGROUND_COLOR = "BackgroundColor";
     public static final String DECK = "Deck";
     public static final String LANGUAGE = "Language";
+    public static final String SORTING_MODE = "SortingMode";
     private final Map<String, String> DECKS, LANGUAGES;
     private static final float CARD_SCALE = 0.25f;
 
