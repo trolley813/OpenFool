@@ -62,7 +62,10 @@ public class OpenFoolGame extends Game {
             assetManager.load(String.format(Locale.ENGLISH, "decks/%s/back.png", d),
                     Texture.class, param);
         }
-
+        for (int i = 0; i < 1; i++) {
+            assetManager.load(String.format(Locale.ENGLISH, "backgrounds/background%d.png", i + 1),
+                    Texture.class, param);
+        }
         this.setScreen(new MainMenuScreen(this));
     }
 

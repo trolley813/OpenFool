@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -37,6 +38,7 @@ import static ru.hyst329.openfool.ResultScreen.Result.WON;
  */
 
 public class GameScreen implements Screen, EventListener {
+    private final Texture background;
     private Color backgroundColor;
 
     enum GameState {
@@ -66,7 +68,10 @@ public class GameScreen implements Screen, EventListener {
     class SortAction extends Action {
         private final int playerIndex;
 
-        public SortAction(int playerIndex) { this.playerIndex = playerIndex; }
+        public SortAction(int playerIndex) {
+            this.playerIndex = playerIndex;
+        }
+
         @Override
         public boolean act(float delta) {
             if (playerIndex == 0)
@@ -121,6 +126,7 @@ public class GameScreen implements Screen, EventListener {
         Gdx.input.setInputProcessor(stage);
         // Get background color
         backgroundColor = new Color(game.preferences.getInteger(SettingsScreen.BACKGROUND_COLOR, 0x33cc4dff));
+        background = game.assetManager.get(String.format("backgrounds/background%d.png", 1), Texture.class);
         String deckStyle = game.preferences.getString(SettingsScreen.DECK, "rus");
         sortingMode = Player.SortingMode.fromInt(game.preferences.getInteger(SettingsScreen.SORTING_MODE, 1));
         // Initialise groups
