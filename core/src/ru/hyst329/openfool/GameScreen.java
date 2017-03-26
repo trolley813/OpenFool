@@ -127,6 +127,8 @@ public class GameScreen implements Screen, EventListener {
         // Get background color
         backgroundColor = new Color(game.preferences.getInteger(SettingsScreen.BACKGROUND_COLOR, 0x33cc4dff));
         background = game.assetManager.get(String.format("backgrounds/background%d.png", 1), Texture.class);
+        background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        //background.
         String deckStyle = game.preferences.getString(SettingsScreen.DECK, "rus");
         sortingMode = Player.SortingMode.fromInt(game.preferences.getInteger(SettingsScreen.SORTING_MODE, 1));
         // Initialise groups
@@ -329,6 +331,12 @@ public class GameScreen implements Screen, EventListener {
                 currentThrowerIndex = currentAttackerIndex;
                 break;
         }
+        // Draw background
+        game.batch.begin();
+        game.batch.setColor(backgroundColor);
+        game.batch.draw(background, 0, 0, 0, 0, 800, 480);
+        game.batch.setColor(new Color(Color.WHITE));
+        game.batch.end();
         // Draw stage
         stage.act(delta);
         stage.draw();
