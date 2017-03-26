@@ -1,4 +1,8 @@
 # Changelog
+## 0.1.3 (2017-03-26)
+- Added background (currently checkerboard).
+- Added card sorting (by suit or rank, ascending or descending).
+- Cards in the discard pile are now placed unevenly.
 ## 0.1.2 (2017-03-19)
 - Fixed issue #17 (throwing more cards then allowed).
 - Added localisation.
