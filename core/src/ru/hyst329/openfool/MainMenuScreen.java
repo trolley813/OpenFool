@@ -9,27 +9,24 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisProgressBar;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 
-import java.util.Locale;
 
 /**
  * Created by hyst329 on 13.03.2017.
  * Licensed under MIT License.
  */
 
-public class MainMenuScreen implements Screen {
+class MainMenuScreen implements Screen {
     private final OpenFoolGame game;
     private final Stage stage;
     private Sprite king, queen, jack;
     private boolean canStart;
-    private VisTextButton newGameButton, settingsButton, quitButton;
-    private VisProgressBar progressBar;
+    private final VisTextButton newGameButton, settingsButton, quitButton;
+    private final VisProgressBar progressBar;
 
-    public MainMenuScreen(OpenFoolGame game) {
+    MainMenuScreen(OpenFoolGame game) {
         this.game = game;
         // Initialise the stage
         stage = new Stage(new FitViewport(800, 480));
@@ -148,17 +145,17 @@ public class MainMenuScreen implements Screen {
 
     }
 
-    public void newGame() {
+    private void newGame() {
         game.setScreen(new GameScreen(game));
         dispose();
     }
 
-    public void showSettings() {
+    private void showSettings() {
         game.setScreen(new SettingsScreen(game));
         dispose();
     }
 
-    public void quit() {
+    private void quit() {
         dispose();
         Gdx.app.exit();
     }

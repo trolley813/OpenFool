@@ -1,8 +1,6 @@
 package ru.hyst329.openfool;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
 import com.badlogic.gdx.graphics.Color;
@@ -16,51 +14,57 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.kotcrab.vis.ui.VisUI;
 import com.kotcrab.vis.ui.widget.VisLabel;
 import com.kotcrab.vis.ui.widget.VisSelectBox;
 import com.kotcrab.vis.ui.widget.VisTextButton;
 import com.kotcrab.vis.ui.widget.color.ColorPicker;
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 /**
  * Created by main on 18.03.2017.
+ * Licensed under MIT License.
  */
-public class SettingsScreen implements Screen {
-    public static final String BACKGROUND_COLOR = "BackgroundColor";
-    public static final String DECK = "Deck";
-    public static final String LANGUAGE = "Language";
-    public static final String SORTING_MODE = "SortingMode";
+class SettingsScreen implements Screen {
+    static final String BACKGROUND_COLOR = "BackgroundColor";
+    static final String DECK = "Deck";
+    private static final String LANGUAGE = "Language";
+    static final String SORTING_MODE = "SortingMode";
     private final Map<String, String> DECKS, LANGUAGES;
     private static final float CARD_SCALE = 0.25f;
 
-    private OpenFoolGame game;
+    private final OpenFoolGame game;
     private final Stage stage;
     private Color backgroundColor;
     private String deck, language;
-    private ColorPicker picker;
-    private VisTextButton changeColorButton, saveButton;
-    private VisSelectBox<String> deckSelectBox, languageSelectBox;
-    private VisLabel deckSelectLabel, languageSelectLabel;
+    private Player.SortingMode sortingMode;
+    private final ColorPicker picker;
+    private final VisSelectBox<String> deckSelectBox, languageSelectBox, sortingSelectBox;
     private Sprite back, ace, queen, ten, deuce;
 
 
-    public SettingsScreen(OpenFoolGame game) {
+    SettingsScreen(OpenFoolGame game) {
         this.game = game;
         // Initialise DECKS
-        DECKS = new HashMap<String, String>();
+        DECKS = new HashMap<>();
         DECKS.put(game.localeBundle.get("CardsRussian"), "rus");
         DECKS.put(game.localeBundle.get("CardsInternational"), "int");
         DECKS.put(game.localeBundle.get("CardsFrench"), "fra");
         // Initialise LANGUAGES
-        LANGUAGES = new HashMap<String, String>();
+        LANGUAGES = new HashMap<>();
         LANGUAGES.put(game.localeBundle.get("LanguageRussian"), "ru");
         LANGUAGES.put(game.localeBundle.get("LanguageEnglish"), "en");
+        // Initialise SORTING_MODES
+        ArrayList<String> SORTING_MODES = new ArrayList<>();
+        SORTING_MODES.add(game.localeBundle.get("SortingUnsorted"));
+        SORTING_MODES.add(game.localeBundle.get("SortingSuitAscending"));
+        SORTING_MODES.add(game.localeBundle.get("SortingSuitDescending"));
+        SORTING_MODES.add(game.localeBundle.get("SortingRankAscending"));
+        SORTING_MODES.add(game.localeBundle.get("SortingRankDescending"));
         // Initialise the stage
         stage = new Stage(new FitViewport(800, 480));
         Gdx.input.setInputProcessor(stage);
@@ -68,6 +72,7 @@ public class SettingsScreen implements Screen {
         backgroundColor = new Color(game.preferences.getInteger(BACKGROUND_COLOR, 0x33cc4dff));
         deck = game.preferences.getString(DECK, "rus");
         language = game.preferences.getString(LANGUAGE, "ru");
+        sortingMode = Player.SortingMode.fromInt(game.preferences.getInteger(SORTING_MODE, 0));
 
         picker = new ColorPicker("Choose background color", new ColorPickerAdapter() {
             @Override
@@ -77,7 +82,7 @@ public class SettingsScreen implements Screen {
 
         });
 
-        changeColorButton = new VisTextButton(game.localeBundle.get("ChangeBackgroundColor"));
+        VisTextButton changeColorButton = new VisTextButton(game.localeBundle.get("ChangeBackgroundColor"));
         changeColorButton.setBounds(40, 300, 250, 80);
         changeColorButton.addListener(new ClickListener() {
             @Override
@@ -88,7 +93,7 @@ public class SettingsScreen implements Screen {
             }
         });
         stage.addActor(changeColorButton);
-        saveButton = new VisTextButton(game.localeBundle.get("SaveSettings"));
+        VisTextButton saveButton = new VisTextButton(game.localeBundle.get("SaveSettings"));
         saveButton.setBounds(40, 200, 250, 80);
         saveButton.addListener(new ClickListener() {
             @Override
@@ -99,15 +104,17 @@ public class SettingsScreen implements Screen {
             }
         });
         stage.addActor(saveButton);
-        deckSelectLabel = new VisLabel(game.localeBundle.get("Cards"));
-        deckSelectLabel.setBounds(520, 400, 60, 40);
+        VisLabel deckSelectLabel = new VisLabel(game.localeBundle.get("Cards"));
+        deckSelectLabel.setBounds(420, 300, 60, 40);
         stage.addActor(deckSelectLabel);
-        languageSelectLabel = new VisLabel(game.localeBundle.get("Language"));
-        languageSelectLabel.setBounds(520, 350, 60, 40);
+        VisLabel languageSelectLabel = new VisLabel(game.localeBundle.get("Language"));
+        languageSelectLabel.setBounds(420, 350, 60, 40);
         stage.addActor(languageSelectLabel);
-
-        deckSelectBox = new VisSelectBox<String>();
-        deckSelectBox.setBounds(600, 400, 120, 40);
+        VisLabel sortingSelectLabel = new VisLabel(game.localeBundle.get("Sorting"));
+        sortingSelectLabel.setBounds(420, 400, 60, 40);
+        stage.addActor(sortingSelectLabel);
+        deckSelectBox = new VisSelectBox<>();
+        deckSelectBox.setBounds(580, 300, 180, 40);
         deckSelectBox.setItems(DECKS.keySet().toArray(new String[0]));
         deckSelectBox.addListener(new ChangeListener() {
             @Override
@@ -126,8 +133,8 @@ public class SettingsScreen implements Screen {
         }
         deckSelectBox.setSelected(deckName);
         stage.addActor(deckSelectBox);
-        languageSelectBox = new VisSelectBox<String>();
-        languageSelectBox.setBounds(600, 350, 120, 40);
+        languageSelectBox = new VisSelectBox<>();
+        languageSelectBox.setBounds(580, 350, 180, 40);
         languageSelectBox.setItems(LANGUAGES.keySet().toArray(new String[0]));
         languageSelectBox.addListener(new ChangeListener() {
             @Override
@@ -146,6 +153,19 @@ public class SettingsScreen implements Screen {
         }
         languageSelectBox.setSelected(languageName);
         stage.addActor(languageSelectBox);
+        sortingSelectBox = new VisSelectBox<>();
+        sortingSelectBox.setBounds(580, 400, 180, 40);
+        sortingSelectBox.setItems(SORTING_MODES.toArray(new String[0]));
+        sortingSelectBox.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+            sortingMode = Player.SortingMode.fromInt(sortingSelectBox.getSelectedIndex());
+            }
+
+
+        });
+        sortingSelectBox.setSelectedIndex(sortingMode.getValue());
+        stage.addActor(sortingSelectBox);
         updateSprites();
 
     }
@@ -202,6 +222,7 @@ public class SettingsScreen implements Screen {
         game.preferences.putInteger(BACKGROUND_COLOR, Color.rgba8888(backgroundColor));
         game.preferences.putString(DECK, deck);
         game.preferences.putString(LANGUAGE, language);
+        game.preferences.putInteger(SORTING_MODE, sortingMode.getValue());
         game.preferences.flush();
         game.setScreen(new MainMenuScreen(game));
         dispose();

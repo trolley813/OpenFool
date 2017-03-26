@@ -2,6 +2,7 @@ package ru.hyst329.openfool;
 
 /**
  * Created by main on 13.03.2017.
+ * Licensed under MIT License.
  */
 
 public enum Rank {

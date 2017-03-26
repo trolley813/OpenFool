@@ -3,23 +3,23 @@ package ru.hyst329.openfool;
 import java.util.Locale;
 
 public class Card {
-    private Suit suit;
-    private Rank rank;
+    private final Suit suit;
+    private final Rank rank;
 
     public Card(Suit suit, Rank rank) {
         this.suit = suit;
         this.rank = rank;
     }
 
-    public Suit getSuit() {
+    Suit getSuit() {
         return suit;
     }
 
-    public Rank getRank() {
+    Rank getRank() {
         return rank;
     }
 
-    public boolean beats(Card other, Suit trumpSuit) {
+    boolean beats(Card other, Suit trumpSuit) {
         int thisRankValue = (this.rank.getValue() + 11) % 13;
         int otherRankValue = (other.rank.getValue() + 11) % 13;
         if (this.suit == other.suit) {

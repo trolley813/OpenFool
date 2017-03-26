@@ -6,26 +6,27 @@ import java.util.Collections;
 
 /**
  * Created by main on 13.03.2017.
+ * Licensed under MIT License.
  */
 
-public class Deck {
+class Deck {
     private ArrayList<Card> cards;
 
-    public Deck() {
-        this.cards = new ArrayList<Card>();
+    Deck() {
+        this.cards = new ArrayList<>();
         this.reset();
         this.shuffle();
     }
 
-    public void reset() {
+    private void reset() {
         this.cards.clear();
-        this.cards = new ArrayList<Card>();
+        this.cards = new ArrayList<>();
         for (Rank r : Rank.values())
             for (Suit s : Suit.values())
                 cards.add(new Card(s, r));
     }
 
-    public void shuffle() {
+    private void shuffle() {
         SecureRandom random = new SecureRandom();
         Collections.shuffle(cards, random);
     }

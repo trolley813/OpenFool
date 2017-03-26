@@ -14,10 +14,10 @@ import java.util.Comparator;
  */
 
 public class Player extends Actor {
-    private ArrayList<Card> hand = new ArrayList<Card>();
-    private GameScreen gameScreen;
+    private final ArrayList<Card> hand = new ArrayList<>();
+    private final GameScreen gameScreen;
     private String name;
-    private int index;
+    private final int index;
 
     private static final int RANK_MULTIPLIER = 100;
     private static final int UNBALANCED_HAND_PENALTY = 200;
@@ -25,7 +25,7 @@ public class Player extends Actor {
     private static final int OUT_OF_PLAY = 30000;
 
     class CardThrownEvent extends Event {
-        private Card card;
+        private final Card card;
 
         public CardThrownEvent(Card card) {
             this.card = card;
@@ -37,7 +37,7 @@ public class Player extends Actor {
     }
 
     class CardBeatenEvent extends Event {
-        private Card card;
+        private final Card card;
 
         public CardBeatenEvent(Card card) {
             this.card = card;
@@ -81,13 +81,13 @@ public class Player extends Actor {
         }
     }
 
-    public Player(GameScreen gameScreen, String name, int index) {
+    Player(GameScreen gameScreen, String name, int index) {
         this.gameScreen = gameScreen;
         this.name = name;
         this.index = index;
     }
 
-    public int handValue(ArrayList<Card> hand) {
+    private int handValue(ArrayList<Card> hand) {
 
         if (gameScreen.cardsRemaining() == 0 && hand.size() == 0) {
             return OUT_OF_PLAY;
@@ -130,7 +130,7 @@ public class Player extends Actor {
         return res;
     }
 
-    public int currentHandValue() {
+    private int currentHandValue() {
         return handValue(hand);
     }
 
@@ -164,7 +164,7 @@ public class Player extends Actor {
         int maxVal = Integer.MIN_VALUE;
         int cardIdx = -1;
         for (int i = 0; i < hand.size(); i++) {
-            ArrayList<Card> newHand = new ArrayList<Card>(hand);
+            ArrayList<Card> newHand = new ArrayList<>(hand);
             Card c = hand.get(i);
             newHand.remove(i);
             Rank r = c.getRank();
@@ -204,7 +204,7 @@ public class Player extends Actor {
             Rank r = c.getRank();
             if (!ranksPresent[r.getValue() - 1])
                 continue;
-            ArrayList<Card> newHand = new ArrayList<Card>(hand);
+            ArrayList<Card> newHand = new ArrayList<>(hand);
             newHand.remove(i);
             int newVal = handValue(newHand)
                     + (int) Math.round(bonuses[countsByRank[r.getValue() - 1]]
@@ -230,7 +230,7 @@ public class Player extends Actor {
     public void tryBeat() {
         int RANK_PRESENT_BONUS = 300;
         boolean[] ranksPresent = new boolean[13];
-        ArrayList<Card> handIfTake = new ArrayList<Card>(hand);
+        ArrayList<Card> handIfTake = new ArrayList<>(hand);
         for (Card c : gameScreen.getAttackCards()) {
             if (c != null) {
                 ranksPresent[c.getRank().getValue() - 1] = true;
@@ -258,7 +258,7 @@ public class Player extends Actor {
             Card c = hand.get(i);
             if (c.beats(attack, gameScreen.getTrumpSuit())) {
                 Rank r = c.getRank();
-                ArrayList<Card> newHand = new ArrayList<Card>(hand);
+                ArrayList<Card> newHand = new ArrayList<>(hand);
                 newHand.remove(i);
                 int newVal = handValue(newHand)
                         + RANK_PRESENT_BONUS * (ranksPresent[r.getValue() - 1] ? 1 : 0);

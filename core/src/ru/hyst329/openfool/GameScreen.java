@@ -15,11 +15,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.sun.scenario.Settings;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Random;
 
 import static ru.hyst329.openfool.GameScreen.GameState.BEATEN;
 import static ru.hyst329.openfool.GameScreen.GameState.BEATING;
@@ -39,7 +40,7 @@ import static ru.hyst329.openfool.ResultScreen.Result.WON;
 
 public class GameScreen implements Screen, EventListener {
     private final Texture background;
-    private Color backgroundColor;
+    private final Color backgroundColor;
 
     enum GameState {
         READY,
@@ -51,10 +52,10 @@ public class GameScreen implements Screen, EventListener {
         FINISHED
     }
 
-    class GameStateChangedAction extends Action {
-        private GameState newState;
+    private class GameStateChangedAction extends Action {
+        private final GameState newState;
 
-        public GameStateChangedAction(GameState newState) {
+        GameStateChangedAction(GameState newState) {
             this.newState = newState;
         }
 
@@ -65,10 +66,10 @@ public class GameScreen implements Screen, EventListener {
         }
     }
 
-    class SortAction extends Action {
+    private class SortAction extends Action {
         private final int playerIndex;
 
-        public SortAction(int playerIndex) {
+        SortAction(int playerIndex) {
             this.playerIndex = playerIndex;
         }
 
@@ -80,18 +81,20 @@ public class GameScreen implements Screen, EventListener {
         }
     }
 
-    private Stage stage;
-    private Group deckGroup, discardPileGroup, tableGroup;
-    private Group[] playerGroups;
-    private OpenFoolGame game;
-    private Suit trumpSuit;
+    private final Stage stage;
+    private final Group discardPileGroup;
+    private final Group tableGroup;
+    private final Group[] playerGroups;
+    private final OpenFoolGame game;
+    private final Suit trumpSuit;
     private Player[] players;
     private Card[] attackCards = new Card[DEAL_LIMIT], defenseCards = new Card[DEAL_LIMIT];
-    private HashMap<Card, CardActor> cardActors = new HashMap<Card, CardActor>();
-    private Deck deck = new Deck();
+    private final HashMap<Card, CardActor> cardActors = new HashMap<>();
+    private final Deck deck = new Deck();
     private int currentAttackerIndex, currentThrowerIndex;
     private int playersSaidDone;
     private boolean isPlayerTaking;
+    private final Random random = new SecureRandom();
 
     private static final int DEAL_LIMIT = 6;
     private static final int PLAYER_COUNT = 4;
@@ -107,17 +110,17 @@ public class GameScreen implements Screen, EventListener {
     private static final float HH_PLAYER = CARD_SCALE_PLAYER * 270;
 
     private static final float[] DECK_POSITION = {60 - HW_TABLE, 240 - HH_TABLE};
-    private static final float[] DISCARD_PILE_POSITION = {640 - HW_TABLE, 120 - HH_TABLE};
+    private static final float[] DISCARD_PILE_POSITION = {680 - HW_TABLE, 180 - HH_TABLE};
     private static final float[] PLAYER_POSITION = {240 - HW_PLAYER, 80 - HH_PLAYER};
     private static final float[] AI_POSITION = {60 - HW_AI, 400 - HH_AI};
     private static final float[] TABLE_POSITION = {200 - HW_TABLE, 280 - HH_TABLE};
     private static final float[] TABLE_DELTA = {10, -10};
     private static final float[] PLAYER_DELTA = {40, 0};
     private static final float[] AI_DELTA = {5, -5};
-    private boolean[] outOfPlay = new boolean[PLAYER_COUNT];
-    private ArrayList<Card> discardPile = new ArrayList<Card>();
+    private final boolean[] outOfPlay = new boolean[PLAYER_COUNT];
+    private final ArrayList<Card> discardPile = new ArrayList<>();
     private GameState gameState = DRAWING, oldGameState = FINISHED;
-    private Player.SortingMode sortingMode;
+    private final Player.SortingMode sortingMode;
 
     public GameScreen(OpenFoolGame game) {
         this.game = game;
@@ -126,15 +129,15 @@ public class GameScreen implements Screen, EventListener {
         Gdx.input.setInputProcessor(stage);
         // Get background color
         backgroundColor = new Color(game.preferences.getInteger(SettingsScreen.BACKGROUND_COLOR, 0x33cc4dff));
-        background = game.assetManager.get(String.format("backgrounds/background%d.png", 1), Texture.class);
+        background = game.assetManager.get(String.format(Locale.ENGLISH, "backgrounds/background%d.png", 1), Texture.class);
         background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         //background.
         String deckStyle = game.preferences.getString(SettingsScreen.DECK, "rus");
-        sortingMode = Player.SortingMode.fromInt(game.preferences.getInteger(SettingsScreen.SORTING_MODE, 1));
+        sortingMode = Player.SortingMode.fromInt(game.preferences.getInteger(SettingsScreen.SORTING_MODE, 0));
         // Initialise groups
         tableGroup = new Group();
         stage.addActor(tableGroup);
-        deckGroup = new Group();
+        Group deckGroup = new Group();
         stage.addActor(deckGroup);
         discardPileGroup = new Group();
         stage.addActor(discardPileGroup);
@@ -388,9 +391,9 @@ public class GameScreen implements Screen, EventListener {
 
     }
 
-    public void endTurn(int playerIndex) {
+    private void endTurn(int playerIndex) {
         playersSaidDone = 0;
-        ArrayList<Card> tableCards = new ArrayList<Card>();
+        ArrayList<Card> tableCards = new ArrayList<>();
         for (int i = 0; i < attackCards.length; i++) {
             if (attackCards[i] != null) {
                 tableCards.add(attackCards[i]);
@@ -410,8 +413,11 @@ public class GameScreen implements Screen, EventListener {
                 discardPileGroup.addActor(cardActor);
                 cardActor.setFaceUp(false);
                 cardActor.setZIndex(discardPile.size() - 1);
+                cardActor.setRotation(random.nextFloat() * 30 - 15);
+                float dx = random.nextFloat() * 10 - 5;
+                float dy = random.nextFloat() * 10 - 5;
                 cardActor.addAction(
-                        Actions.moveTo(DISCARD_PILE_POSITION[0], DISCARD_PILE_POSITION[1], 0.6f));
+                        Actions.moveTo(DISCARD_PILE_POSITION[0] + dx, DISCARD_PILE_POSITION[1] + dy, 0.6f));
             }
         } else {
             Player player = players[playerIndex];
@@ -457,20 +463,20 @@ public class GameScreen implements Screen, EventListener {
         gameState = READY;
     }
 
-    public boolean isGameOver() {
+    private boolean isGameOver() {
         // TODO: Generalise
         return (outOfPlay[0] && outOfPlay[2]) || (outOfPlay[1] && outOfPlay[3]);
     }
 
-    public Suit getTrumpSuit() {
+    Suit getTrumpSuit() {
         return trumpSuit;
     }
 
-    public int cardsRemaining() {
+    int cardsRemaining() {
         return deck.getCards().size();
     }
 
-    public Player[] getPlayers() {
+    Player[] getPlayers() {
         return players;
     }
 
@@ -574,15 +580,15 @@ public class GameScreen implements Screen, EventListener {
         return false;
     }
 
-    public Card[] getAttackCards() {
+    Card[] getAttackCards() {
         return attackCards;
     }
 
-    public Card[] getDefenseCards() {
+    Card[] getDefenseCards() {
         return defenseCards;
     }
 
-    public void drawCardsToPlayer(int playerIndex, int cardCount) {
+    private void drawCardsToPlayer(int playerIndex, int cardCount) {
         Player player = players[playerIndex];
         if (!deck.getCards().isEmpty()) {
             player.addAction(Actions.sequence(
@@ -614,14 +620,14 @@ public class GameScreen implements Screen, EventListener {
         }
     }
 
-    public Player getCurrentAttacker() {
+    private Player getCurrentAttacker() {
         if (outOfPlay[currentAttackerIndex]) {
             return players[(currentAttackerIndex + 2) % PLAYER_COUNT];
         }
         return players[currentAttackerIndex];
     }
 
-    public Player getCurrentDefender() {
+    private Player getCurrentDefender() {
         int currentDefender = (currentAttackerIndex + 1) % PLAYER_COUNT;
         if (outOfPlay[currentDefender]) {
             return players[(currentDefender + 2) % PLAYER_COUNT];
@@ -629,14 +635,14 @@ public class GameScreen implements Screen, EventListener {
         return players[currentDefender];
     }
 
-    public Player getCurrentThrower() {
+    private Player getCurrentThrower() {
         if (outOfPlay[currentThrowerIndex]) {
             return players[(currentThrowerIndex + 2) % PLAYER_COUNT];
         }
         return players[currentThrowerIndex];
     }
 
-    public void sortPlayerCards() {
+    private void sortPlayerCards() {
         // TODO: Generalise to other players
         Player player = players[0];
         player.sortCards(sortingMode);

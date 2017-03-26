@@ -8,19 +8,20 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 /**
  * Created by main on 18.03.2017.
+ * Licensed under MIT License.
  */
-public class ResultScreen implements Screen {
+class ResultScreen implements Screen {
     private final OpenFoolGame game;
     private final Result result;
 
-    public enum Result {
+    enum Result {
         WON,
         LOST,
         PARTNER_LOST,
         DRAW
     }
 
-    public ResultScreen(OpenFoolGame game, Result result) {
+    ResultScreen(OpenFoolGame game, Result result) {
         this.game = game;
         this.result = result;
     }

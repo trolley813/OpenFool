@@ -6,7 +6,6 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
 import com.badlogic.gdx.assets.loaders.TextureLoader;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -69,10 +68,10 @@ public class OpenFoolGame extends Game {
         this.setScreen(new MainMenuScreen(this));
     }
 
-    @Override
-    public void render() {
-        super.render();
-    }
+//    @Override
+//    public void render() {
+//        super.render();
+//    }
 
     @Override
     public void dispose() {
