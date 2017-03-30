@@ -33,6 +33,7 @@ public class OpenFoolGame extends Game {
         VisUI.load();
         font = VisUI.getSkin().getFont("default-font");
         preferences = Gdx.app.getPreferences("OpenFool");
+        Gdx.input.setCatchBackKey(true);
         // Deal with localisation
         String localeString = preferences.getString("Language", null);
         Locale locale = localeString == null ? Locale.getDefault() : new Locale(localeString);

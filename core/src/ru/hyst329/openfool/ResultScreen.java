@@ -1,6 +1,7 @@
 package ru.hyst329.openfool;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -69,7 +70,8 @@ class ResultScreen implements Screen {
                 400 - textLayout.width / 2,
                 280 - textLayout.height / 2);
         game.batch.end();
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)
+                || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.setScreen(new MainMenuScreen(game));
             dispose();
         }

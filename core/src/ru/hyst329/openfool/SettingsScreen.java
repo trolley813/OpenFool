@@ -1,6 +1,7 @@
 package ru.hyst329.openfool;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.loaders.I18NBundleLoader;
 import com.badlogic.gdx.graphics.Color;
@@ -190,6 +191,10 @@ class SettingsScreen implements Screen {
             deuce.draw(game.batch);
         }
         game.batch.end();
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)
+                || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            saveAndQuit();
+        }
     }
 
     @Override

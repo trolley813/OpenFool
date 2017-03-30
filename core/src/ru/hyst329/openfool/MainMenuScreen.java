@@ -1,6 +1,7 @@
 package ru.hyst329.openfool;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -117,6 +118,10 @@ class MainMenuScreen implements Screen {
         settingsButton.setVisible(canStart);
         quitButton.setVisible(canStart);
         progressBar.setVisible(!canStart);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.BACK)
+                || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.exit();
+        }
 
     }
 
