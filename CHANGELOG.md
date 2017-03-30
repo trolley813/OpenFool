@@ -1,4 +1,8 @@
 # Changelog
+## 0.1.4 (2017-03-30)
+- Fixed issue with card throwing (#23).
+- Tweaked discard pile cards placement.
+- Back button is now functional.
 ## 0.1.3 (2017-03-26)
 - Added background (currently checkerboard).
 - Added card sorting (by suit or rank, ascending or descending).
