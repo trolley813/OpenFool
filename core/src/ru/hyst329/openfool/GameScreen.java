@@ -121,7 +121,7 @@ public class GameScreen implements Screen, EventListener {
     private final ArrayList<Card> discardPile = new ArrayList<>();
     private GameState gameState = DRAWING, oldGameState = FINISHED;
     private final Player.SortingMode sortingMode;
-    private int throwLimit = 0;
+    private int throwLimit = DEAL_LIMIT;
 
     public GameScreen(OpenFoolGame game) {
         this.game = game;
@@ -419,9 +419,9 @@ public class GameScreen implements Screen, EventListener {
                 discardPileGroup.addActor(cardActor);
                 cardActor.setFaceUp(false);
                 cardActor.setZIndex(discardPile.size() - 1);
-                cardActor.setRotation(random.nextFloat() * 30 - 15);
-                float dx = random.nextFloat() * 10 - 5;
-                float dy = random.nextFloat() * 10 - 5;
+                cardActor.setRotation(random.nextFloat() * 20 - 10);
+                float dx = random.nextFloat() * 20 - 10;
+                float dy = random.nextFloat() * 20 - 10;
                 cardActor.addAction(
                         Actions.moveTo(DISCARD_PILE_POSITION[0] + dx, DISCARD_PILE_POSITION[1] + dy, 0.6f));
             }
