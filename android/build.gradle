@@ -1,6 +1,6 @@
 android {
-    buildToolsVersion "22.0.1"
-    compileSdkVersion 22
+    buildToolsVersion "25.0.1"
+    compileSdkVersion 25
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -20,7 +20,7 @@ android {
     defaultConfig {
         applicationId "ru.hyst329.openfool"
         minSdkVersion 9
-        targetSdkVersion 22
+        targetSdkVersion 25
     }
     productFlavors {
     }

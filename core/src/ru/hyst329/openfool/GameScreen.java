@@ -121,6 +121,7 @@ public class GameScreen implements Screen, EventListener {
     private final ArrayList<Card> discardPile = new ArrayList<>();
     private GameState gameState = DRAWING, oldGameState = FINISHED;
     private final Player.SortingMode sortingMode;
+    private int throwLimit = 0;
 
     public GameScreen(OpenFoolGame game) {
         this.game = game;
@@ -167,7 +168,7 @@ public class GameScreen implements Screen, EventListener {
                     getCurrentDefender().sayTake();
                     return true;
                 }
-                return false;
+                return true;
             }
         });
         // Initialise card actors
@@ -288,7 +289,6 @@ public class GameScreen implements Screen, EventListener {
         // TODO: Actual game logic
         int opponents = (outOfPlay[currentAttackerIndex] ? 0 : 1)
                 + (outOfPlay[(currentAttackerIndex + 2) % PLAYER_COUNT] ? 0 : 1);
-        int throwLimit = Math.min(DEAL_LIMIT, getCurrentDefender().getHand().size());
         if (playersSaidDone == opponents && gameState != DRAWING
                 && gameState != BEATING && gameState != THROWING) {
             gameState = FINISHED;
@@ -300,6 +300,7 @@ public class GameScreen implements Screen, EventListener {
         switch (gameState) {
             case READY:
                 if (getCurrentAttacker().getIndex() != 0) {
+                    throwLimit = Math.min(DEAL_LIMIT, getCurrentDefender().getHand().size());
                     getCurrentAttacker().startTurn();
                 }
                 break;
@@ -309,7 +310,12 @@ public class GameScreen implements Screen, EventListener {
                 break;
             case THROWN:
                 if (getCurrentDefender().getIndex() != 0) {
-                    getCurrentDefender().tryBeat();
+                    if(!isPlayerTaking) {
+                        getCurrentDefender().tryBeat();
+                    }
+                    else {
+                        getCurrentDefender().sayTake();
+                    }
                 }
                 if (isPlayerTaking)
                     gameState = BEATEN;
@@ -483,8 +489,7 @@ public class GameScreen implements Screen, EventListener {
     @Override
     public boolean handle(Event event) {
         if (event instanceof Player.CardThrownEvent) {
-            // TODO: Handle when card is thrown
-            playersSaidDone = 0;
+            // Handle when card is thrown
             playersSaidDone = 0;
             int throwIndex = 0;
             while (attackCards[throwIndex] != null) throwIndex++;
@@ -521,7 +526,7 @@ public class GameScreen implements Screen, EventListener {
             return true;
         }
         if (event instanceof Player.CardBeatenEvent) {
-            // TODO: Handle when card is beaten
+            // Handle when card is beaten
             playersSaidDone = 0;
             int beatIndex = 0;
             while (defenseCards[beatIndex] != null) beatIndex++;
@@ -558,7 +563,7 @@ public class GameScreen implements Screen, EventListener {
             return true;
         }
         if (event instanceof Player.TakeEvent) {
-            // TODO: Handle when player takes
+            // Handle when player takes
             playersSaidDone = 0;
             isPlayerTaking = true;
             Player player = (Player) event.getTarget();
@@ -568,7 +573,7 @@ public class GameScreen implements Screen, EventListener {
 
         }
         if (event instanceof Player.DoneEvent) {
-            // TODO: Handle when player says done
+            // Handle when player says done
             playersSaidDone++;
             currentThrowerIndex += 2;
             currentThrowerIndex %= PLAYER_COUNT;
