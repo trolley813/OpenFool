@@ -31,37 +31,37 @@ internal class ResultScreen(private val game: OpenFoolGame, private val result: 
         when (result) {
             ResultScreen.Result.WON -> {
                 color = Color(0.2f, 0.6f, 0.125f, 1f)
-                header = game.getLocaleBundle().get("VictoryHeader")
-                text = game.getLocaleBundle().get("VictoryText")
+                header = game.localeBundle.get("VictoryHeader")
+                text = game.localeBundle.get("VictoryText")
             }
             ResultScreen.Result.LOST -> {
                 color = Color(0.6f, 0.2f, 0.125f, 1f)
-                header = game.getLocaleBundle().get("DefeatHeader")
-                text = game.getLocaleBundle().get("DefeatText")
+                header = game.localeBundle.get("DefeatHeader")
+                text = game.localeBundle.get("DefeatText")
             }
             ResultScreen.Result.PARTNER_LOST -> {
                 color = Color(0.6f, 0.4f, 0.125f, 1f)
-                header = game.getLocaleBundle().get("PartnerDefeatHeader")
-                text = game.getLocaleBundle().get("PartnerDefeatText")
+                header = game.localeBundle.get("PartnerDefeatHeader")
+                text = game.localeBundle.get("PartnerDefeatText")
             }
             ResultScreen.Result.DRAW -> {
                 color = Color(0.6f, 0.6f, 0.125f, 1f)
-                header = game.getLocaleBundle().get("DrawHeader")
-                text = game.getLocaleBundle().get("DrawText")
+                header = game.localeBundle.get("DrawHeader")
+                text = game.localeBundle.get("DrawText")
             }
         }
-        val headerLayout = GlyphLayout(game.getFont(), header)
-        val textLayout = GlyphLayout(game.getFont(), text)
+        val headerLayout = GlyphLayout(game.font, header)
+        val textLayout = GlyphLayout(game.font, text)
         Gdx.gl.glClearColor(color.r, color.g, color.b, color.a)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-        game.getBatch().begin()
-        game.getFont().draw(game.getBatch(), headerLayout,
+        game.batch.begin()
+        game.font.draw(game.batch, headerLayout,
                 400 - headerLayout.width / 2,
                 400 - headerLayout.height / 2)
-        game.getFont().draw(game.getBatch(), textLayout,
+        game.font.draw(game.batch, textLayout,
                 400 - textLayout.width / 2,
                 280 - textLayout.height / 2)
-        game.getBatch().end()
+        game.batch.end()
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.screen = MainMenuScreen(game)
             dispose()

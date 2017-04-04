@@ -13,6 +13,7 @@ import com.badlogic.gdx.utils.I18NBundle
 import com.kotcrab.vis.ui.VisUI
 
 import java.util.Locale
+import kotlin.properties.Delegates
 
 /**
  * Created by hyst329 on 12.03.2017.
@@ -20,11 +21,11 @@ import java.util.Locale
  */
 
 class OpenFoolGame : Game() {
-    internal var batch: SpriteBatch
-    internal var assetManager: AssetManager
-    internal var font: BitmapFont
-    internal var preferences: Preferences
-    internal var localeBundle: I18NBundle
+    internal var batch: SpriteBatch by Delegates.notNull()
+    internal var assetManager: AssetManager by Delegates.notNull()
+    internal var font: BitmapFont by Delegates.notNull()
+    internal var preferences: Preferences by Delegates.notNull()
+    internal var localeBundle: I18NBundle by Delegates.notNull()
 
     override fun create() {
         batch = SpriteBatch()

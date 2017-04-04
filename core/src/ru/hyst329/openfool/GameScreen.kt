@@ -111,7 +111,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         stage.addActor(deckGroup)
         discardPileGroup = Group()
         stage.addActor(discardPileGroup)
-        playerGroups = arrayOfNulls<Group>(PLAYER_COUNT)
+        playerGroups = Array(PLAYER_COUNT, { i -> Group() })
         for (i in 0..PLAYER_COUNT - 1) {
             playerGroups[i] = Group()
             stage.addActor(playerGroups[i])
@@ -139,17 +139,25 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 return true
             }
         })
+        // Initialise players
+        // TODO: Replace with settings
+        val playerNames = arrayOf("South", "West", "North", "East")
+        players = Array(PLAYER_COUNT, {i -> Player(this, playerNames[i], i)})
+        for (i in 0..PLAYER_COUNT - 1) {
+            players[i].addListener(this)
+            stage.addActor(players[i])
+        }
         // Initialise card actors
-        val cards = deck.getCards()
+        val cards = deck.cards
         val listener = object : InputListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
                 if (event!!.target is CardActor) {
                     val cardActor = event.target as CardActor
-                    System.out.printf("Trying to click %s\n", cardActor.getCard())
-                    val card = cardActor.getCard()
+                    System.out.printf("Trying to click %s\n", cardActor.card)
+                    val card = cardActor.card
                     val user = players[0]
                     if (!user.hand.contains(card)) {
-                        System.out.printf("%s is not a user's card\n", cardActor.getCard())
+                        System.out.printf("%s is not a user's card\n", cardActor.card)
                         return true
                     }
                     if (currentThrower === user) {
@@ -165,8 +173,8 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 return super.touchDown(event, x, y, pointer, button)
             }
         }
-        for (i in cards.indices) {
-            val c = cards.get(i)
+        for (i in cards!!.indices) {
+            val c = cards[i]
             val cardActor = CardActor(game, c, deckStyle)
             cardActors.put(c, cardActor)
             cardActor.addListener(this)
@@ -175,29 +183,20 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             deckGroup.addActor(cardActor)
             cardActor.zIndex = i
         }
-        // Initialise players
-        // TODO: Replace with settings
-        val playerNames = arrayOf("South", "West", "North", "East")
-        players = arrayOfNulls<Player>(PLAYER_COUNT)
-        for (i in 0..PLAYER_COUNT - 1) {
-            players[i] = Player(this, playerNames[i], i)
-            players[i].addListener(this)
-            stage.addActor(players[i])
-        }
         // Starting the game
         for (cardActor in cardActors.values) {
-            cardActor.setFaceUp(false)
+            cardActor.isFaceUp = false
             cardActor.setScale(CARD_SCALE_TABLE)
             cardActor.setPosition(DECK_POSITION[0], DECK_POSITION[1])
             // cardActor.setDebug(true);
         }
         // Determine trump
-        val trumpCard = deck.getCards().get(0)
+        val trumpCard = deck.cards?.get(0)
         val trump = cardActors[trumpCard]
-        trump.setRotation(-90.0f)
-        trump.setFaceUp(true)
-        trump.moveBy(90 * CARD_SCALE_TABLE, 0f)
-        trumpSuit = trumpCard.getSuit()
+        trump?.rotation = -90.0f
+        trump?.isFaceUp = true
+        trump?.moveBy(90 * CARD_SCALE_TABLE, 0f)
+        trumpSuit = trumpCard!!.suit
         println(String.format("Trump suit is %s", trumpSuit.toString()))
         // Draw cards
         for (i in 0..PLAYER_COUNT - 1) {
@@ -209,9 +208,9 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         var firstAttacker = 0
         for (p in players) {
             for (c in p.hand) {
-                if (c.getSuit() === trumpSuit && (c.getRank() !== Rank.ACE && c.getRank().value < lowestTrump.value || lowestTrump === Rank.ACE)) {
+                if (c.suit === trumpSuit && (c.rank !== Rank.ACE && c.rank.value < lowestTrump.value || lowestTrump === Rank.ACE)) {
                     firstAttacker = p.index
-                    lowestTrump = c.getRank()
+                    lowestTrump = c.rank
                     lowestTrumpCard = c
                 }
             }
@@ -219,17 +218,17 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
 
         if (firstAttacker != 0) {
             val showingTrump = cardActors[lowestTrumpCard]
-            val z = showingTrump.getZIndex()
-            showingTrump.addAction(Actions.sequence(object : Action() {
+            val z = showingTrump?.zIndex ?: 0
+            showingTrump?.addAction(Actions.sequence(object : Action() {
                 override fun act(delta: Float): Boolean {
-                    showingTrump.setFaceUp(true)
-                    showingTrump.setZIndex(100)
+                    showingTrump.isFaceUp = true
+                    showingTrump.zIndex = 100
                     return true
                 }
             }, Actions.delay(1.5f), object : Action() {
                 override fun act(delta: Float): Boolean {
-                    showingTrump.setFaceUp(false)
-                    showingTrump.setZIndex(z)
+                    showingTrump.isFaceUp = false
+                    showingTrump.zIndex = z
                     return true
                 }
             }))
@@ -282,7 +281,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             BEATEN -> {
                 if (currentDefender.hand.size == 0 || attackCards[throwLimit - 1] != null) {
                     gameState = FINISHED
-                    break
+                    // break
                 }
                 if (currentThrower.index != 0) {
                     currentThrower.throwOrDone()
@@ -353,11 +352,11 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         val tableCards = ArrayList<Card>()
         for (i in attackCards.indices) {
             if (attackCards[i] != null) {
-                tableCards.add(attackCards[i])
+                tableCards.add(attackCards[i] as Card)
                 //attackCards[i] = null;
             }
             if (defenseCards[i] != null) {
-                tableCards.add(defenseCards[i])
+                tableCards.add(defenseCards[i] as Card)
                 //defenseCards[i] = null;
             }
         }
@@ -368,12 +367,12 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 val cardActor = cardActors[card]
                 discardPile.add(card)
                 discardPileGroup.addActor(cardActor)
-                cardActor.setFaceUp(false)
-                cardActor.setZIndex(discardPile.size - 1)
-                cardActor.setRotation(random.nextFloat() * 20 - 10)
+                cardActor?.isFaceUp = false
+                cardActor?.zIndex = discardPile.size - 1
+                cardActor?.rotation = random.nextFloat() * 20 - 10
                 val dx = random.nextFloat() * 20 - 10
                 val dy = random.nextFloat() * 20 - 10
-                cardActor.addAction(
+                cardActor?.addAction(
                         Actions.moveTo(DISCARD_PILE_POSITION[0] + dx, DISCARD_PILE_POSITION[1] + dy, 0.6f))
             }
         } else {
@@ -381,7 +380,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             for (card in tableCards) {
                 player.addCard(card)
                 val cardActor = cardActors[card]
-                cardActor.setFaceUp(playerIndex == 0)
+                cardActor?.isFaceUp = (playerIndex == 0)
                 val position = (if (playerIndex == 0) PLAYER_POSITION else AI_POSITION).clone()
                 if (playerIndex > 0)
                     position[0] += ((playerIndex - 1) * 640 / (PLAYER_COUNT - 2)).toFloat()
@@ -389,29 +388,29 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 val index = player.hand.size - 1
                 val posX = position[0] + index * delta[0]
                 val posY = position[1] + index * delta[1]
-                cardActor.addAction(Actions.moveTo(posX, posY, 0.4f))
-                cardActor.setRotation(0.0f)
-                cardActor.setScale(if (playerIndex == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI)
+                cardActor?.addAction(Actions.moveTo(posX, posY, 0.4f))
+                cardActor?.rotation = 0.0f
+                cardActor?.setScale(if (playerIndex == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI)
                 playerGroups[playerIndex].addActor(cardActor)
-                cardActor.setZIndex(index)
+                cardActor?.setZIndex(index)
             }
             player.addAction(Actions.sequence(
                     Actions.delay(0.39f),
                     SortAction(playerIndex)
             ))
         }
-        if (!deck.getCards().isEmpty()) {
+        if (!deck.cards!!.isEmpty()) {
             for (i in 0..PLAYER_COUNT - 1) {
                 val cardsToDraw = DEAL_LIMIT - players[i].hand.size
                 if (cardsToDraw > 0) {
                     drawCardsToPlayer(i, cardsToDraw)
                 }
-                if (deck.getCards().isEmpty())
+                if (deck.cards!!.isEmpty())
                     break
             }
         }
         // Check if someone is out of play
-        if (deck.getCards().isEmpty()) {
+        if (deck.cards!!.isEmpty()) {
             for (i in 0..PLAYER_COUNT - 1) {
                 outOfPlay[i] = players[i].hand.size == 0
             }
@@ -425,7 +424,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         get() = outOfPlay[0] && outOfPlay[2] || outOfPlay[1] && outOfPlay[3]
 
     internal fun cardsRemaining(): Int {
-        return deck.getCards().size
+        return deck.cards?.size ?: 0
     }
 
     override fun handle(event: Event): Boolean {
@@ -437,13 +436,13 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             val throwCard = event.card
             attackCards[throwIndex] = throwCard
             val throwCardActor = cardActors[throwCard]
-            throwCardActor.setFaceUp(true)
+            throwCardActor?.isFaceUp = true
             tableGroup.addActor(throwCardActor)
-            throwCardActor.setZIndex(2 * throwIndex)
-            throwCardActor.setScale(CARD_SCALE_TABLE)
+            throwCardActor?.zIndex = 2 * throwIndex
+            throwCardActor?.setScale(CARD_SCALE_TABLE)
             val throwPos = TABLE_POSITION.clone()
             throwPos[0] += (90 * throwIndex).toFloat()
-            throwCardActor.addAction(Actions.sequence(
+            throwCardActor?.addAction(Actions.sequence(
                     GameStateChangedAction(GameState.THROWING),
                     Actions.moveTo(throwPos[0], throwPos[1], 0.4f),
                     Actions.delay(0.2f),
@@ -459,10 +458,10 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 val posX = position[0] + i * delta[0]
                 val posY = position[1] + i * delta[1]
                 //cardActor.addAction(Actions.moveTo(posX, posY, 0.1f));
-                cardActor.setPosition(posX, posY)
-                cardActor.setRotation(0.0f)
-                cardActor.setScale(if (thrower.index == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI)
-                cardActor.setZIndex(i)
+                cardActor?.setPosition(posX, posY)
+                cardActor?.rotation = 0.0f
+                cardActor?.setScale(if (thrower.index == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI)
+                cardActor?.zIndex = i
             }
             return true
         }
@@ -474,13 +473,13 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             val beatCard = event.card
             defenseCards[beatIndex] = beatCard
             val beatCardActor = cardActors[beatCard]
-            beatCardActor.setFaceUp(true)
+            beatCardActor?.isFaceUp = true
             tableGroup.addActor(beatCardActor)
-            beatCardActor.setZIndex(2 * beatIndex + 1)
-            beatCardActor.setScale(CARD_SCALE_TABLE)
+            beatCardActor?.zIndex = 2 * beatIndex + 1
+            beatCardActor?.setScale(CARD_SCALE_TABLE)
             val beatPos = TABLE_POSITION.clone()
             beatPos[0] += (90 * beatIndex).toFloat()
-            beatCardActor.addAction(Actions.sequence(
+            beatCardActor?.addAction(Actions.sequence(
                     GameStateChangedAction(GameState.BEATING),
                     Actions.moveTo(beatPos[0] + TABLE_DELTA[0], beatPos[1] + TABLE_DELTA[1], 0.4f),
                     Actions.delay(0.2f),
@@ -496,10 +495,10 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 val posX = position[0] + i * delta[0]
                 val posY = position[1] + i * delta[1]
                 //cardActor.addAction(Actions.moveTo(posX, posY, 0.1f));
-                cardActor.setPosition(posX, posY)
-                cardActor.setRotation(0.0f)
-                cardActor.setScale(if (beater.index == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI)
-                cardActor.setZIndex(i)
+                cardActor?.setPosition(posX, posY)
+                cardActor?.rotation = 0.0f
+                cardActor?.setScale(if (beater.index == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI)
+                cardActor?.zIndex = i
             }
             return true
         }
@@ -528,7 +527,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
 
     private fun drawCardsToPlayer(playerIndex: Int, cardCount: Int) {
         val player = players[playerIndex]
-        if (!deck.getCards().isEmpty()) {
+        if (!deck.cards!!.isEmpty()) {
             player.addAction(Actions.sequence(
                     GameStateChangedAction(GameState.DRAWING),
                     Actions.delay(0.39f),
@@ -537,12 +536,12 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             ))
         }
         for (i in 0..cardCount - 1) {
-            if (deck.getCards().isEmpty())
+            if (deck.cards!!.isEmpty())
                 break
-            val card = deck.draw()
+            val card = deck.draw() as Card
             player.addCard(card)
             val cardActor = cardActors[card]
-            cardActor.setFaceUp(playerIndex == 0)
+            cardActor?.isFaceUp = (playerIndex == 0)
             val position = (if (playerIndex == 0) PLAYER_POSITION else AI_POSITION).clone()
             if (playerIndex > 0)
                 position[0] += ((playerIndex - 1) * 640 / (PLAYER_COUNT - 2)).toFloat()
@@ -550,11 +549,11 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             val index = player.hand.size - 1
             val posX = position[0] + index * delta[0]
             val posY = position[1] + index * delta[1]
-            cardActor.addAction(Actions.moveTo(posX, posY, 0.4f))
-            cardActor.setRotation(0.0f)
-            cardActor.setScale(if (playerIndex == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI)
+            cardActor?.addAction(Actions.moveTo(posX, posY, 0.4f))
+            cardActor?.rotation = 0.0f
+            cardActor?.setScale(if (playerIndex == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI)
             playerGroups[playerIndex].addActor(cardActor)
-            cardActor.setZIndex(index)
+            cardActor?.zIndex = index
         }
     }
 
@@ -596,10 +595,10 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 position[0] += ((player.index - 1) * 640 / (PLAYER_COUNT - 2)).toFloat()
             val posX = position[0] + i * delta[0]
             val posY = position[1] + i * delta[1]
-            cardActor.setPosition(posX, posY)
-            cardActor.setRotation(0.0f)
-            cardActor.setScale(if (player.index == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI)
-            cardActor.setZIndex(i)
+            cardActor?.setPosition(posX, posY)
+            cardActor?.rotation = 0.0f
+            cardActor?.setScale(if (player.index == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI)
+            cardActor?.zIndex = i
         }
     }
 
