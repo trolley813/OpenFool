@@ -39,7 +39,6 @@ allprojects {
 }
 
 project(":desktop") {
-    apply plugin: "java"
     apply plugin: "kotlin"
 
     dependencies {
@@ -75,7 +74,6 @@ project(":android") {
 }
 
 project(":ios") {
-    apply plugin: "java"
     apply plugin: "robovm"
     apply plugin: "kotlin"
 
@@ -90,7 +88,6 @@ project(":ios") {
 }
 
 project(":core") {
-    apply plugin: "java"
     apply plugin: "kotlin"
 
     dependencies {
