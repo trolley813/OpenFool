@@ -61,8 +61,8 @@ class OpenFoolGame : Game() {
             assetManager.load(String.format(Locale.ENGLISH, "decks/%s/back.png", d),
                     Texture::class.java, param)
         }
-        for (i in 0..0) {
-            assetManager.load(String.format(Locale.ENGLISH, "backgrounds/background%d.png", i + 1),
+        for (i in 1..2) {
+            assetManager.load(String.format(Locale.ENGLISH, "backgrounds/background%d.png", i),
                     Texture::class.java, param)
         }
         this.setScreen(MainMenuScreen(this))
