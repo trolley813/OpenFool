@@ -1,4 +1,8 @@
 # Changelog
+## 0.1.5 (2017-04-06)
+- The game is rewritten to Kotlin.
+- Added background selection (2 backgrounds now available).
+- VisUI updated to 1.3.0.
 ## 0.1.4 (2017-03-30)
 - Fixed issue with card throwing (#23).
 - Tweaked discard pile cards placement.
