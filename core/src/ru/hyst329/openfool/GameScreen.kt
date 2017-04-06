@@ -142,7 +142,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         // Initialise players
         // TODO: Replace with settings
         val playerNames = arrayOf("South", "West", "North", "East")
-        players = Array(PLAYER_COUNT, {i -> Player(this, playerNames[i], i)})
+        players = Array(PLAYER_COUNT, { i -> Player(this, playerNames[i], i) })
         for (i in 0..PLAYER_COUNT - 1) {
             players[i].addListener(this)
             stage.addActor(players[i])
@@ -250,12 +250,14 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         val opponents = (if (outOfPlay[currentAttackerIndex]) 0 else 1) + if (outOfPlay[(currentAttackerIndex + 2) % PLAYER_COUNT]) 0 else 1
         if (playersSaidDone == opponents && gameState != DRAWING
                 && gameState != BEATING && gameState != THROWING) {
+            System.out.println("Done - all players said done!")
             gameState = FINISHED
         }
         if (oldGameState != gameState) {
             System.out.printf("Game state is %s\n", gameState)
             oldGameState = gameState
         }
+        var newGameState = gameState
         when (gameState) {
             READY -> if (currentAttacker.index != 0) {
                 throwLimit = Math.min(DEAL_LIMIT, currentDefender.hand.size)
@@ -274,13 +276,14 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     }
                 }
                 if (isPlayerTaking)
-                    gameState = BEATEN
+                    newGameState = BEATEN
             }
             BEATING -> {
             }
             BEATEN -> {
                 if (currentDefender.hand.size == 0 || attackCards[throwLimit - 1] != null) {
-                    gameState = FINISHED
+                    println("Forced to finish the turn")
+                    newGameState = FINISHED
                     // break
                 }
                 if (currentThrower.index != 0) {
@@ -290,11 +293,15 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             FINISHED -> {
                 val playerTook = isPlayerTaking
                 endTurn(if (isPlayerTaking) currentDefender.index else -1)
+                newGameState = READY
                 currentAttackerIndex += if (playerTook) 2 else 1
                 currentAttackerIndex %= PLAYER_COUNT
                 currentThrowerIndex = currentAttackerIndex
+                System.out.printf("%s (%d) -> %s (%d)\n", currentAttacker.name, currentAttacker.index,
+                        currentDefender.name, currentDefender.index)
             }
         }
+        gameState = newGameState
         // Draw background
         game.batch.begin()
         game.batch.color = backgroundColor
@@ -399,18 +406,18 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     SortAction(playerIndex)
             ))
         }
-        if (!deck.cards!!.isEmpty()) {
+        if (!(deck.cards?.isEmpty() ?: true)) {
             for (i in 0..PLAYER_COUNT - 1) {
                 val cardsToDraw = DEAL_LIMIT - players[i].hand.size
                 if (cardsToDraw > 0) {
                     drawCardsToPlayer(i, cardsToDraw)
                 }
-                if (deck.cards!!.isEmpty())
+                if (deck.cards?.isEmpty() ?: true)
                     break
             }
         }
         // Check if someone is out of play
-        if (deck.cards!!.isEmpty()) {
+        if (deck.cards?.isEmpty() ?: true) {
             for (i in 0..PLAYER_COUNT - 1) {
                 outOfPlay[i] = players[i].hand.size == 0
             }
