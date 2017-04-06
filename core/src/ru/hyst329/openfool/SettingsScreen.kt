@@ -20,6 +20,8 @@ import com.kotcrab.vis.ui.widget.VisSelectBox
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.color.ColorPicker
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
+import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel
+import com.kotcrab.vis.ui.widget.spinner.Spinner
 
 import java.util.ArrayList
 import java.util.HashMap
@@ -38,10 +40,12 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
     private var deck: String? = null
     private var language: String? = null
     private var sortingMode: Player.SortingMode? = null
+    private var background: Int
     private val picker: ColorPicker
     private val deckSelectBox: VisSelectBox<String>
     private val languageSelectBox: VisSelectBox<String>
     private val sortingSelectBox: VisSelectBox<String>
+    private val backgroundSpinner: Spinner
     private var back: Sprite by Delegates.notNull()
     private var ace: Sprite by Delegates.notNull()
     private var queen: Sprite by Delegates.notNull()
@@ -74,7 +78,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         deck = game.preferences.getString(DECK, "rus")
         language = game.preferences.getString(LANGUAGE, "ru")
         sortingMode = Player.SortingMode.fromInt(game.preferences.getInteger(SORTING_MODE, 0))
-
+        background = game.preferences.getInteger(BACKGROUND)
         picker = ColorPicker("Choose background color", object : ColorPickerAdapter() {
             override fun finished(newColor: Color?) {
                 backgroundColor = newColor
@@ -102,6 +106,9 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
             }
         })
         stage.addActor(saveButton)
+        val backgroundSelectLabel = VisLabel(game.localeBundle.get("Background"))
+        backgroundSelectLabel.setBounds(420f, 250f, 60f, 40f)
+        stage.addActor(backgroundSelectLabel)
         val deckSelectLabel = VisLabel(game.localeBundle.get("Cards"))
         deckSelectLabel.setBounds(420f, 300f, 60f, 40f)
         stage.addActor(deckSelectLabel)
@@ -111,6 +118,18 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         val sortingSelectLabel = VisLabel(game.localeBundle.get("Sorting"))
         sortingSelectLabel.setBounds(420f, 400f, 60f, 40f)
         stage.addActor(sortingSelectLabel)
+        val intSpinnerModel = IntSpinnerModel(background, 1, 2, 1)
+        backgroundSpinner = Spinner("", intSpinnerModel)
+        backgroundSpinner.setBounds(580f, 250f, 180f, 40f)
+        backgroundSpinner.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
+                background = intSpinnerModel.value
+                // updateSprites()
+            }
+
+
+        })
+        stage.addActor(backgroundSpinner)
         deckSelectBox = VisSelectBox<String>()
         deckSelectBox.setBounds(580f, 300f, 180f, 40f)
         deckSelectBox.setItems(*DECKS.keys.toTypedArray())
@@ -176,11 +195,11 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         stage.draw()
         game.batch.begin()
         if (!stage.actors.contains(picker, true)) {
-            back!!.draw(game.batch)
-            ace!!.draw(game.batch)
-            queen!!.draw(game.batch)
-            ten!!.draw(game.batch)
-            deuce!!.draw(game.batch)
+            back.draw(game.batch)
+            ace.draw(game.batch)
+            queen.draw(game.batch)
+            ten.draw(game.batch)
+            deuce.draw(game.batch)
         }
         game.batch.end()
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
@@ -214,6 +233,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         game.preferences.putString(DECK, deck)
         game.preferences.putString(LANGUAGE, language)
         game.preferences.putInteger(SORTING_MODE, sortingMode!!.value)
+        game.preferences.putInteger(BACKGROUND, background)
         game.preferences.flush()
         game.screen = MainMenuScreen(game)
         dispose()
@@ -230,10 +250,9 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
                 String.format("decks/%s/10h.png", deck), Texture::class.java))
         deuce = Sprite(game.assetManager.get(
                 String.format("decks/%s/2c.png", deck), Texture::class.java))
-        var index = 0
-        for (sprite in arrayOf<Sprite>(back, ace, queen, ten, deuce)) {
+        for ((index, sprite) in arrayOf(back, ace, queen, ten, deuce).withIndex()) {
             sprite.setScale(CARD_SCALE)
-            sprite.setCenter((360 + 90 * index++).toFloat(), 200f)
+            sprite.setCenter((360f + 90f * index), 150f)
         }
     }
 
@@ -250,6 +269,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         val DECK = "Deck"
         private val LANGUAGE = "Language"
         val SORTING_MODE = "SortingMode"
+        val BACKGROUND = "Background"
         private val CARD_SCALE = 0.25f
     }
 }
