@@ -258,6 +258,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             oldGameState = gameState
         }
         var newGameState = gameState
+        var forceFinish = false
         when (gameState) {
             READY -> if (currentAttacker.index != 0) {
                 throwLimit = Math.min(DEAL_LIMIT, currentDefender.hand.size)
@@ -283,6 +284,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             BEATEN -> {
                 if (currentDefender.hand.size == 0 || attackCards[throwLimit - 1] != null) {
                     println("Forced to finish the turn")
+                    forceFinish = true
                     newGameState = FINISHED
                     // break
                 }
@@ -293,7 +295,8 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             FINISHED -> {
                 val playerTook = isPlayerTaking
                 endTurn(if (isPlayerTaking) currentDefender.index else -1)
-                newGameState = READY
+                if (!forceFinish)
+                    newGameState = READY
                 currentAttackerIndex += if (playerTook) 2 else 1
                 currentAttackerIndex %= PLAYER_COUNT
                 currentThrowerIndex = currentAttackerIndex
