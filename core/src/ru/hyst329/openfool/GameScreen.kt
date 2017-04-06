@@ -92,6 +92,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     private var oldGameState = FINISHED
     private val sortingMode: Player.SortingMode
     private var throwLimit = DEAL_LIMIT
+    private var forceFinish = false
 
     init {
         // Initialise the stage
@@ -258,7 +259,6 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             oldGameState = gameState
         }
         var newGameState = gameState
-        var forceFinish = false
         when (gameState) {
             READY -> if (currentAttacker.index != 0) {
                 throwLimit = Math.min(DEAL_LIMIT, currentDefender.hand.size)
@@ -297,6 +297,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 endTurn(if (isPlayerTaking) currentDefender.index else -1)
                 if (!forceFinish)
                     newGameState = READY
+                forceFinish = false
                 currentAttackerIndex += if (playerTook) 2 else 1
                 currentAttackerIndex %= PLAYER_COUNT
                 currentThrowerIndex = currentAttackerIndex
