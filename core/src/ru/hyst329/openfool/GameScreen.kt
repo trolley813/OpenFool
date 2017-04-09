@@ -101,7 +101,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         // Get background color
         backgroundColor = Color(game.preferences.getInteger(SettingsScreen.BACKGROUND_COLOR, 0x33cc4dff))
         background = game.assetManager.get(String.format(Locale.ENGLISH, "backgrounds/background%d.png",
-                game.preferences.getInteger(SettingsScreen.BACKGROUND)), Texture::class.java)
+                game.preferences.getInteger(SettingsScreen.BACKGROUND, 1)), Texture::class.java)
         background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
         //background.
         val deckStyle = game.preferences.getString(SettingsScreen.DECK, "rus")

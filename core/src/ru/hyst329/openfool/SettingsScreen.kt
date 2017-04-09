@@ -78,7 +78,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         deck = game.preferences.getString(DECK, "rus")
         language = game.preferences.getString(LANGUAGE, "ru")
         sortingMode = Player.SortingMode.fromInt(game.preferences.getInteger(SORTING_MODE, 0))
-        background = game.preferences.getInteger(BACKGROUND)
+        background = game.preferences.getInteger(BACKGROUND, 1)
         picker = ColorPicker("Choose background color", object : ColorPickerAdapter() {
             override fun finished(newColor: Color?) {
                 backgroundColor = newColor
