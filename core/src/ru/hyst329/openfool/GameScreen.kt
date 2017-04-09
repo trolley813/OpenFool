@@ -28,6 +28,7 @@ import ru.hyst329.openfool.GameScreen.GameState.DRAWING
 import ru.hyst329.openfool.GameScreen.GameState.FINISHED
 import ru.hyst329.openfool.GameScreen.GameState.READY
 import ru.hyst329.openfool.GameScreen.GameState.THROWING
+import ru.hyst329.openfool.GameScreen.GameState.THROWN
 import ru.hyst329.openfool.ResultScreen.Result.DRAW
 import ru.hyst329.openfool.ResultScreen.Result.LOST
 import ru.hyst329.openfool.ResultScreen.Result.PARTNER_LOST
@@ -69,7 +70,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         }
     }
 
-    private val stage: Stage
+    private val stage: Stage = Stage(FitViewport(800f, 480f))
     private val discardPileGroup: Group
     private val tableGroup: Group
     private val playerGroups: Array<Group>
@@ -92,11 +93,9 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     private var oldGameState = FINISHED
     private val sortingMode: Player.SortingMode
     private var throwLimit = DEAL_LIMIT
-    private var forceFinish = false
 
     init {
         // Initialise the stage
-        stage = Stage(FitViewport(800f, 480f))
         Gdx.input.inputProcessor = stage
         // Get background color
         backgroundColor = Color(game.preferences.getInteger(SettingsScreen.BACKGROUND_COLOR, 0x33cc4dff))
@@ -248,7 +247,6 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     override fun render(delta: Float) {
         Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-        // TODO: Actual game logic
         val opponents = (if (outOfPlay[currentAttackerIndex]) 0 else 1) + if (outOfPlay[(currentAttackerIndex + 2) % PLAYER_COUNT]) 0 else 1
         if (playersSaidDone == opponents && gameState != DRAWING
                 && gameState != BEATING && gameState != THROWING) {
@@ -259,7 +257,6 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             System.out.printf("Game state is %s\n", gameState)
             oldGameState = gameState
         }
-        var newGameState = gameState
         when (gameState) {
             READY -> if (currentAttacker.index != 0) {
                 throwLimit = Math.min(DEAL_LIMIT, currentDefender.hand.size)
@@ -269,7 +266,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             }
             THROWING -> {
             }
-            GameScreen.GameState.THROWN -> {
+            THROWN -> {
                 if (currentDefender.index != 0) {
                     if (!isPlayerTaking) {
                         currentDefender.tryBeat()
@@ -278,15 +275,14 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     }
                 }
                 if (isPlayerTaking)
-                    newGameState = BEATEN
+                    gameState = BEATEN
             }
             BEATING -> {
             }
             BEATEN -> {
                 if (currentDefender.hand.size == 0 || attackCards[throwLimit - 1] != null) {
                     println("Forced to finish the turn")
-                    forceFinish = true
-                    newGameState = FINISHED
+                    gameState = FINISHED
                     // break
                 }
                 if (currentThrower.index != 0) {
@@ -296,9 +292,6 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             FINISHED -> {
                 val playerTook = isPlayerTaking
                 endTurn(if (isPlayerTaking) currentDefender.index else -1)
-                if (!forceFinish)
-                    newGameState = READY
-                forceFinish = false
                 currentAttackerIndex += if (playerTook) 2 else 1
                 currentAttackerIndex %= PLAYER_COUNT
                 currentThrowerIndex = currentAttackerIndex
@@ -306,7 +299,6 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                         currentDefender.name, currentDefender.index)
             }
         }
-        gameState = newGameState
         // Draw background
         game.batch.begin()
         game.batch.color = backgroundColor
@@ -328,6 +320,9 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
 
         }
         game.font.draw(game.batch, String.format("%s %s", trumpSuit, cardsRemaining()), 20f, 160f)
+        game.font.draw(game.batch,
+                String.format("%s -> %s", currentAttacker.name, currentDefender.name),
+                20f, 100f)
         game.batch.end()
         // Check if the game is over
         if (isGameOver) {
