@@ -93,6 +93,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     private var oldGameState = FINISHED
     private val sortingMode: Player.SortingMode
     private var throwLimit = DEAL_LIMIT
+    private var playerDoneStatuses = Array(PLAYER_COUNT, {i -> false})
 
     init {
         // Initialise the stage
@@ -280,13 +281,17 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             BEATING -> {
             }
             BEATEN -> {
-                if (currentDefender.hand.size == 0 || attackCards[throwLimit - 1] != null) {
-                    println("Forced to finish the turn")
-                    gameState = FINISHED
-                    // break
-                }
+                val forcedFinish =
+                        if (currentDefender.hand.size == 0 || attackCards[throwLimit - 1] != null) {
+                            println("Forced to finish the turn")
+                            gameState = FINISHED
+                            true
+                        } else false
                 if (currentThrower.index != 0) {
-                    currentThrower.throwOrDone()
+                    if (!forcedFinish)
+                        currentThrower.throwOrDone()
+                    else
+                        currentThrower.sayDone()
                 }
             }
             FINISHED -> {
@@ -314,15 +319,22 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             val position = (if (i == 0) PLAYER_POSITION else AI_POSITION).clone()
             if (i > 0)
                 position[0] += ((i - 1) * 640 / (PLAYER_COUNT - 2)).toFloat()
-            position[1] += 600 * if (i == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI
-            game.font.draw(game.batch, String.format("%s: %s", players[i].name, players[i].hand.size),
+            position[1] += 640 * if (i == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI
+            var playerFormat = String.format("%s: %s ", players[i].name, players[i].hand.size)
+            if (playerDoneStatuses[i]) playerFormat += game.localeBundle["PlayerDone"]
+            if (isPlayerTaking && currentDefender.index == i)
+                playerFormat += game.localeBundle["PlayerTakes"]
+            game.font.draw(game.batch, playerFormat,
                     position[0], position[1])
 
         }
         game.font.draw(game.batch, String.format("%s %s", trumpSuit, cardsRemaining()), 20f, 160f)
-        game.font.draw(game.batch,
-                String.format("%s -> %s", currentAttacker.name, currentDefender.name),
-                20f, 100f)
+        var turnString = String.format("%s -> %s", currentAttacker.name, currentDefender.name)
+        if (currentAttacker.index == 0)
+            turnString += "\n" + game.localeBundle["YourTurn"]
+        if (currentDefender.index == 0)
+            turnString += "\n" + game.localeBundle["Defend"]
+        game.font.draw(game.batch, turnString, 20f, 100f)
         game.batch.end()
         // Check if the game is over
         if (isGameOver) {
@@ -356,6 +368,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
 
     private fun endTurn(playerIndex: Int) {
         playersSaidDone = 0
+        playerDoneStatuses = Array(PLAYER_COUNT, {i -> false})
         val tableCards = ArrayList<Card>()
         for (i in attackCards.indices) {
             if (attackCards[i] != null) {
@@ -438,6 +451,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         if (event is Player.CardThrownEvent) {
             // Handle when card is thrown
             playersSaidDone = 0
+            playerDoneStatuses = Array(PLAYER_COUNT, {i -> false})
             var throwIndex = 0
             while (attackCards[throwIndex] != null) throwIndex++
             val throwCard = event.card
@@ -475,6 +489,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         if (event is Player.CardBeatenEvent) {
             // Handle when card is beaten
             playersSaidDone = 0
+            playerDoneStatuses = Array(PLAYER_COUNT, {i -> false})
             var beatIndex = 0
             while (defenseCards[beatIndex] != null) beatIndex++
             val beatCard = event.card
@@ -512,6 +527,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         if (event is Player.TakeEvent) {
             // Handle when player takes
             playersSaidDone = 0
+            playerDoneStatuses = Array(PLAYER_COUNT, {i -> false})
             isPlayerTaking = true
             val player = event.getTarget() as Player
             System.out.printf("%s (%s) decides to take\n",
@@ -525,6 +541,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             currentThrowerIndex += 2
             currentThrowerIndex %= PLAYER_COUNT
             val player = event.getTarget() as Player
+            playerDoneStatuses[player.index] = true
             System.out.printf("%s (%s) says done\n",
                     player.name, player.index)
             return true

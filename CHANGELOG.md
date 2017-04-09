@@ -1,4 +1,8 @@
 # Changelog
+## 0.1.6 (2017-04-09)
+- Fixed issue #23, when throw limit checking (and possibly other things) was broken.
+- Added turn information display (who attacks/defends)
+- Added player information (when someone takes or says _Done_).
 ## 0.1.5 (2017-04-06)
 - The game is rewritten to Kotlin.
 - Added background selection (2 backgrounds now available).
