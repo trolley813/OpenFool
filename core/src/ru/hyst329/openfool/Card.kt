@@ -14,7 +14,6 @@ class Card(internal val suit: Suit, internal val rank: Rank) {
     }
 
     override fun toString(): String {
-        return String.format(Locale.ENGLISH, "%d%c", rank.value,
-                suit.name.toLowerCase()[0])
+        return "${rank.value}${suit.name.toLowerCase()[0]}"
     }
 }

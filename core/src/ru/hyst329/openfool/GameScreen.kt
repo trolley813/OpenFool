@@ -93,15 +93,15 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     private var oldGameState = FINISHED
     private val sortingMode: Player.SortingMode
     private var throwLimit = DEAL_LIMIT
-    private var playerDoneStatuses = Array(PLAYER_COUNT, {i -> false})
+    private var playerDoneStatuses = Array(PLAYER_COUNT, { i -> false })
 
     init {
         // Initialise the stage
         Gdx.input.inputProcessor = stage
         // Get background color
         backgroundColor = Color(game.preferences.getInteger(SettingsScreen.BACKGROUND_COLOR, 0x33cc4dff))
-        background = game.assetManager.get(String.format(Locale.ENGLISH, "backgrounds/background%d.png",
-                game.preferences.getInteger(SettingsScreen.BACKGROUND, 1)), Texture::class.java)
+        val backgroundNo = game.preferences.getInteger(SettingsScreen.BACKGROUND, 1)
+        background = game.assetManager.get("backgrounds/background$backgroundNo.png", Texture::class.java)
         background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
         //background.
         val deckStyle = game.preferences.getString(SettingsScreen.DECK, "rus")
@@ -199,7 +199,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         trump?.isFaceUp = true
         trump?.moveBy(90 * CARD_SCALE_TABLE, 0f)
         trumpSuit = trumpCard!!.suit
-        println(String.format("Trump suit is %s", trumpSuit.toString()))
+        println("Trump suit is ${trumpSuit.toString()}")
         // Draw cards
         for (i in 0..PLAYER_COUNT - 1) {
             drawCardsToPlayer(i, DEAL_LIMIT)
@@ -235,8 +235,9 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 }
             }))
         }
-        println(String.format("%s (%s) has the lowest trump %s",
-                players[firstAttacker].name, players[firstAttacker].index, lowestTrump))
+        println(players[firstAttacker].name +
+                " (${players[firstAttacker].index})" +
+                " has the lowest trump $lowestTrump")
         currentAttackerIndex = firstAttacker
         currentThrowerIndex = firstAttacker
     }
@@ -320,7 +321,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             if (i > 0)
                 position[0] += ((i - 1) * 640 / (PLAYER_COUNT - 2)).toFloat()
             position[1] += 640 * if (i == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI
-            var playerFormat = String.format("%s: %s ", players[i].name, players[i].hand.size)
+            var playerFormat = "${players[i].name}: ${players[i].hand.size}"
             if (playerDoneStatuses[i]) playerFormat += game.localeBundle["PlayerDone"]
             if (isPlayerTaking && currentDefender.index == i)
                 playerFormat += game.localeBundle["PlayerTakes"]
@@ -328,8 +329,8 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     position[0], position[1])
 
         }
-        game.font.draw(game.batch, String.format("%s %s", trumpSuit, cardsRemaining()), 20f, 160f)
-        var turnString = String.format("%s -> %s", currentAttacker.name, currentDefender.name)
+        game.font.draw(game.batch, "$trumpSuit ${cardsRemaining()}", 20f, 160f)
+        var turnString = "${currentAttacker.name} -> ${currentDefender.name}"
         if (currentAttacker.index == 0)
             turnString += "\n" + game.localeBundle["YourTurn"]
         if (currentDefender.index == 0)
@@ -368,7 +369,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
 
     private fun endTurn(playerIndex: Int) {
         playersSaidDone = 0
-        playerDoneStatuses = Array(PLAYER_COUNT, {i -> false})
+        playerDoneStatuses = Array(PLAYER_COUNT, { i -> false })
         val tableCards = ArrayList<Card>()
         for (i in attackCards.indices) {
             if (attackCards[i] != null) {
@@ -451,7 +452,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         if (event is Player.CardThrownEvent) {
             // Handle when card is thrown
             playersSaidDone = 0
-            playerDoneStatuses = Array(PLAYER_COUNT, {i -> false})
+            playerDoneStatuses = Array(PLAYER_COUNT, { i -> false })
             var throwIndex = 0
             while (attackCards[throwIndex] != null) throwIndex++
             val throwCard = event.card
@@ -489,7 +490,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         if (event is Player.CardBeatenEvent) {
             // Handle when card is beaten
             playersSaidDone = 0
-            playerDoneStatuses = Array(PLAYER_COUNT, {i -> false})
+            playerDoneStatuses = Array(PLAYER_COUNT, { i -> false })
             var beatIndex = 0
             while (defenseCards[beatIndex] != null) beatIndex++
             val beatCard = event.card
@@ -527,7 +528,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         if (event is Player.TakeEvent) {
             // Handle when player takes
             playersSaidDone = 0
-            playerDoneStatuses = Array(PLAYER_COUNT, {i -> false})
+            playerDoneStatuses = Array(PLAYER_COUNT, { i -> false })
             isPlayerTaking = true
             val player = event.getTarget() as Player
             System.out.printf("%s (%s) decides to take\n",

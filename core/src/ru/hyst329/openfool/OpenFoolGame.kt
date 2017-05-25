@@ -54,16 +54,13 @@ class OpenFoolGame : Game() {
         for (d in decks) {
             for (i in 1..13) {
                 for (s in suits.toCharArray()) {
-                    assetManager.load(String.format(Locale.ENGLISH, "decks/%s/%d%s.png", d, i, s),
-                            Texture::class.java, param)
+                    assetManager.load("decks/$d/$i$s.png", Texture::class.java, param)
                 }
             }
-            assetManager.load(String.format(Locale.ENGLISH, "decks/%s/back.png", d),
-                    Texture::class.java, param)
+            assetManager.load("decks/$d/back.png", Texture::class.java, param)
         }
         for (i in 1..2) {
-            assetManager.load(String.format(Locale.ENGLISH, "backgrounds/background%d.png", i),
-                    Texture::class.java, param)
+            assetManager.load("backgrounds/background$i.png", Texture::class.java, param)
         }
         this.setScreen(MainMenuScreen(this))
     }

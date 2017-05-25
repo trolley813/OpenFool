@@ -63,6 +63,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         LANGUAGES = HashMap<String, String>()
         LANGUAGES.put(game.localeBundle.get("LanguageRussian"), "ru")
         LANGUAGES.put(game.localeBundle.get("LanguageEnglish"), "en")
+        LANGUAGES.put(game.localeBundle.get("LanguageCzech"), "cs")
         // Initialise SORTING_MODES
         val SORTING_MODES = ArrayList<String>()
         SORTING_MODES.add(game.localeBundle.get("SortingUnsorted"))
@@ -87,7 +88,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         })
 
         val changeColorButton = VisTextButton(game.localeBundle.get("ChangeBackgroundColor"))
-        changeColorButton.setBounds(40f, 300f, 250f, 80f)
+        changeColorButton.setBounds(40f, 350f, 250f, 80f)
         changeColorButton.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 // super.clicked(event, x, y);
@@ -97,7 +98,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         })
         stage.addActor(changeColorButton)
         val saveButton = VisTextButton(game.localeBundle.get("SaveSettings"))
-        saveButton.setBounds(40f, 200f, 250f, 80f)
+        saveButton.setBounds(40f, 250f, 250f, 80f)
         saveButton.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 // super.clicked(event, x, y);
@@ -106,6 +107,16 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
             }
         })
         stage.addActor(saveButton)
+        val playerNamesButton = VisTextButton(game.localeBundle.get("PlayerNames"))
+        playerNamesButton.setBounds(40f, 150f, 250f, 80f)
+        playerNamesButton.addListener(object : ClickListener() {
+            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+                // super.clicked(event, x, y);
+                // TODO: Add real player name selection
+
+            }
+        })
+        stage.addActor(playerNamesButton)
         val backgroundSelectLabel = VisLabel(game.localeBundle.get("Background"))
         backgroundSelectLabel.setBounds(420f, 250f, 60f, 40f)
         stage.addActor(backgroundSelectLabel)
