@@ -1,4 +1,7 @@
 # Changelog
+## 0.1.7 (2017-05-25)
+- Added Czech localisation.
+- Code cleanup.
 ## 0.1.6 (2017-04-09)
 - Fixed issue #23, when throw limit checking (and possibly other things) was broken.
 - Added turn information display (who attacks/defends)

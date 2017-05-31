@@ -10,7 +10,7 @@ eclipse.project {
     name = appName + "-core"
 }
 buildscript {
-    ext.kotlinVersion = '1.1.1'
+    ext.kotlinVersion = '1.1.2-4'
     repositories {
         mavenCentral()
     }
