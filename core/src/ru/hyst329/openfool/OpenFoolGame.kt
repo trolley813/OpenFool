@@ -9,11 +9,15 @@ import com.badlogic.gdx.assets.loaders.TextureLoader
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
+
 import com.badlogic.gdx.utils.I18NBundle
 import com.kotcrab.vis.ui.VisUI
 
 import java.util.Locale
 import kotlin.properties.Delegates
+import java.nio.file.Files.size
 
 /**
  * Created by hyst329 on 12.03.2017.
@@ -24,6 +28,7 @@ class OpenFoolGame : Game() {
     internal var batch: SpriteBatch by Delegates.notNull()
     internal var assetManager: AssetManager by Delegates.notNull()
     internal var font: BitmapFont by Delegates.notNull()
+    internal var smallFont: BitmapFont by Delegates.notNull()
     internal var preferences: Preferences by Delegates.notNull()
     internal var localeBundle: I18NBundle by Delegates.notNull()
 
@@ -31,7 +36,21 @@ class OpenFoolGame : Game() {
         batch = SpriteBatch()
         assetManager = AssetManager()
         VisUI.load()
-        font = VisUI.getSkin().getFont("default-font")
+        val generator = FreeTypeFontGenerator(Gdx.files.internal("fonts/8835.otf"))
+        val parameter = FreeTypeFontParameter()
+        var chars: String = ""
+        for (i in 0x21..0x2040) {
+            chars += i.toChar()
+        }
+        parameter.characters = chars
+        parameter.size = 24
+        font = generator.generateFont(parameter)
+        parameter.size = 12
+        smallFont = generator.generateFont(parameter)
+        VisUI.getSkin().remove("default-font", BitmapFont::class.java)
+        VisUI.getSkin().add("default-font", font, BitmapFont::class.java)
+        VisUI.getSkin().remove("small-font", BitmapFont::class.java)
+        VisUI.getSkin().add("small-font", smallFont, BitmapFont::class.java)
         preferences = Gdx.app.getPreferences("OpenFool")
         Gdx.input.isCatchBackKey = true
         // Deal with localisation
