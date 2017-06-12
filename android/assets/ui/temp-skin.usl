@@ -1,0 +1,6 @@
+include <visui-1.3.0>
+
+#com.badlogic.gdx.graphics.g2d.BitmapFont: {
+	default-font: { file: font-24.fnt }
+	small-font: { file: font-24.fnt }
+}

@@ -103,11 +103,11 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
             king!!.draw(game.batch)
             queen!!.draw(game.batch)
             jack!!.draw(game.batch)
-            game.font.draw(game.batch, "OpenFool", 520f, 80f)
+            game.font.draw(game.batch, "OpenFool", 540f, 80f)
         } else {
             val progress = game.assetManager.progress
             game.font.draw(game.batch, game.localeBundle.format("LoadingAssets",
-                    Math.round(progress * 100)), 320f, 100f)
+                    Math.round(progress * 100)), 280f, 110f)
             progressBar.value = progress
         }
         game.batch.end()

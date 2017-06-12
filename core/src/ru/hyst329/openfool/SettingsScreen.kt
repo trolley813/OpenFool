@@ -118,20 +118,20 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         })
         stage.addActor(playerNamesButton)
         val backgroundSelectLabel = VisLabel(game.localeBundle.get("Background"))
-        backgroundSelectLabel.setBounds(420f, 250f, 60f, 40f)
+        backgroundSelectLabel.setBounds(340f, 250f, 100f, 40f)
         stage.addActor(backgroundSelectLabel)
         val deckSelectLabel = VisLabel(game.localeBundle.get("Cards"))
-        deckSelectLabel.setBounds(420f, 300f, 60f, 40f)
+        deckSelectLabel.setBounds(340f, 300f, 100f, 40f)
         stage.addActor(deckSelectLabel)
         val languageSelectLabel = VisLabel(game.localeBundle.get("Language"))
-        languageSelectLabel.setBounds(420f, 350f, 60f, 40f)
+        languageSelectLabel.setBounds(340f, 350f, 100f, 40f)
         stage.addActor(languageSelectLabel)
         val sortingSelectLabel = VisLabel(game.localeBundle.get("Sorting"))
-        sortingSelectLabel.setBounds(420f, 400f, 60f, 40f)
+        sortingSelectLabel.setBounds(340f, 400f, 100f, 40f)
         stage.addActor(sortingSelectLabel)
         val intSpinnerModel = IntSpinnerModel(background, 1, 2, 1)
         backgroundSpinner = Spinner("", intSpinnerModel)
-        backgroundSpinner.setBounds(580f, 250f, 180f, 40f)
+        backgroundSpinner.setBounds(530f, 250f, 230f, 40f)
         backgroundSpinner.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
                 background = intSpinnerModel.value
@@ -142,7 +142,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         })
         stage.addActor(backgroundSpinner)
         deckSelectBox = VisSelectBox<String>()
-        deckSelectBox.setBounds(580f, 300f, 180f, 40f)
+        deckSelectBox.setBounds(530f, 300f, 230f, 40f)
         deckSelectBox.setItems(*DECKS.keys.toTypedArray())
         deckSelectBox.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
@@ -161,7 +161,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         deckSelectBox.setSelected(deckName)
         stage.addActor(deckSelectBox)
         languageSelectBox = VisSelectBox<String>()
-        languageSelectBox.setBounds(580f, 350f, 180f, 40f)
+        languageSelectBox.setBounds(530f, 350f, 230f, 40f)
         languageSelectBox.setItems(*LANGUAGES.keys.toTypedArray())
         languageSelectBox.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
@@ -180,7 +180,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         languageSelectBox.setSelected(languageName)
         stage.addActor(languageSelectBox)
         sortingSelectBox = VisSelectBox<String>()
-        sortingSelectBox.setBounds(580f, 400f, 180f, 40f)
+        sortingSelectBox.setBounds(530f, 400f, 230f, 40f)
         sortingSelectBox.setItems(*SORTING_MODES.toTypedArray())
         sortingSelectBox.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
@@ -263,7 +263,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
                 String.format("decks/%s/2c.png", deck), Texture::class.java))
         for ((index, sprite) in arrayOf(back, ace, queen, ten, deuce).withIndex()) {
             sprite.setScale(CARD_SCALE)
-            sprite.setCenter((360f + 90f * index), 150f)
+            sprite.setCenter((360f + 90f * index), 100f)
         }
     }
 

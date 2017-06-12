@@ -11,9 +11,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 
 import com.badlogic.gdx.utils.I18NBundle
 import com.kotcrab.vis.ui.VisUI
+import com.kotcrab.vis.usl.USL
 
 import java.util.Locale
 import kotlin.properties.Delegates
@@ -35,7 +37,6 @@ class OpenFoolGame : Game() {
     override fun create() {
         batch = SpriteBatch()
         assetManager = AssetManager()
-        VisUI.load()
         val generator = FreeTypeFontGenerator(Gdx.files.internal("fonts/8835.otf"))
         val parameter = FreeTypeFontParameter()
         var chars: String = ""
@@ -47,10 +48,8 @@ class OpenFoolGame : Game() {
         font = generator.generateFont(parameter)
         parameter.size = 12
         smallFont = generator.generateFont(parameter)
-        VisUI.getSkin().remove("default-font", BitmapFont::class.java)
-        VisUI.getSkin().add("default-font", font, BitmapFont::class.java)
-        VisUI.getSkin().remove("small-font", BitmapFont::class.java)
-        VisUI.getSkin().add("small-font", smallFont, BitmapFont::class.java)
+
+        VisUI.load(Gdx.files.internal("ui/temp-skin.json"))
         preferences = Gdx.app.getPreferences("OpenFool")
         Gdx.input.isCatchBackKey = true
         // Deal with localisation
@@ -83,11 +82,6 @@ class OpenFoolGame : Game() {
         }
         this.setScreen(MainMenuScreen(this))
     }
-
-    //    @Override
-    //    public void render() {
-    //        super.render();
-    //    }
 
     override fun dispose() {
         batch.dispose()
