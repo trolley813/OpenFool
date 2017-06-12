@@ -322,7 +322,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 position[0] += ((i - 1) * 640 / (PLAYER_COUNT - 2)).toFloat()
             position[1] += 640 * if (i == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI
             var playerFormat = "${players[i].name}: ${players[i].hand.size}"
-            if (playerDoneStatuses[i]) playerFormat += game.localeBundle["PlayerDone"]
+            if (playerDoneStatuses[i]) playerFormat += "   " + game.localeBundle["PlayerDone"]
             if (isPlayerTaking && currentDefender.index == i)
                 playerFormat += game.localeBundle["PlayerTakes"]
             game.font.draw(game.batch, playerFormat,

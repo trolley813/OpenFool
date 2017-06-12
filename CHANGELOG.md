@@ -1,4 +1,7 @@
 # Changelog
+## 0.1.8 (2017-06-12)
+- Added Underdog font as main UI font (until new skin).
+- Fixed Czech localisation display.
 ## 0.1.7 (2017-05-25)
 - Added Czech localisation.
 - Code cleanup.
