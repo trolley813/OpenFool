@@ -107,16 +107,16 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
             }
         })
         stage.addActor(saveButton)
-        val playerNamesButton = VisTextButton(game.localeBundle.get("PlayerNames"))
-        playerNamesButton.setBounds(40f, 150f, 250f, 80f)
-        playerNamesButton.addListener(object : ClickListener() {
+        val gameplaySettingsButton = VisTextButton(game.localeBundle.get("GameplaySettings"))
+        gameplaySettingsButton.setBounds(40f, 150f, 250f, 80f)
+        gameplaySettingsButton.addListener(object : ClickListener() {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 // super.clicked(event, x, y);
-                // TODO: Add real player name selection
+                // TODO: Add real gameplay settings
 
             }
         })
-        stage.addActor(playerNamesButton)
+        stage.addActor(gameplaySettingsButton)
         val backgroundSelectLabel = VisLabel(game.localeBundle.get("Background"))
         backgroundSelectLabel.setBounds(340f, 250f, 100f, 40f)
         stage.addActor(backgroundSelectLabel)
