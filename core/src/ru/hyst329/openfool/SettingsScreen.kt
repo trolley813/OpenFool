@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import com.kotcrab.vis.ui.widget.VisLabel
 import com.kotcrab.vis.ui.widget.VisSelectBox
 import com.kotcrab.vis.ui.widget.VisTextButton
+import com.kotcrab.vis.ui.widget.VisDialog
 import com.kotcrab.vis.ui.widget.color.ColorPicker
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
 import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel
@@ -113,7 +114,12 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 // super.clicked(event, x, y);
                 // TODO: Add real gameplay settings
-
+                val win = VisDialog(game.localeBundle.get("GameplaySettings"))
+                win.button(game.localeBundle.get("OK"), true)
+                win.button(game.localeBundle.get("Cancel"), false)
+                win.key(Input.Keys.ENTER, true).key(Input.Keys.ESCAPE, false)
+                // Adding checkboxes for rules
+                win.show(stage)
             }
         })
         stage.addActor(gameplaySettingsButton)

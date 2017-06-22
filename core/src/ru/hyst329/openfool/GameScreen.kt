@@ -94,6 +94,8 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     private val sortingMode: Player.SortingMode
     private var throwLimit = DEAL_LIMIT
     private var playerDoneStatuses = Array(PLAYER_COUNT, { i -> false })
+    internal var ruleSet = RuleSet()
+        private set
 
     init {
         // Initialise the stage
@@ -261,7 +263,10 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         }
         when (gameState) {
             READY -> if (currentAttacker.index != 0) {
-                throwLimit = Math.min(DEAL_LIMIT, currentDefender.hand.size)
+                throwLimit = Math.min((if (ruleSet.loweredFirstDiscardLimit
+                        && discardPile.isEmpty())
+                    DEAL_LIMIT else DEAL_LIMIT - 1)
+                        , currentDefender.hand.size)
                 currentAttacker.startTurn()
             }
             DRAWING -> {
