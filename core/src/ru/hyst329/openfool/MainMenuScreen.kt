@@ -21,9 +21,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton
 
 internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
     private val stage: Stage
-    private var king: Sprite? = null
-    private var queen: Sprite? = null
-    private var jack: Sprite? = null
+    private var logo: Sprite = Sprite(Texture(Gdx.files.internal("logos/mm_logo.png")))
     private var canStart: Boolean = false
     private val newGameButton: VisTextButton
     private val settingsButton: VisTextButton
@@ -82,28 +80,9 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
         game.batch.begin()
         if (game.assetManager.update()) {
             canStart = true
-            if (king == null) {
-                king = Sprite(game.assetManager.get("decks/rus/13h.png", Texture::class.java))
-                king!!.setScale(0.4f)
-                king!!.setCenter(520f, 240f)
-                king!!.rotation = 20f
-            }
-            if (queen == null) {
-                queen = Sprite(game.assetManager.get("decks/rus/12c.png", Texture::class.java))
-                queen!!.setScale(0.4f)
-                queen!!.setCenter(600f, 270f)
-                queen!!.rotation = 0f
-            }
-            if (jack == null) {
-                jack = Sprite(game.assetManager.get("decks/rus/11d.png", Texture::class.java))
-                jack!!.setScale(0.4f)
-                jack!!.setCenter(680f, 240f)
-                jack!!.rotation = -20f
-            }
-            king!!.draw(game.batch)
-            queen!!.draw(game.batch)
-            jack!!.draw(game.batch)
-            game.font.draw(game.batch, "OpenFool", 540f, 80f)
+            logo.setCenter(560f, 250f)
+            logo.draw(game.batch)
+
         } else {
             val progress = game.assetManager.progress
             game.font.draw(game.batch, game.localeBundle.format("LoadingAssets",
