@@ -20,7 +20,7 @@ import com.kotcrab.vis.ui.widget.VisTextButton
  */
 
 internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
-    private val stage: Stage
+    private val stage: Stage = Stage(FitViewport(800f, 480f))
     private var logo: Sprite = Sprite(Texture(Gdx.files.internal("logos/mm_logo.png")))
     private var canStart: Boolean = false
     private val newGameButton: VisTextButton
@@ -30,7 +30,6 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
 
     init {
         // Initialise the stage
-        stage = Stage(FitViewport(800f, 480f))
         Gdx.input.inputProcessor = stage
 
 
@@ -121,7 +120,7 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
     }
 
     private fun newGame() {
-        game.screen = GameScreen(game)
+        game.screen = NewGameScreen(game)
         dispose()
     }
 
