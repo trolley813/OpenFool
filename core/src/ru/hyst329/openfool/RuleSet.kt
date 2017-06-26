@@ -17,4 +17,12 @@ class RuleSet(var deuceBeatsAce: Boolean = false,
         allowPass = preferences.getBoolean("Rules/AllowPass", false)
         playerCount = preferences.getInteger("Rules/PlayerCount", 4)
     }
+
+    fun save(preferences: Preferences): Unit {
+        preferences.putBoolean("Rules/DeuceBeatsAce", deuceBeatsAce)
+        preferences.putBoolean("Rules/LoweredFirstDiscardLimit", loweredFirstDiscardLimit)
+        preferences.putBoolean("Rules/AllowPass", allowPass)
+        preferences.putInteger("Rules/PlayerCount", playerCount)
+        preferences.flush()
+    }
 }

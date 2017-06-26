@@ -40,7 +40,7 @@ internal class NewGameScreen(private val game: OpenFoolGame) : Screen {
         limitCheckBox = VisCheckBox(game.localeBundle.get("LimitTo5Cards"))
         limitCheckBox.setBounds(440f, 250f, 260f, 40f)
         stage.addActor(limitCheckBox)
-        deuceCheckBox.isChecked = ruleSet.loweredFirstDiscardLimit
+        limitCheckBox.isChecked = ruleSet.loweredFirstDiscardLimit
     }
 
 
@@ -74,6 +74,9 @@ internal class NewGameScreen(private val game: OpenFoolGame) : Screen {
     }
 
     private fun startGame() {
+        ruleSet.deuceBeatsAce = deuceCheckBox.isChecked
+        ruleSet.loweredFirstDiscardLimit = limitCheckBox.isChecked
+        ruleSet.save(game.preferences)
         game.screen = GameScreen(game)
         dispose()
     }

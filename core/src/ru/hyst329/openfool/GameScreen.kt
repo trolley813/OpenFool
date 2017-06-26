@@ -94,7 +94,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     private val sortingMode: Player.SortingMode
     private var throwLimit = DEAL_LIMIT
     private var playerDoneStatuses = Array(PLAYER_COUNT, { i -> false })
-    internal var ruleSet = RuleSet()
+    internal var ruleSet = RuleSet(game.preferences)
         private set
 
     init {

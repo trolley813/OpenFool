@@ -4,7 +4,7 @@ import java.util.Locale
 
 class Card(internal val suit: Suit, internal val rank: Rank) {
 
-    internal fun beats(other: Card, trumpSuit: Suit, deuceBeatsAce: Boolean = false): Boolean {
+    internal fun beats(other: Card, trumpSuit: Suit, deuceBeatsAce: Boolean): Boolean {
         val thisRankValue = (this.rank.value + 11) % 13
         val otherRankValue = (other.rank.value + 11) % 13
         if (this.suit === other.suit) {

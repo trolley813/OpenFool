@@ -200,7 +200,7 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
         System.out.printf("Index = %s attack is %s\n", index, attack ?: "null")
         for (i in hand.indices) {
             val c = hand[i]
-            if (c.beats(attack!!, gameScreen.trumpSuit)) {
+            if (c.beats(attack!!, gameScreen.trumpSuit, gameScreen.ruleSet.deuceBeatsAce)) {
                 val r = c.rank
                 val newHand = ArrayList(hand)
                 newHand.removeAt(i)
@@ -245,7 +245,7 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
 
     fun beatWithCard(c: Card) {
         val attack = gameScreen.attackCards[Arrays.asList<Card>(*gameScreen.defenseCards).indexOf(null)]
-        if (hand.contains(c) && c.beats(attack!!, gameScreen.trumpSuit)) {
+        if (hand.contains(c) && c.beats(attack!!, gameScreen.trumpSuit, gameScreen.ruleSet.deuceBeatsAce)) {
             hand.remove(c)
             fire(CardBeatenEvent(c))
         }
