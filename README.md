@@ -3,6 +3,7 @@
 ![Github All Releases](https://img.shields.io/github/downloads/hyst329/OpenFool/total.svg)
 ![Github Releases](https://img.shields.io/github/downloads/hyst329/OpenFool/latest/total.svg)
 ![GitHub release](https://img.shields.io/github/release/hyst329/OpenFool.svg)
+[![Gitter](https://img.shields.io/gitter/room/OpenFoolCommunity/Lobby.svg)](https://gitter.im/OpenFoolCommunity/Lobby)
 
 
 OpenFool - free and open source (MIT licensed) Fool (Durak) card game implementation for desktop and Android.
