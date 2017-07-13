@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Sprite
 import com.badlogic.gdx.scenes.scene2d.Action
 import com.badlogic.gdx.scenes.scene2d.Event
 import com.badlogic.gdx.scenes.scene2d.EventListener
@@ -42,6 +43,12 @@ import ru.hyst329.openfool.ResultScreen.Result.WON
 class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     private val background: Texture
     private val backgroundColor: Color
+    private val suitSymbols: Map<Suit, Sprite> = mapOf(
+            Suit.SPADES to Sprite(game.assetManager.get("suits/spades.png", Texture::class.java)),
+            Suit.DIAMONDS to Sprite(game.assetManager.get("suits/diamonds.png", Texture::class.java)),
+            Suit.CLUBS to Sprite(game.assetManager.get("suits/clubs.png", Texture::class.java)),
+            Suit.HEARTS to Sprite(game.assetManager.get("suits/hearts.png", Texture::class.java))
+    )
 
     internal enum class GameState {
         READY,
@@ -105,6 +112,11 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         val backgroundNo = game.preferences.getInteger(SettingsScreen.BACKGROUND, 1)
         background = game.assetManager.get("backgrounds/background$backgroundNo.png", Texture::class.java)
         background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
+        // Initialise suit symbols
+        for ((suit, sprite) in suitSymbols) {
+            sprite.setCenter(40f, 150f)
+            sprite.setScale(0.5f)
+        }
         // Initialise player info
         playerDoneStatuses = BooleanArray(ruleSet.playerCount)
         outOfPlay = BooleanArray(ruleSet.playerCount)
@@ -339,12 +351,14 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     position[0], position[1])
 
         }
-        game.font.draw(game.batch, "$trumpSuit ${cardsRemaining()}", 20f, 160f)
+
+        game.font.draw(game.batch, "${cardsRemaining()}", 80f, 160f)
         var turnString = "${currentAttacker.name} -> ${currentDefender.name}"
         if (currentAttacker.index == 0)
             turnString += "\n" + game.localeBundle["YourTurn"]
         if (currentDefender.index == 0)
             turnString += "\n" + game.localeBundle["Defend"]
+        suitSymbols[trumpSuit]?.draw(game.batch)
         game.font.draw(game.batch, turnString, 20f, 100f)
         game.batch.end()
         // Check if the game is over

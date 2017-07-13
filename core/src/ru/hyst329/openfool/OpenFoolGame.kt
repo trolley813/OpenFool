@@ -69,6 +69,7 @@ class OpenFoolGame : Game() {
         param.genMipMaps = true
         val decks = arrayOf("fra", "int", "rus")
         val suits = "cdhs"
+        val fullSuits = arrayOf("clubs", "diamonds", "hearts", "spades")
         for (d in decks) {
             for (i in 1..13) {
                 for (s in suits.toCharArray()) {
@@ -79,6 +80,9 @@ class OpenFoolGame : Game() {
         }
         for (i in 1..2) {
             assetManager.load("backgrounds/background$i.png", Texture::class.java, param)
+        }
+        for (s in fullSuits) {
+            assetManager.load("suits/$s.png", Texture::class.java, param)
         }
         this.setScreen(MainMenuScreen(this))
     }
