@@ -447,7 +447,14 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
 
     private // TODO: Generalise
     val isGameOver: Boolean
-        get() = outOfPlay[0] && outOfPlay[2] || outOfPlay[1] && outOfPlay[3]
+        get() {
+            if (ruleSet.teamPlay)
+                return outOfPlay[0] && outOfPlay[2] || outOfPlay[1] && outOfPlay[3]
+            else {
+                // Simply check if only one player remains
+                return (outOfPlay.map { if (it) 1 else 0 }.fold(initial = 0) { total, current -> total + current }) == 1
+            }
+        }
 
     internal fun cardsRemaining(): Int {
         return deck.cards?.size ?: 0
