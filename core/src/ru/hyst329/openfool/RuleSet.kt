@@ -10,8 +10,13 @@ import com.badlogic.gdx.Preferences
 class RuleSet(var deuceBeatsAce: Boolean = false,
               var loweredFirstDiscardLimit: Boolean = false,
               var allowPass: Boolean = false,
-              var playerCount: Int = 4,
+              playerCount: Int = 4,
               var teamPlay: Boolean = true) {
+    var playerCount: Int = playerCount
+    set(value) {
+        field = value
+        teamPlay = (playerCount > 2 && playerCount % 2 == 0)
+    }
     constructor(preferences: Preferences) : this() {
         deuceBeatsAce = preferences.getBoolean("Rules/DeuceBeatsAce", false)
         loweredFirstDiscardLimit = preferences.getBoolean("Rules/LoweredFirstDiscardLimit", false)
