@@ -15,7 +15,7 @@ class RuleSet(var deuceBeatsAce: Boolean = false,
     var playerCount: Int = playerCount
     set(value) {
         field = value
-        teamPlay = (playerCount > 2 && playerCount % 2 == 0)
+        teamPlay = teamPlay && (playerCount > 2 && playerCount % 2 == 0)
     }
     constructor(preferences: Preferences) : this() {
         deuceBeatsAce = preferences.getBoolean("Rules/DeuceBeatsAce", false)
@@ -24,7 +24,7 @@ class RuleSet(var deuceBeatsAce: Boolean = false,
         playerCount = preferences.getInteger("Rules/PlayerCount", 4)
         teamPlay = preferences.getBoolean("Rules/TeamPlay", true)
         // Team play only for even number of players (4 or 6 actually)
-        teamPlay  = teamPlay && (playerCount > 2 && playerCount % 2 == 0)
+        teamPlay = teamPlay && (playerCount > 2 && playerCount % 2 == 0)
     }
 
     fun save(preferences: Preferences): Unit {
