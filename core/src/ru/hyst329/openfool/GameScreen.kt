@@ -156,7 +156,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         })
         // Initialise players
         // TODO: Replace with settings
-        val playerNames = arrayOf("South", "West", "North", "East")
+        val playerNames = arrayOf("South", "West", "North", "East", "Center")
         players = Array(ruleSet.playerCount, { i -> Player(this, playerNames[i], i) })
         for (i in 0..ruleSet.playerCount - 1) {
             players[i].addListener(this)

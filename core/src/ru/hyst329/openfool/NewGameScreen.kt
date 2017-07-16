@@ -47,7 +47,7 @@ internal class NewGameScreen(private val game: OpenFoolGame) : Screen {
         limitCheckBox.setBounds(390f, 250f, 320f, 40f)
         stage.addActor(limitCheckBox)
         limitCheckBox.isChecked = ruleSet.loweredFirstDiscardLimit
-        val intSpinnerModel = IntSpinnerModel(ruleSet.playerCount, 2, 4, 1)
+        val intSpinnerModel = IntSpinnerModel(ruleSet.playerCount, 2, 5, 1)
         playerCountSpinner = Spinner(game.localeBundle.get("PlayerCount"), intSpinnerModel)
         playerCountSpinner.setBounds(390f, 200f, 320f, 40f)
         playerCountSpinner.addListener(object : ChangeListener() {
