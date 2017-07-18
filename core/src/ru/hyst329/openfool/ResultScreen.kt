@@ -14,10 +14,10 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout
 internal class ResultScreen(private val game: OpenFoolGame, private val result: ResultScreen.Result) : Screen {
 
     internal enum class Result {
-        WON,
-        LOST,
-        PARTNER_LOST,
-        DRAW
+        TEAM_WON,
+        TEAM_LOST,
+        TEAM_PARTNER_LOST,
+        TEAM_DRAW
     }
 
     override fun show() {
@@ -29,22 +29,22 @@ internal class ResultScreen(private val game: OpenFoolGame, private val result: 
         var header = ""
         var text = ""
         when (result) {
-            ResultScreen.Result.WON -> {
+            ResultScreen.Result.TEAM_WON -> {
                 color = Color(0.2f, 0.6f, 0.125f, 1f)
                 header = game.localeBundle.get("VictoryHeader")
                 text = game.localeBundle.get("VictoryText")
             }
-            ResultScreen.Result.LOST -> {
+            ResultScreen.Result.TEAM_LOST -> {
                 color = Color(0.6f, 0.2f, 0.125f, 1f)
                 header = game.localeBundle.get("DefeatHeader")
                 text = game.localeBundle.get("DefeatText")
             }
-            ResultScreen.Result.PARTNER_LOST -> {
+            ResultScreen.Result.TEAM_PARTNER_LOST -> {
                 color = Color(0.6f, 0.4f, 0.125f, 1f)
                 header = game.localeBundle.get("PartnerDefeatHeader")
                 text = game.localeBundle.get("PartnerDefeatText")
             }
-            ResultScreen.Result.DRAW -> {
+            ResultScreen.Result.TEAM_DRAW -> {
                 color = Color(0.6f, 0.6f, 0.125f, 1f)
                 header = game.localeBundle.get("DrawHeader")
                 text = game.localeBundle.get("DrawText")

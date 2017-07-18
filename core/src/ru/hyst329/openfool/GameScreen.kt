@@ -20,8 +20,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport
 import java.security.SecureRandom
 import java.util.ArrayList
 import java.util.HashMap
-import java.util.Locale
-import java.util.Random
 
 import ru.hyst329.openfool.GameScreen.GameState.BEATEN
 import ru.hyst329.openfool.GameScreen.GameState.BEATING
@@ -30,10 +28,10 @@ import ru.hyst329.openfool.GameScreen.GameState.FINISHED
 import ru.hyst329.openfool.GameScreen.GameState.READY
 import ru.hyst329.openfool.GameScreen.GameState.THROWING
 import ru.hyst329.openfool.GameScreen.GameState.THROWN
-import ru.hyst329.openfool.ResultScreen.Result.DRAW
-import ru.hyst329.openfool.ResultScreen.Result.LOST
-import ru.hyst329.openfool.ResultScreen.Result.PARTNER_LOST
-import ru.hyst329.openfool.ResultScreen.Result.WON
+import ru.hyst329.openfool.ResultScreen.Result.TEAM_DRAW
+import ru.hyst329.openfool.ResultScreen.Result.TEAM_LOST
+import ru.hyst329.openfool.ResultScreen.Result.TEAM_PARTNER_LOST
+import ru.hyst329.openfool.ResultScreen.Result.TEAM_WON
 
 /**
  * Created by main on 13.03.2017.
@@ -363,9 +361,9 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         game.batch.end()
         // Check if the game is over
         if (isGameOver) {
-            var gameResult: ResultScreen.Result = if (outOfPlay[0]) WON else LOST
-            if (ruleSet.teamPlay && outOfPlay[1] && outOfPlay[3] && gameResult == WON)
-                gameResult = if (outOfPlay[2]) DRAW else PARTNER_LOST
+            var gameResult: ResultScreen.Result = if (outOfPlay[0]) TEAM_WON else TEAM_LOST
+            if (ruleSet.teamPlay && outOfPlay[1] && outOfPlay[3] && gameResult == TEAM_WON)
+                gameResult = if (outOfPlay[2]) TEAM_DRAW else TEAM_PARTNER_LOST
             game.screen = ResultScreen(game, gameResult)
             dispose()
         }
