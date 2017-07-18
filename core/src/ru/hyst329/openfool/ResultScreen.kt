@@ -31,23 +31,23 @@ internal class ResultScreen(private val game: OpenFoolGame, private val result: 
         when (result) {
             ResultScreen.Result.TEAM_WON -> {
                 color = Color(0.2f, 0.6f, 0.125f, 1f)
-                header = game.localeBundle.get("VictoryHeader")
-                text = game.localeBundle.get("VictoryText")
+                header = game.localeBundle.get("TeamVictoryHeader")
+                text = game.localeBundle.get("TeamVictoryText")
             }
             ResultScreen.Result.TEAM_LOST -> {
                 color = Color(0.6f, 0.2f, 0.125f, 1f)
-                header = game.localeBundle.get("DefeatHeader")
-                text = game.localeBundle.get("DefeatText")
+                header = game.localeBundle.get("TeamDefeatHeader")
+                text = game.localeBundle.get("TeamDefeatText")
             }
             ResultScreen.Result.TEAM_PARTNER_LOST -> {
                 color = Color(0.6f, 0.4f, 0.125f, 1f)
-                header = game.localeBundle.get("PartnerDefeatHeader")
-                text = game.localeBundle.get("PartnerDefeatText")
+                header = game.localeBundle.get("TeamPartnerDefeatHeader")
+                text = game.localeBundle.get("TeamPartnerDefeatText")
             }
             ResultScreen.Result.TEAM_DRAW -> {
                 color = Color(0.6f, 0.6f, 0.125f, 1f)
-                header = game.localeBundle.get("DrawHeader")
-                text = game.localeBundle.get("DrawText")
+                header = game.localeBundle.get("TeamDrawHeader")
+                text = game.localeBundle.get("TeamDrawText")
             }
         }
         val headerLayout = GlyphLayout(game.font, header)
