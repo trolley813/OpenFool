@@ -17,7 +17,10 @@ internal class ResultScreen(private val game: OpenFoolGame, private val result: 
         TEAM_WON,
         TEAM_LOST,
         TEAM_PARTNER_LOST,
-        TEAM_DRAW
+        TEAM_DRAW,
+        WON,
+        LOST,
+        DRAW
     }
 
     override fun show() {
@@ -48,6 +51,21 @@ internal class ResultScreen(private val game: OpenFoolGame, private val result: 
                 color = Color(0.6f, 0.6f, 0.125f, 1f)
                 header = game.localeBundle.get("TeamDrawHeader")
                 text = game.localeBundle.get("TeamDrawText")
+            }
+            ResultScreen.Result.WON -> {
+                color = Color(0.2f, 0.6f, 0.125f, 1f)
+                header = game.localeBundle.get("VictoryHeader")
+                text = game.localeBundle.get("VictoryText")
+            }
+            ResultScreen.Result.LOST -> {
+                color = Color(0.6f, 0.2f, 0.125f, 1f)
+                header = game.localeBundle.get("DefeatHeader")
+                text = game.localeBundle.get("DefeatText")
+            }
+            ResultScreen.Result.DRAW -> {
+                color = Color(0.6f, 0.6f, 0.125f, 1f)
+                header = game.localeBundle.get("DrawHeader")
+                text = game.localeBundle.get("DrawText")
             }
         }
         val headerLayout = GlyphLayout(game.font, header)

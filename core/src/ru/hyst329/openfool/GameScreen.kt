@@ -32,6 +32,9 @@ import ru.hyst329.openfool.ResultScreen.Result.TEAM_DRAW
 import ru.hyst329.openfool.ResultScreen.Result.TEAM_LOST
 import ru.hyst329.openfool.ResultScreen.Result.TEAM_PARTNER_LOST
 import ru.hyst329.openfool.ResultScreen.Result.TEAM_WON
+import ru.hyst329.openfool.ResultScreen.Result.DRAW
+import ru.hyst329.openfool.ResultScreen.Result.LOST
+import ru.hyst329.openfool.ResultScreen.Result.WON
 
 /**
  * Created by main on 13.03.2017.
@@ -361,7 +364,10 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         game.batch.end()
         // Check if the game is over
         if (isGameOver) {
-            var gameResult: ResultScreen.Result = if (outOfPlay[0]) TEAM_WON else TEAM_LOST
+            var gameResult: ResultScreen.Result = if (outOfPlay[0]) WON else LOST
+            if(outOfPlay.all { it })
+                gameResult = DRAW
+            if(ruleSet.teamPlay) gameResult = if (outOfPlay[0]) TEAM_WON else TEAM_LOST
             if (ruleSet.teamPlay && outOfPlay[1] && outOfPlay[3] && gameResult == TEAM_WON)
                 gameResult = if (outOfPlay[2]) TEAM_DRAW else TEAM_PARTNER_LOST
             game.screen = ResultScreen(game, gameResult)
