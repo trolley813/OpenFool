@@ -1,4 +1,13 @@
 # Changelog
+## 0.2.0 (2017-07-19)
+- Fixed issue #28, 4-player individual mode is now possible. 
+- Maximum player count increased to 5.
+- Result screen text are different for individual and team modes.
+## 0.1.9 (2017-07-13)
+- Added individual mode for 2 and 3 players (experimental).
+- Trump suit name on the game screen replaced with symbol.
+- Application icon added.
+- The rules are customisable in some extent.
 ## 0.1.8 (2017-06-12)
 - Added Underdog font as main UI font (until new skin).
 - Fixed Czech localisation display.
