@@ -263,7 +263,11 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     override fun render(delta: Float) {
         Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-        val opponents = (if (outOfPlay[currentAttackerIndex]) 0 else 1) + if (outOfPlay[(currentAttackerIndex + 2) % ruleSet.playerCount]) 0 else 1
+        val opponents =
+                if(ruleSet.teamPlay)
+                    (if (outOfPlay[currentAttackerIndex]) 0 else 1) + if (outOfPlay[(currentAttackerIndex + 2) % ruleSet.playerCount]) 0 else 1
+                else
+                    if ((outOfPlay.map { if (it) 0 else 1 }.fold(initial = 0) { total, current -> total + current }) > 2) 2 else 1
         if (playersSaidDone == opponents && gameState != DRAWING
                 && gameState != BEATING && gameState != THROWING) {
             System.out.println("Done - all players said done!")
@@ -634,7 +638,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     if (currentDefenderIndex == ruleSet.playerCount)
                         currentDefenderIndex = 0
                 }
-            if (outOfPlay[currentDefenderIndex]) {
+            else if (outOfPlay[currentDefenderIndex]) {
                 return players[(currentDefenderIndex + 2) % ruleSet.playerCount]
             }
             return players[currentDefenderIndex]
