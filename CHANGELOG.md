@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.1 (2017-07-27)
+- Fixed issue #10, throwing rules up to 5 players are properly implemented.
 ## 0.2.0 (2017-07-19)
 - Fixed issue #28, 4-player individual mode is now possible. 
 - Maximum player count increased to 5.
