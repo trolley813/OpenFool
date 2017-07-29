@@ -318,11 +318,14 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             }
             FINISHED -> {
                 val playerTook = isPlayerTaking
+                val currentDefenderIndex = currentDefender.index
                 endTurn(if (isPlayerTaking) currentDefender.index else -1)
                 currentAttackerIndex += if (playerTook) 2 else 1
                 currentAttackerIndex %= ruleSet.playerCount
                 if (!ruleSet.teamPlay)
-                    while (outOfPlay[currentAttackerIndex]) {
+                    // Defender who took cannot attack anyway!
+                    while (outOfPlay[currentAttackerIndex] ||
+                            (playerTook && currentAttackerIndex == currentDefenderIndex)) {
                         currentAttackerIndex++
                         if (currentAttackerIndex == ruleSet.playerCount)
                             currentAttackerIndex = 0
