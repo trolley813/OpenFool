@@ -483,6 +483,12 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             }
         }
 
+    val areAllCardsBeaten: Boolean
+        get() {
+            return (0..DEAL_LIMIT-1).map { (attackCards[it] != null) == (defenseCards[it] != null) }
+                    .fold(initial = true) { total, current -> total && current }
+        }
+
     internal fun cardsRemaining(): Int {
         return deck.cards?.size ?: 0
     }
