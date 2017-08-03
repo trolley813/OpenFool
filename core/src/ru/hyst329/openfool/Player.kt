@@ -244,8 +244,8 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
     }
 
     fun beatWithCard(c: Card) {
-        val attack = gameScreen.attackCards[Arrays.asList<Card>(*gameScreen.defenseCards).indexOf(null)]
-        if (hand.contains(c) && c.beats(attack!!, gameScreen.trumpSuit, gameScreen.ruleSet.deuceBeatsAce)) {
+        val attack = gameScreen.attackCards[Arrays.asList<Card>(*gameScreen.defenseCards).indexOf(null)] ?: return
+        if (hand.contains(c) && c.beats(attack, gameScreen.trumpSuit, gameScreen.ruleSet.deuceBeatsAce)) {
             hand.remove(c)
             fire(CardBeatenEvent(c))
         }
