@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.2 (2017-08-30/2017-09-09)
+- Some minor bug fixes.
+- Added iOS build (for jailbroken devices only).
 ## 0.2.1 (2017-07-27)
 - Fixed issue #10, throwing rules up to 5 players are properly implemented.
 ## 0.2.0 (2017-07-19)
