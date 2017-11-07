@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.3 (2017-11-07)
+- Revolution Edition: Hammer and Sickle logo and red background during October Revolution holidays (5/11 to 10/11).
 ## 0.2.2 (2017-08-30/2017-09-09)
 - Some minor bug fixes.
 - Added iOS build (for jailbroken devices only).
