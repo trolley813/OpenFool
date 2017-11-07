@@ -84,6 +84,7 @@ class OpenFoolGame : Game() {
         for (s in fullSuits) {
             assetManager.load("suits/$s.png", Texture::class.java, param)
         }
+        assetManager.load("holidays/hammersickle.png", Texture::class.java, param)
         this.setScreen(MainMenuScreen(this))
     }
 
