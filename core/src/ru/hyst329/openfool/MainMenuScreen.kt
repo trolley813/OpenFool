@@ -73,10 +73,10 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
     }
 
     override fun render(delta: Float) {
-        when (getCurrentHoliday())
-        {
-                Holiday.OCTOBER_REVOLUTION -> Gdx.gl.glClearColor(0.8f, 0.0f, 0.0f, 1f)
-             null -> Gdx.gl.glClearColor(0.2f, 0.8f, 0.3f, 1f)
+        when (getCurrentHoliday()) {
+            Holiday.OCTOBER_REVOLUTION -> Gdx.gl.glClearColor(0.8f, 0.0f, 0.0f, 1f)
+            Holiday.NEW_YEAR ->  Gdx.gl.glClearColor(0.0f, 0.6f, 0.9f, 1f)
+            null -> Gdx.gl.glClearColor(0.2f, 0.8f, 0.3f, 1f)
         }
 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
@@ -87,12 +87,14 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
             canStart = true
             logo.setCenter(560f, 250f)
             logo.draw(game.batch)
-            when (getCurrentHoliday())
-            {
+            when (getCurrentHoliday()) {
                 Holiday.OCTOBER_REVOLUTION -> {
                     hammerAndSickle.setCenter(165f, 430f)
                     hammerAndSickle.setScale(0.35f)
                     hammerAndSickle.draw(game.batch)
+                }
+                Holiday.NEW_YEAR -> {
+                    // TODO: New Year logo
                 }
                 null -> {
 
