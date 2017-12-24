@@ -1,17 +1,27 @@
 language: android
 android:
   components:
-    - tools
-    - platform-tools
-    - android-27
-    - tools
-    - build-tools-27.0.3
+  - tools
+  - platform-tools
+  - android-27
+  - tools
+  - build-tools-27.0.3
 licenses:
-    - 'android-sdk-license-.+'
+- android-sdk-license-.+
 jdk: oraclejdk8
 before_install:
-  - chmod +x gradlew
-  - yes | sdkmanager "platforms;android-27"
-
-# Extend compile timeout to 30 minutes; gwt easily takes 10+.
+- openssl aes-256-cbc -K $encrypted_e0a83df23fd5_key -iv $encrypted_e0a83df23fd5_iv
+  -in android.jks.enc -out android.jks -d
+- chmod +x gradlew
+- yes | sdkmanager "platforms;android-27"
+before_deploy:
+  - cp $TRAVIS_BUILD_DIR/.keystore $HOME
+  - cd android/build/release/apk
+  - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/android.jks -storepass $storepass -keypass $keypass
+  android-release-unsigned.apk android-signing
+  - jarsigner -verify android-release-unsigned.apk
 script: travis_wait 30 ./gradlew clean assembleQa
+env:
+  global:
+  - secure: GbwGC+BsOLOYYGtGpUspaPCNNW2KvTA1EzfFQ7JT8Npd80OD+XxcwCGHPk/3ugk6sPGrvWllHEaZehQECsxGB+3M3dL9W8dT2EOYlItXWJSrljxcyAfFr4Z8YZpxEWm4mvZiy2/V6N8w+O/P6P+Fkj3S0crg3jINpDg+Vv+zPkT3oWt7XpWX0DW1DJI+ARbI/wkUDGmy2+dfyS8P3a/IAFTn6wTm9ioQxuTw9A2MqpuvRAwGg7KhCza5uRyvKQCgQP4W7Vwioh48cjIPQEvXXmu84fXJ+nX0Q/UfRp5WIXu/bW+vm3YC7bUkpdge31uKZVEPpuo0RKCPUGqGGJJ3Ln0GCAeSH6kdjoKMTtUB2kUVPCwcm1Eg0tVPjZCDH8/MaNcNyggKnpIryi4/iLZ3c5E0iXa/T07LV1rmMDoVcj+jMYIxEtiaB+E6/dpU/7fywZIYuVWZ043PPk74QSllPKqn/R6Z7UjMrnYS5w2d9Bq5BCaK/tAi6gUTBbThokgOqc2FWHmpcbBa/Smt54J9CQxmI4/LIygo/MxhtxJaJDqOKktNTm8O4A0/yf/r5w6yKAHYFT9ATmdJCFoNgViMIBTCEy7FR9CoSJoFizEooGNDYFpt39lgFJaqUN4Z1SUjyQaEJyVgLrEjmY2emrLSaWL1RgC6huGYRmQBgAcgBm4=
+  - secure: WRsg93Pi8eUNdYOxLby+y4JxH/2qAqkaaxe4CC3YbzOYE/3M1Sr329UuendgNMkfZ8NYK4jZLKZTeDZfNM6e04fSbba4R4TCtm+abdFJ9ZBe0EZ3jChPCP0bKzxj2vB4OewEqqZdetid3RxDHe5ij52NtFotxWszMe4E9RMEnAmoHLUed6BzAzsADtbUETQuxVnCgRc56Ao/wsGZoYEjc46TPXq8xaCNDoRQCwaJmLBAXVqp8j50wFHn4xmhB//ZTePo9utYcrGyMHRZMMQ8n2ghakKNk/By4gZ1C1GlGD+zzvRM0tG12VB3KqmNqqMUzaf/LqonIupHjXo0Vtuy5YcaPpuWYPLmS5S/RRD5NOZxP8evK0ZjmRJCwhycmbL9wYOldljuAnZvvxIFn5BgwmDfPQm1DopCU94D2N0sNb+AvYPtox5D+ygfjjJj+ETIOpg0G/JKgaQwfmn1Mpe0o6W6PJiX/BPFLCbVgwAwRKvX51rkgsA8KTrboeZR0ASIEMUQN3dLAWRBM0s2hMGijx+xWOB7oUAyR7+zanpV3BkILFsiG40aqvezncHzfVRY1SVun2mCJZT/fkY1MjInntmzZa5Ax+waaS5w1+H14Z5bi7gYZb69uDKYNDYd0pSqYSmSs0j6N/3dRXgTGpBqbSRu185d78LU15ZjTKgAUPY=
