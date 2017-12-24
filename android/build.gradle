@@ -25,16 +25,28 @@ android {
     productFlavors {
     }
     signingConfigs {
-//       release {
-//           storeFile file(RELEASE_STORE_FILE)
-//           storePassword RELEASE_STORE_PASSWORD
-//           keyAlias RELEASE_KEY_ALIAS
-//           keyPassword RELEASE_KEY_PASSWORD
-//       }
+       release {
+           storeFile file(RELEASE_STORE_FILE)
+           storePassword RELEASE_STORE_PASSWORD
+           keyAlias RELEASE_KEY_ALIAS
+           keyPassword RELEASE_KEY_PASSWORD
+       }
     }
     buildTypes {
+        debug {
+
+        }
+        dev {
+
+        }
+        qa {
+
+        }
+        rc {
+
+        }
         release {
-//            signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
         }
     }
 }
