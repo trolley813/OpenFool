@@ -17,8 +17,7 @@ before_install:
 before_deploy:
   - cp $TRAVIS_BUILD_DIR/.keystore $HOME
   - cd android/build/release/apk
-  - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/android.jks -storepass $storepass -keypass $keypass
-  android-release-unsigned.apk android-signing
+  - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/android.jks -storepass $storepass -keypass $keypass android-release-unsigned.apk android-signing
   - jarsigner -verify android-release-unsigned.apk
 script: travis_wait 30 ./gradlew clean assembleQa
 env:
