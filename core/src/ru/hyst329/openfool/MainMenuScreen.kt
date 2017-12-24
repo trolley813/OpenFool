@@ -23,6 +23,7 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
     private val stage: Stage = Stage(FitViewport(800f, 480f))
     private var logo: Sprite = Sprite(Texture(Gdx.files.internal("logos/mm_logo.png")))
     private var hammerAndSickle: Sprite = Sprite(Texture(Gdx.files.internal("holidays/hammersickle.png")))
+    private var santaHat: Sprite = Sprite(Texture(Gdx.files.internal("holidays/santahat.png")))
     private var canStart: Boolean = false
     private val newGameButton: VisTextButton
     private val settingsButton: VisTextButton
@@ -94,7 +95,9 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
                     hammerAndSickle.draw(game.batch)
                 }
                 Holiday.NEW_YEAR -> {
-                    // TODO: New Year logo
+                    santaHat.setCenter(165f, 430f)
+                    santaHat.setScale(0.3f)
+                    santaHat.draw(game.batch)
                 }
                 null -> {
 
