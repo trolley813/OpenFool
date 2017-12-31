@@ -86,16 +86,16 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
         game.batch.begin()
         if (game.assetManager.update()) {
             canStart = true
-            logo.setCenter(560f, 250f)
+            logo.setCenter(Gdx.graphics.width * 560f / 840f, Gdx.graphics.height * 250f / 480f)
             logo.draw(game.batch)
             when (getCurrentHoliday()) {
                 Holiday.OCTOBER_REVOLUTION -> {
-                    hammerAndSickle.setCenter(165f, 430f)
+                    hammerAndSickle.setCenter(Gdx.graphics.width * 165f / 840f, Gdx.graphics.height * 430f / 480f)
                     hammerAndSickle.setScale(0.35f)
                     hammerAndSickle.draw(game.batch)
                 }
                 Holiday.NEW_YEAR -> {
-                    santaHat.setCenter(165f, 430f)
+                    santaHat.setCenter(Gdx.graphics.width * 165f / 840f, Gdx.graphics.height * 430f / 480f)
                     santaHat.setScale(0.3f)
                     santaHat.draw(game.batch)
                 }
@@ -107,7 +107,7 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
         } else {
             val progress = game.assetManager.progress
             game.font.draw(game.batch, game.localeBundle.format("LoadingAssets",
-                    Math.round(progress * 100)), 280f, 110f)
+                    Math.round(progress * 100)), Gdx.graphics.width / 2.8f, Gdx.graphics.height / 4.4f)
             progressBar.value = progress
         }
         game.batch.end()

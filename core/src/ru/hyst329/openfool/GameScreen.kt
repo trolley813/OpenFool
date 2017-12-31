@@ -115,7 +115,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         background.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat)
         // Initialise suit symbols
         for ((suit, sprite) in suitSymbols) {
-            sprite.setCenter(40f, 150f)
+            sprite.setCenter(Gdx.graphics.width / 20f, Gdx.graphics.height / 3.2f)
             sprite.setScale(0.5f)
         }
         // Initialise player info
@@ -131,7 +131,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         discardPileGroup = Group()
         stage.addActor(discardPileGroup)
         playerGroups = Array(ruleSet.playerCount, { Group() })
-        for (i in 0..ruleSet.playerCount - 1) {
+        for (i in 0 until ruleSet.playerCount) {
             playerGroups[i] = Group()
             stage.addActor(playerGroups[i])
         }
@@ -159,7 +159,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         // TODO: Replace with settings
         val playerNames = arrayOf("South", "West", "North", "East", "Center")
         players = Array(ruleSet.playerCount, { i -> Player(this, playerNames[i], i) })
-        for (i in 0..ruleSet.playerCount - 1) {
+        for (i in 0 until ruleSet.playerCount) {
             players[i].addListener(this)
             stage.addActor(players[i])
         }
@@ -215,7 +215,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         trumpSuit = trumpCard!!.suit
         println("Trump suit is $trumpSuit")
         // Draw cards
-        for (i in 0..ruleSet.playerCount - 1) {
+        for (i in 0 until ruleSet.playerCount) {
             drawCardsToPlayer(i, DEAL_LIMIT)
         }
         // Determine the first attacker and thrower
@@ -264,10 +264,11 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         Gdx.gl.glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         val opponents =
-                if(ruleSet.teamPlay)
-                    (if (outOfPlay[currentAttackerIndex]) 0 else 1) + if (outOfPlay[(currentAttackerIndex + 2) % ruleSet.playerCount]) 0 else 1
-                else
-                    if ((outOfPlay.map { if (it) 0 else 1 }.fold(initial = 0) { total, current -> total + current }) > 2) 2 else 1
+                when {
+                    ruleSet.teamPlay -> (if (outOfPlay[currentAttackerIndex]) 0 else 1) + if (outOfPlay[(currentAttackerIndex + 2) % ruleSet.playerCount]) 0 else 1
+                    (outOfPlay.map { if (it) 0 else 1 }.fold(initial = 0) { total, current -> total + current }) > 2 -> 2
+                    else -> 1
+                }
         if (playersSaidDone == opponents && gameState != DRAWING
                 && gameState != BEATING && gameState != THROWING) {
             System.out.println("Done - all players said done!")
@@ -338,7 +339,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         // Draw background
         game.batch.begin()
         game.batch.color = backgroundColor
-        game.batch.draw(background, 0f, 0f, 0, 0, 800, 480)
+        game.batch.draw(background, 0f, 0f, 0, 0, Gdx.graphics.width, Gdx.graphics.height)
         game.batch.color = Color(Color.WHITE)
         game.batch.end()
         // Draw stage
@@ -346,28 +347,30 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         stage.draw()
         // Draw player labels
         game.batch.begin()
-        for (i in 0..ruleSet.playerCount - 1) {
+        for (i in 0 until ruleSet.playerCount) {
             val position = (if (i == 0) PLAYER_POSITION else AI_POSITION).clone()
             if (i > 0 && ruleSet.playerCount > 2)
                 position[0] += ((i - 1) * 640 / (ruleSet.playerCount - 2)).toFloat()
             position[1] += 640 * if (i == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI
+            position[0] *= (Gdx.graphics.width / 800f)
+            position[1] *= (Gdx.graphics.height / 480f)
             var playerFormat = "${players[i].name}: ${players[i].hand.size}"
             if (playerDoneStatuses[i]) playerFormat += "   " + game.localeBundle["PlayerDone"]
             if (isPlayerTaking && currentDefender.index == i)
-                playerFormat += game.localeBundle["PlayerTakes"]
+                playerFormat += "   " + game.localeBundle["PlayerTakes"]
             game.font.draw(game.batch, playerFormat,
                     position[0], position[1])
 
         }
 
-        game.font.draw(game.batch, "${cardsRemaining()}", 80f, 160f)
+        game.font.draw(game.batch, "${cardsRemaining()}", Gdx.graphics.width / 10f, Gdx.graphics.height / 3f)
         var turnString = "${currentAttacker.name} -> ${currentDefender.name}"
         if (currentAttacker.index == 0)
             turnString += "\n" + game.localeBundle["YourTurn"]
         if (currentDefender.index == 0)
             turnString += "\n" + game.localeBundle["Defend"]
         suitSymbols[trumpSuit]?.draw(game.batch)
-        game.font.draw(game.batch, turnString, 20f, 100f)
+        game.font.draw(game.batch, turnString, Gdx.graphics.width / 40f, Gdx.graphics.height / 4.8f)
         game.batch.end()
         // Check if the game is over
         if (isGameOver) {
@@ -416,8 +419,8 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 //defenseCards[i] = null;
             }
         }
-        attackCards = arrayOfNulls<Card>(DEAL_LIMIT)
-        defenseCards = arrayOfNulls<Card>(DEAL_LIMIT)
+        attackCards = arrayOfNulls(DEAL_LIMIT)
+        defenseCards = arrayOfNulls(DEAL_LIMIT)
         if (playerIndex < 0) {
             for (card in tableCards) {
                 val cardActor = cardActors[card]
@@ -455,19 +458,19 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     SortAction(playerIndex)
             ))
         }
-        if (!(deck.cards?.isEmpty() ?: true)) {
-            for (i in 0..ruleSet.playerCount - 1) {
+        if (deck.cards?.isEmpty() == false) {
+            for (i in 0 until ruleSet.playerCount) {
                 val cardsToDraw = DEAL_LIMIT - players[i].hand.size
                 if (cardsToDraw > 0) {
                     drawCardsToPlayer(i, cardsToDraw)
                 }
-                if (deck.cards?.isEmpty() ?: true)
+                if (deck.cards?.isEmpty() != false)
                     break
             }
         }
         // Check if someone is out of play
-        if (deck.cards?.isEmpty() ?: true) {
-            for (i in 0..ruleSet.playerCount - 1) {
+        if (deck.cards?.isEmpty() != false) {
+            for (i in 0 until ruleSet.playerCount) {
                 outOfPlay[i] = players[i].hand.size == 0
             }
         }
@@ -488,7 +491,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
 
     val areAllCardsBeaten: Boolean
         get() {
-            return (0..DEAL_LIMIT-1).map { (attackCards[it] != null) == (defenseCards[it] != null) }
+            return (0 until DEAL_LIMIT).map { (attackCards[it] != null) == (defenseCards[it] != null) }
                     .fold(initial = true) { total, current -> total && current }
         }
 
@@ -519,7 +522,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     GameStateChangedAction(GameState.THROWN)))
             val thrower = event.getTarget() as Player
             System.out.printf("%s (%s) throws %s\n", thrower.name, thrower.index, throwCard)
-            for (i in 0..thrower.hand.size - 1) {
+            for (i in 0 until thrower.hand.size) {
                 val cardActor = cardActors[thrower.hand[i]]
                 val position = (if (thrower.index == 0) PLAYER_POSITION else AI_POSITION).clone()
                 val delta = (if (thrower.index == 0) PLAYER_DELTA else AI_DELTA).clone()
@@ -557,7 +560,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     GameStateChangedAction(GameState.BEATEN)))
             val beater = event.getTarget() as Player
             System.out.printf("%s (%s) beats with %s\n", beater.name, beater.index, beatCard)
-            for (i in 0..beater.hand.size - 1) {
+            for (i in 0 until beater.hand.size) {
                 val cardActor = cardActors[beater.hand[i]]
                 val position = (if (beater.index == 0) PLAYER_POSITION else AI_POSITION).clone()
                 val delta = (if (beater.index == 0) PLAYER_DELTA else AI_DELTA).clone()
@@ -608,7 +611,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     SortAction(playerIndex)
             ))
         }
-        for (i in 0..cardCount - 1) {
+        for (i in 0 until cardCount) {
             if (deck.cards!!.isEmpty())
                 break
             val card = deck.draw() as Card
@@ -666,7 +669,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         val player = players[0]
         player.sortCards(sortingMode)
         // Reposition all cards
-        for (i in 0..player.hand.size - 1) {
+        for (i in 0 until player.hand.size) {
             val cardActor = cardActors[player.hand[i]]
             val position = (if (player.index == 0) PLAYER_POSITION else AI_POSITION).clone()
             val delta = (if (player.index == 0) PLAYER_DELTA else AI_DELTA).clone()

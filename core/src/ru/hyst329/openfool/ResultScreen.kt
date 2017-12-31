@@ -74,11 +74,11 @@ internal class ResultScreen(private val game: OpenFoolGame, private val result: 
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         game.batch.begin()
         game.font.draw(game.batch, headerLayout,
-                400 - headerLayout.width / 2,
-                400 - headerLayout.height / 2)
+                Gdx.graphics.width * 0.5f - headerLayout.width / 2,
+                Gdx.graphics.height * 0.833f - headerLayout.height / 2)
         game.font.draw(game.batch, textLayout,
-                400 - textLayout.width / 2,
-                280 - textLayout.height / 2)
+                Gdx.graphics.width * 0.5f - textLayout.width / 2,
+                Gdx.graphics.width * 0.58f - textLayout.height / 2)
         game.batch.end()
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.screen = MainMenuScreen(game)
