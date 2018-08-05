@@ -1,4 +1,6 @@
 # Changelog
+## 0.2.5 (2017-12-31)
+- Fixed issue #31 with improper UI elements positioning on Android devices (on desktop, there's now a fixed-size window).
 ## 0.2.4 (2017-12-24)
 - Christmas Edition: Santa Hat and blue background during Christmas and New Year holidays (24/12 to 9/1).
 ## 0.2.3 (2017-11-07)
