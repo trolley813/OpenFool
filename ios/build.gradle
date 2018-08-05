@@ -22,7 +22,7 @@ eclipse.project {
     natures 'org.robovm.eclipse.RoboVMNature'
 }
 buildscript {
-    ext.kotlinVersion = '1.1.2-4'
+    ext.kotlinVersion = '1.2.51'
     repositories {
         mavenCentral()
     }
