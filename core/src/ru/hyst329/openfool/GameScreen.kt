@@ -82,7 +82,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     private val discardPileGroup: Group
     private val tableGroup: Group
     private val playerGroups: Array<Group>
-    internal val trumpSuit: Suit
+    internal lateinit var trumpSuit: Suit
     internal val players: Array<Player>
     internal var attackCards = arrayOfNulls<Card>(DEAL_LIMIT)
         private set
@@ -158,7 +158,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         // Initialise players
         // TODO: Replace with settings
         val playerNames = arrayOf("South", "West", "North", "East", "Center")
-        players = Array(ruleSet.playerCount, { i -> Player(this, playerNames[i], i) })
+        players = Array(ruleSet.playerCount) { i -> Player(ruleSet, playerNames[i], i) }
         for (i in 0 until ruleSet.playerCount) {
             players[i].addListener(this)
             stage.addActor(players[i])
@@ -177,11 +177,11 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                         return true
                     }
                     if (currentThrower === user) {
-                        user.throwCard(card)
+                        user.throwCard(card, attackCards, defenseCards, trumpSuit)
                         return true
                     }
                     if (currentDefender === user) {
-                        user.beatWithCard(card)
+                        user.beatWithCard(card, attackCards, defenseCards, trumpSuit)
                         return true
                     }
                     return false
@@ -284,7 +284,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                         && discardPile.isEmpty())
                     DEAL_LIMIT else DEAL_LIMIT - 1)
                         , currentDefender.hand.size)
-                currentAttacker.startTurn()
+                currentAttacker.startTurn(trumpSuit, cardsRemaining(), players.map { it.hand.size }.toTypedArray())
             }
             DRAWING -> {
             }
@@ -293,7 +293,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             THROWN -> {
                 if (currentDefender.index != 0) {
                     if (!isPlayerTaking) {
-                        currentDefender.tryBeat()
+                        currentDefender.tryBeat(attackCards, defenseCards, trumpSuit, cardsRemaining(), players.map { it.hand.size }.toTypedArray())
                     } else {
                         currentDefender.sayTake()
                     }
@@ -312,7 +312,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                         } else false
                 if (currentThrower.index != 0) {
                     if (!forcedFinish)
-                        currentThrower.throwOrDone()
+                        currentThrower.throwOrDone(attackCards, defenseCards, trumpSuit, cardsRemaining(), players.map { it.hand.size }.toTypedArray())
                     else
                         currentThrower.sayDone()
                 }
@@ -667,7 +667,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     private fun sortPlayerCards() {
         // TODO: Generalise to other players
         val player = players[0]
-        player.sortCards(sortingMode)
+        player.sortCards(sortingMode, trumpSuit)
         // Reposition all cards
         for (i in 0 until player.hand.size) {
             val cardActor = cardActors[player.hand[i]]

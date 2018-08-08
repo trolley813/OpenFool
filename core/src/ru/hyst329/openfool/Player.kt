@@ -13,7 +13,7 @@ import java.util.Comparator
  * Licensed under MIT License.
  */
 
-class Player internal constructor(private val gameScreen: GameScreen, private var name: String?, val index: Int) : Actor() {
+class Player internal constructor(private val ruleSet: RuleSet, private var name: String?, val index: Int) : Actor() {
     val hand = ArrayList<Card>()
 
     internal inner class CardThrownEvent(val card: Card) : Event()
@@ -45,9 +45,9 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
         }
     }
 
-    private fun handValue(hand: ArrayList<Card>): Int {
+    private fun handValue(hand: ArrayList<Card>, trumpSuit: Suit, cardsRemaining: Int, playerHands: Array<Int>): Int {
 
-        if (gameScreen.cardsRemaining() == 0 && hand.size == 0) {
+        if (cardsRemaining == 0 && hand.size == 0) {
             return OUT_OF_PLAY
         }
         val bonuses = doubleArrayOf(0.0, 0.0, 0.5, 0.75, 1.25) // for cards of same rank
@@ -58,7 +58,7 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
             val r = c.rank
             val s = c.suit
             res += (if (r === Rank.ACE) 6 else r.value - 8) * RANK_MULTIPLIER
-            if (s === gameScreen.trumpSuit)
+            if (s === trumpSuit)
                 res += 13 * RANK_MULTIPLIER
             countsByRank[r.value - 1]++
             countsBySuit[s.value]++
@@ -68,27 +68,27 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
         }
         var avgSuit = 0.0
         for (c in hand) {
-            if (c.suit !== gameScreen.trumpSuit)
+            if (c.suit !== trumpSuit)
                 avgSuit++
         }
         avgSuit /= 3.0
         for (s in Suit.values()) {
-            if (s !== gameScreen.trumpSuit) {
+            if (s !== trumpSuit) {
                 val dev = Math.abs((countsBySuit[s.value] - avgSuit) / avgSuit)
                 res -= (UNBALANCED_HAND_PENALTY * dev).toInt()
             }
         }
-        var cardsInPlay = gameScreen.cardsRemaining()
-        for (p in gameScreen.players)
-            cardsInPlay += p.hand.size
+        var cardsInPlay = cardsRemaining
+        for (p in playerHands)
+            cardsInPlay += p
         cardsInPlay -= hand.size
         val cardRatio = if (cardsInPlay != 0) (hand.size / cardsInPlay).toDouble() else 10.0
         res += ((0.25 - cardRatio) * MANY_CARDS_PENALTY).toInt()
         return res
     }
 
-    private fun currentHandValue(): Int {
-        return handValue(hand)
+    private fun currentHandValue(trumpSuit: Suit, cardsRemaining: Int, playerHands: Array<Int>): Int {
+        return handValue(hand, trumpSuit, cardsRemaining, playerHands)
     }
 
 
@@ -104,7 +104,9 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
         hand.add(c)
     }
 
-    fun startTurn() {
+    fun startTurn(trumpSuit: Suit,
+                  cardsRemaining: Int,
+                  playerHands: Array<Int>) {
         val bonuses = doubleArrayOf(0.0, 0.0, 1.0, 1.5, 2.5)
         val countsByRank = IntArray(13)
         for (c in hand) {
@@ -117,7 +119,7 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
             val c = hand[i]
             newHand.removeAt(i)
             val r = c.rank
-            val newVal = handValue(newHand) + Math.round(bonuses[countsByRank[r.value - 1]] * (if (r === Rank.ACE) 6 else r.value - 8).toDouble() * RANK_MULTIPLIER.toDouble()).toInt()
+            val newVal = handValue(newHand, trumpSuit, cardsRemaining, playerHands) + Math.round(bonuses[countsByRank[r.value - 1]] * (if (r === Rank.ACE) 6 else r.value - 8).toDouble() * RANK_MULTIPLIER.toDouble()).toInt()
             if (newVal > maxVal) {
                 maxVal = newVal
                 cardIdx = i
@@ -128,13 +130,18 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
         fire(CardThrownEvent(c))
     }
 
-    fun throwOrDone() {
+    fun throwOrDone(attackCards: Array<Card?>,
+                    defenseCards: Array<Card?>,
+                    trumpSuit: Suit,
+                    cardsRemaining: Int,
+                    playerHands: Array<Int>
+                    ) {
         val ranksPresent = BooleanArray(13)
-        for (c in gameScreen.attackCards) {
+        for (c in attackCards) {
             if (c != null)
                 ranksPresent[c.rank.value - 1] = true
         }
-        for (c in gameScreen.defenseCards) {
+        for (c in defenseCards) {
             if (c != null)
                 ranksPresent[c.rank.value - 1] = true
         }
@@ -153,7 +160,7 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
                 continue
             val newHand = ArrayList(hand)
             newHand.removeAt(i)
-            val newVal = handValue(newHand) + Math.round(bonuses[countsByRank[r.value - 1]] * (if (r === Rank.ACE) 6 else r.value - 8).toDouble() * RANK_MULTIPLIER.toDouble()).toInt()
+            val newVal = handValue(newHand, trumpSuit, cardsRemaining, playerHands) + Math.round(bonuses[countsByRank[r.value - 1]] * (if (r === Rank.ACE) 6 else r.value - 8).toDouble() * RANK_MULTIPLIER.toDouble()).toInt()
             if (newVal > maxVal) {
                 maxVal = newVal
                 cardIdx = i
@@ -161,7 +168,8 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
         }
         val PENALTY_BASE = 1200
         val PENALTY_DELTA = 50
-        if (currentHandValue() - maxVal < PENALTY_BASE - PENALTY_DELTA * gameScreen.cardsRemaining() && cardIdx >= 0) {
+        if (currentHandValue(trumpSuit, cardsRemaining, playerHands) - maxVal <
+                PENALTY_BASE - PENALTY_DELTA * cardsRemaining && cardIdx >= 0) {
             val c = hand[cardIdx]
             hand.removeAt(cardIdx)
             fire(CardThrownEvent(c))
@@ -171,40 +179,44 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
     }
 
 
-    fun tryBeat() {
+    fun tryBeat(attackCards: Array<Card?>,
+                defenseCards: Array<Card?>,
+                trumpSuit: Suit,
+                cardsRemaining: Int,
+                playerHands: Array<Int>) {
         val RANK_PRESENT_BONUS = 300
         val ranksPresent = BooleanArray(13)
         val handIfTake = ArrayList(hand)
-        for (c in gameScreen.attackCards) {
+        for (c in attackCards) {
             if (c != null) {
-                ranksPresent[c!!.rank.value - 1] = true
+                ranksPresent[c.rank.value - 1] = true
                 handIfTake.add(c)
             }
         }
-        for (c in gameScreen.defenseCards) {
+        for (c in defenseCards) {
             if (c != null) {
-                ranksPresent[c!!.rank.value - 1] = true
+                ranksPresent[c.rank.value - 1] = true
                 handIfTake.add(c)
             }
         }
         var maxVal = Integer.MIN_VALUE
         var cardIdx = -1
         print("Attack cards: ")
-        for (i in 0..gameScreen.attackCards.size - 1) {
-            val card = gameScreen.attackCards[i]
+        for (i in 0..attackCards.size - 1) {
+            val card = attackCards[i]
             System.out.printf("%s ", card ?: "null")
         }
         println()
-        val index = Arrays.asList<Card>(*gameScreen.defenseCards).indexOf(null)
-        val attack = gameScreen.attackCards[index]
+        val index = Arrays.asList<Card>(*defenseCards).indexOf(null)
+        val attack = attackCards[index]
         System.out.printf("Index = %s attack is %s\n", index, attack ?: "null")
         for (i in hand.indices) {
             val c = hand[i]
-            if (c.beats(attack!!, gameScreen.trumpSuit, gameScreen.ruleSet.deuceBeatsAce)) {
+            if (c.beats(attack!!, trumpSuit, ruleSet.deuceBeatsAce)) {
                 val r = c.rank
                 val newHand = ArrayList(hand)
                 newHand.removeAt(i)
-                val newVal = handValue(newHand) + RANK_PRESENT_BONUS * if (ranksPresent[r.value - 1]) 1 else 0
+                val newVal = handValue(newHand, trumpSuit, cardsRemaining, playerHands) + RANK_PRESENT_BONUS * if (ranksPresent[r.value - 1]) 1 else 0
                 if (newVal > maxVal) {
                     maxVal = newVal
                     cardIdx = i
@@ -214,7 +226,8 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
         val PENALTY = 800
         val TAKE_PENALTY_BASE = 2000
         val TAKE_PENALTY_DELTA = 40
-        if ((currentHandValue() - maxVal < PENALTY || handValue(handIfTake) - maxVal < TAKE_PENALTY_BASE - TAKE_PENALTY_DELTA * gameScreen.cardsRemaining() || gameScreen.cardsRemaining() == 0) && cardIdx >= 0) {
+        if ((currentHandValue(trumpSuit, cardsRemaining, playerHands) - maxVal < PENALTY
+                        || handValue(handIfTake, trumpSuit, cardsRemaining, playerHands) - maxVal < TAKE_PENALTY_BASE - TAKE_PENALTY_DELTA * cardsRemaining || cardsRemaining == 0) && cardIdx >= 0) {
             val c = hand[cardIdx]
             hand.removeAt(cardIdx)
             fire(CardBeatenEvent(c))
@@ -227,25 +240,31 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
         hand.clear()
     }
 
-    fun throwCard(c: Card) {
+    fun throwCard(c: Card,
+                  attackCards: Array<Card?>,
+                  defenseCards: Array<Card?>,
+                  trumpSuit: Suit) {
         val ranksPresent = BooleanArray(13)
-        for (card in gameScreen.attackCards) {
+        for (card in attackCards) {
             if (card != null)
                 ranksPresent[card.rank.value - 1] = true
         }
-        for (card in gameScreen.defenseCards) {
+        for (card in defenseCards) {
             if (card != null)
                 ranksPresent[card.rank.value - 1] = true
         }
-        if (hand.contains(c) && (ranksPresent[c.rank.value - 1] || Arrays.equals(gameScreen.attackCards, arrayOfNulls<Card>(6)))) {
+        if (hand.contains(c) && (ranksPresent[c.rank.value - 1] || Arrays.equals(attackCards, arrayOfNulls<Card>(6)))) {
             hand.remove(c)
             fire(CardThrownEvent(c))
         }
     }
 
-    fun beatWithCard(c: Card) {
-        val attack = gameScreen.attackCards[Arrays.asList<Card>(*gameScreen.defenseCards).indexOf(null)] ?: return
-        if (hand.contains(c) && c.beats(attack, gameScreen.trumpSuit, gameScreen.ruleSet.deuceBeatsAce)) {
+    fun beatWithCard(c: Card,
+                     attackCards: Array<Card?>,
+                     defenseCards: Array<Card?>,
+                     trumpSuit: Suit) {
+        val attack = attackCards[Arrays.asList<Card>(*defenseCards).indexOf(null)] ?: return
+        if (hand.contains(c) && c.beats(attack, trumpSuit, ruleSet.deuceBeatsAce)) {
             hand.remove(c)
             fire(CardBeatenEvent(c))
         }
@@ -259,7 +278,8 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
         fire(TakeEvent())
     }
 
-    fun sortCards(sortingMode: SortingMode) {
+    fun sortCards(sortingMode: SortingMode,
+                  trumpSuit: Suit) {
         if (sortingMode == SortingMode.UNSORTED) {
             return
         }
@@ -267,8 +287,8 @@ class Player internal constructor(private val gameScreen: GameScreen, private va
             if (c1 === c2) {
                 return@Comparator 0
             } else {
-                val v1 = (c1.suit.value + (3 - gameScreen.trumpSuit.value)) % 4
-                val v2 = (c2.suit.value + (3 - gameScreen.trumpSuit.value)) % 4
+                val v1 = (c1.suit.value + (3 - trumpSuit.value)) % 4
+                val v2 = (c2.suit.value + (3 - trumpSuit.value)) % 4
                 val r1 = (c1.rank.value + 11) % 13
                 val r2 = (c2.rank.value + 11) % 13
                 when (sortingMode) {

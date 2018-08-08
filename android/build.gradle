@@ -19,8 +19,8 @@ android {
     }
     defaultConfig {
         applicationId "ru.hyst329.openfool"
-        minSdkVersion 9
-        targetSdkVersion 25
+        minSdkVersion 14
+        targetSdkVersion 27
     }
     productFlavors {
     }
