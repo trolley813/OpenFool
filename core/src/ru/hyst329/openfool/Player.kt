@@ -87,7 +87,7 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
         return res
     }
 
-    private fun currentHandValue(trumpSuit: Suit, cardsRemaining: Int, playerHands: Array<Int>): Int {
+    fun currentHandValue(trumpSuit: Suit, cardsRemaining: Int, playerHands: Array<Int>): Int {
         return handValue(hand, trumpSuit, cardsRemaining, playerHands)
     }
 
