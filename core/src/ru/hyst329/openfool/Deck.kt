@@ -9,34 +9,35 @@ import java.util.Collections
  * Licensed under MIT License.
  */
 
-internal class Deck {
+internal class Deck(private val lowestRank: Rank = Rank.TWO) {
     var cards: ArrayList<Card>? = null
         private set
 
     init {
-        this.cards = ArrayList<Card>()
+        this.cards = ArrayList()
         this.reset()
         this.shuffle()
     }
 
     private fun reset() {
         this.cards!!.clear()
-        this.cards = ArrayList<Card>()
+        this.cards = ArrayList()
         for (r in Rank.values())
             for (s in Suit.values())
-                cards!!.add(Card(s, r))
+                if (r >= lowestRank || r == Rank.ACE)
+                    cards!!.add(Card(s, r))
     }
 
     private fun shuffle() {
         val random = SecureRandom()
-        Collections.shuffle(cards!!, random)
+        cards!!.shuffle(random)
     }
 
     fun draw(): Card? {
-        try {
-            return cards!!.removeAt(cards!!.size - 1)
+        return try {
+            cards!!.removeAt(cards!!.size - 1)
         } catch (e: IndexOutOfBoundsException) {
-            return null
+            null
         }
 
     }

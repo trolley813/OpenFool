@@ -15,7 +15,10 @@ object DesktopLauncher {
         if (arg.contains("--test-players")) {
             println("Testing players")
             val ruleSet = RuleSet(false, false, false, 3, false)
-            PlayerTesting(ruleSet, Rank.TWO).runGames(100)
+            for (i in 1..100) {
+                println("Running game $i")
+                PlayerTesting(ruleSet, Rank.TWO).runGame()
+            }
             System.exit(5)
         }
         val config = LwjglApplicationConfiguration()
