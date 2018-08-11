@@ -8,7 +8,7 @@ import ru.hyst329.openfool.PlayerTesting.GameState.FINISHED
 import ru.hyst329.openfool.PlayerTesting.GameState.READY
 import ru.hyst329.openfool.PlayerTesting.GameState.THROWN
 
-class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener {
+class PlayerTesting(val gameId: Int, val ruleSet: RuleSet, val lowestRank: Rank) : EventListener {
 
     // The same as in GameScreen, but without transition states
     internal enum class GameState {
@@ -25,6 +25,7 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
         private set
     internal var defenseCards = arrayOfNulls<Card>(DEAL_LIMIT)
         private set
+    internal var places = IntArray(DEAL_LIMIT) { 0 }
     private var deck = Deck()
     private var playersSaidDone: Int = 0
     private var playerDoneStatuses: BooleanArray
@@ -46,7 +47,7 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
         deck = Deck(lowestRank)
         trumpSuit = deck.cards?.get(0)!!.suit
 
-        println("Trump suit is $trumpSuit")
+        println("[$gameId] Trump suit is $trumpSuit")
         players = Array(ruleSet.playerCount) { i -> Player(ruleSet, "Player $i", i) }
         for (p in 0..players.size - 1) {
             drawCardsToPlayer(p, DEAL_LIMIT)
@@ -69,12 +70,12 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
                 }
             }
         }
-        println(players[firstAttacker].name +
+        println("[$gameId] ${players[firstAttacker].name}" +
                 " (${players[firstAttacker].index})" +
                 " has the lowest trump $lowestTrump")
         currentAttackerIndex = firstAttacker
         currentThrowerIndex = firstAttacker
-        while(!isGameOver) {
+        while (!isGameOver) {
             step()
         }
 
@@ -93,7 +94,7 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
     private fun printPlayerHands() {
         val hands = players.map { it.hand.size }.toTypedArray()
         for (p in 0..players.size - 1) {
-            print("Player $p hand is: ")
+            print("[$gameId] Player $p hand is: ")
             for (c in players[p].hand) {
                 print("$c ")
             }
@@ -113,7 +114,7 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
             val throwCard = event.card
             attackCards[throwIndex] = throwCard
             val thrower = event.getTarget() as Player
-            System.out.printf("%s (%s) throws %s\n", thrower.name, thrower.index, throwCard)
+            println("[$gameId] ${thrower.name} (${thrower.index}) throws $throwCard\n")
             gameState = THROWN
             return true
         }
@@ -126,7 +127,7 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
             val beatCard = event.card
             defenseCards[beatIndex] = beatCard
             val beater = event.getTarget() as Player
-            System.out.printf("%s (%s) beats with %s\n", beater.name, beater.index, beatCard)
+            println("[$gameId] ${beater.name} (${beater.index}) beats with $beatCard\n")
             gameState = BEATEN
             return true
         }
@@ -136,8 +137,7 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
             playerDoneStatuses = BooleanArray(ruleSet.playerCount)
             isPlayerTaking = true
             val player = event.getTarget() as Player
-            System.out.printf("%s (%s) decides to take\n",
-                    player.name, player.index)
+            println("[$gameId] ${player.name} (${player.index}) decides to take\n")
             return true
 
         }
@@ -148,8 +148,7 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
             currentThrowerIndex %= ruleSet.playerCount
             val player = event.getTarget() as Player
             playerDoneStatuses[player.index] = true
-            System.out.printf("%s (%s) says done\n",
-                    player.name, player.index)
+            println("[$gameId] ${player.name} (${player.index}) says done\n")
             return true
         }
         return false
@@ -169,11 +168,11 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
                     else -> 1
                 }
         if (playersSaidDone == opponents) {
-            System.out.println("Done - all players said done!")
+            System.out.println("[$gameId] Done - all players said done!")
             gameState = FINISHED
         }
         if (oldGameState != gameState) {
-            System.out.printf("Game state is %s\n", gameState)
+            println("[$gameId] Game state is $gameState\n")
             oldGameState = gameState
         }
         when (gameState) {
@@ -196,7 +195,7 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
             BEATEN -> {
                 val forcedFinish =
                         if (currentDefender.hand.size == 0 || attackCards[throwLimit - 1] != null) {
-                            println("Forced to finish the turn")
+                            println("[$gameId] Forced to finish the turn")
                             gameState = FINISHED
                             true
                         } else false
@@ -209,6 +208,10 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
                 val playerTook = isPlayerTaking
                 val currentDefenderIndex = currentDefender.index
                 endTurn(if (isPlayerTaking) currentDefender.index else -1)
+                if (isGameOver) {
+                    println("GAME OVER")
+                    return
+                }
                 currentAttackerIndex += if (playerTook) 2 else 1
                 currentAttackerIndex %= ruleSet.playerCount
                 if (!ruleSet.teamPlay)
@@ -220,8 +223,7 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
                             currentAttackerIndex = 0
                     }
                 currentThrowerIndex = currentAttackerIndex
-                System.out.printf("%s (%d) -> %s (%d)\n", currentAttacker.name, currentAttacker.index,
-                        currentDefender.name, currentDefender.index)
+                println("[$gameId] ${currentAttacker.name} (${currentAttacker.index}) -> ${currentDefender.name} (${currentDefender.index})")
             }
         }
     }
@@ -291,11 +293,14 @@ class PlayerTesting(val ruleSet: RuleSet, val lowestRank: Rank) : EventListener 
         if (deck.cards?.isEmpty() != false) {
             for (i in 0 until ruleSet.playerCount) {
                 outOfPlay[i] = players[i].hand.size == 0
+                if (outOfPlay[i]) {
+                    places[i] = outOfPlay.count { it == true }
+                }
             }
         }
         isPlayerTaking = false
         gameState = READY
-        println("Turn ended, remaining ${cardsRemaining()} cards, $isGameOver")
+        println("[$gameId] Turn ended, remaining ${cardsRemaining()} cards, $isGameOver")
     }
 
 }

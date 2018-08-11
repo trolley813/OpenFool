@@ -24,7 +24,7 @@ allprojects {
     version = '0.2.6'
     ext {
         appName = "OpenFool"
-        gdxVersion = '1.9.8'
+        gdxVersion = '1.9.9-SNAPSHOT'
         roboVMVersion = '2.3.0'
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'

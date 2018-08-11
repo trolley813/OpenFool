@@ -321,6 +321,10 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 val playerTook = isPlayerTaking
                 val currentDefenderIndex = currentDefender.index
                 endTurn(if (isPlayerTaking) currentDefender.index else -1)
+                if (isGameOver) {
+                    println("GAME OVER")
+                    return
+                }
                 currentAttackerIndex += if (playerTook) 2 else 1
                 currentAttackerIndex %= ruleSet.playerCount
                 if (!ruleSet.teamPlay)
@@ -330,6 +334,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                         currentAttackerIndex++
                         if (currentAttackerIndex == ruleSet.playerCount)
                             currentAttackerIndex = 0
+                        if (isGameOver) break
                     }
                 currentThrowerIndex = currentAttackerIndex
                 System.out.printf("%s (%d) -> %s (%d)\n", currentAttacker.name, currentAttacker.index,

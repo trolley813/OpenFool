@@ -17,9 +17,9 @@ object DesktopLauncher {
             val ruleSet = RuleSet(false, false, false, 3, false)
             for (i in 1..100) {
                 println("Running game $i")
-                PlayerTesting(ruleSet, Rank.TWO).runGame()
+                PlayerTesting(i, ruleSet, Rank.TWO).runGame()
             }
-            System.exit(5)
+            System.exit(0)
         }
         val config = LwjglApplicationConfiguration()
         config.title = "OpenFool"
