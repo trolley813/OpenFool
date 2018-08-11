@@ -43,7 +43,7 @@ class PlayerTesting(val gameId: Int, val ruleSet: RuleSet, val lowestRank: Rank)
         outOfPlay = BooleanArray(ruleSet.playerCount)
     }
 
-    fun runGame() {
+    fun runGame() : Pair<IntArray, IntArray> {
         deck = Deck(lowestRank)
         trumpSuit = deck.cards?.get(0)!!.suit
 
@@ -78,7 +78,13 @@ class PlayerTesting(val gameId: Int, val ruleSet: RuleSet, val lowestRank: Rank)
         while (!isGameOver) {
             step()
         }
-
+        print("Places are: ")
+        for (p in 0 until ruleSet.playerCount) {
+            if (!outOfPlay[p]) places[p] = ruleSet.playerCount // assign last place
+            print("$p -> ${places[p]}, ")
+        }
+        println()
+        return Pair(initialHands.toIntArray(), places)
     }
 
     private fun drawCardsToPlayer(playerIndex: Int, cardCount: Int) {
@@ -114,7 +120,7 @@ class PlayerTesting(val gameId: Int, val ruleSet: RuleSet, val lowestRank: Rank)
             val throwCard = event.card
             attackCards[throwIndex] = throwCard
             val thrower = event.getTarget() as Player
-            println("[$gameId] ${thrower.name} (${thrower.index}) throws $throwCard\n")
+            println("[$gameId] ${thrower.name} (${thrower.index}) throws $throwCard")
             gameState = THROWN
             return true
         }
@@ -127,7 +133,7 @@ class PlayerTesting(val gameId: Int, val ruleSet: RuleSet, val lowestRank: Rank)
             val beatCard = event.card
             defenseCards[beatIndex] = beatCard
             val beater = event.getTarget() as Player
-            println("[$gameId] ${beater.name} (${beater.index}) beats with $beatCard\n")
+            println("[$gameId] ${beater.name} (${beater.index}) beats with $beatCard")
             gameState = BEATEN
             return true
         }
@@ -137,7 +143,7 @@ class PlayerTesting(val gameId: Int, val ruleSet: RuleSet, val lowestRank: Rank)
             playerDoneStatuses = BooleanArray(ruleSet.playerCount)
             isPlayerTaking = true
             val player = event.getTarget() as Player
-            println("[$gameId] ${player.name} (${player.index}) decides to take\n")
+            println("[$gameId] ${player.name} (${player.index}) decides to take")
             return true
 
         }
@@ -148,7 +154,7 @@ class PlayerTesting(val gameId: Int, val ruleSet: RuleSet, val lowestRank: Rank)
             currentThrowerIndex %= ruleSet.playerCount
             val player = event.getTarget() as Player
             playerDoneStatuses[player.index] = true
-            println("[$gameId] ${player.name} (${player.index}) says done\n")
+            println("[$gameId] ${player.name} (${player.index}) says done")
             return true
         }
         return false
@@ -172,7 +178,7 @@ class PlayerTesting(val gameId: Int, val ruleSet: RuleSet, val lowestRank: Rank)
             gameState = FINISHED
         }
         if (oldGameState != gameState) {
-            println("[$gameId] Game state is $gameState\n")
+            println("[$gameId] Game state is $gameState")
             oldGameState = gameState
         }
         when (gameState) {
@@ -292,9 +298,10 @@ class PlayerTesting(val gameId: Int, val ruleSet: RuleSet, val lowestRank: Rank)
         // Check if someone is out of play
         if (deck.cards?.isEmpty() != false) {
             for (i in 0 until ruleSet.playerCount) {
+                val oldOutOfPlay = outOfPlay[i]
                 outOfPlay[i] = players[i].hand.size == 0
-                if (outOfPlay[i]) {
-                    places[i] = outOfPlay.count { it == true }
+                if (outOfPlay[i] && !oldOutOfPlay) {
+                    places[i] = outOfPlay.count { it }
                 }
             }
         }

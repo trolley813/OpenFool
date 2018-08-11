@@ -41,4 +41,7 @@ class RuleSet(var deuceBeatsAce: Boolean = false,
         preferences.putBoolean("Rules/TeamPlay", teamPlay)
         preferences.flush()
     }
+
+    val lowestRank: Rank
+        get() = Rank.fromInt((14 - (cardCount / 4)) % 13 + 1)!!
 }

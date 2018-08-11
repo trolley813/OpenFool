@@ -57,14 +57,14 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
         for (c in hand) {
             val r = c.rank
             val s = c.suit
-            res += (if (r === Rank.ACE) 6 else r.value - 8) * RANK_MULTIPLIER
+            res += ((relativeCardValue(r.value)) * RANK_MULTIPLIER).toInt()
             if (s === trumpSuit)
                 res += 13 * RANK_MULTIPLIER
             countsByRank[r.value - 1]++
             countsBySuit[s.value]++
         }
         for (i in 1..13) {
-            res += (Math.max(if (i == 1) 6 else i - 8, 1) * bonuses[countsByRank[i - 1]]).toInt()
+            res += (Math.max(relativeCardValue(i), 1.0) * bonuses[countsByRank[i - 1]]).toInt()
         }
         var avgSuit = 0.0
         for (c in hand) {
@@ -324,6 +324,12 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
         private val UNBALANCED_HAND_PENALTY = 200
         private val MANY_CARDS_PENALTY = 600
         private val OUT_OF_PLAY = 30000
+    }
+
+    fun relativeCardValue(rankValue: Int): Double {
+        val ranksInPlay = (14 - ruleSet.lowestRank.value) % 13 + 1
+        val maxValue = ranksInPlay / 2.0
+        return if (rankValue == 1) maxValue else (rankValue + maxValue - 14)
     }
 
 }

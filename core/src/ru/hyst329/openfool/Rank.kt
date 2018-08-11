@@ -18,5 +18,10 @@ enum class Rank constructor(val value: Int) {
     TEN(10),
     JACK(11),
     QUEEN(12),
-    KING(13)
+    KING(13);
+
+    companion object {
+        private val map = values().associateBy(Rank::value)
+        fun fromInt(type: Int) = map[type]
+    }
 }

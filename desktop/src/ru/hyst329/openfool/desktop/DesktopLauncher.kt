@@ -7,17 +7,27 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 import ru.hyst329.openfool.OpenFoolGame
 import ru.hyst329.openfool.RuleSet
 import ru.hyst329.openfool.PlayerTesting
-import ru.hyst329.openfool.Rank
+import java.io.PrintWriter
 
 object DesktopLauncher {
     @JvmStatic
     fun main(arg: Array<String>) {
-        if (arg.contains("--test-players")) {
+        if (arg.isNotEmpty() && arg[0]=="--test-players") {
+            val players = arg[1].toInt()
+            val games = arg[2].toInt()
             println("Testing players")
-            val ruleSet = RuleSet(false, false, false, 3, false)
-            for (i in 1..100) {
-                println("Running game $i")
-                PlayerTesting(i, ruleSet, Rank.TWO).runGame()
+            for (c in listOf(24, 32, 36, 52)) {
+                val ruleSet = RuleSet(false, false, false, players, false, c)
+                val rank = ruleSet.lowestRank
+                val log = PrintWriter("out_${players}_${ruleSet.cardCount}.csv")
+                for (i in 1..games) {
+                    println("Running game $i")
+                    val (initialHands, places) = PlayerTesting(i, ruleSet, rank).runGame()
+                    for (p in 0 until players) {
+                        log.println("${initialHands[p]},${players + 1 - places[p]}")
+                    }
+                }
+                log.close()
             }
             System.exit(0)
         }

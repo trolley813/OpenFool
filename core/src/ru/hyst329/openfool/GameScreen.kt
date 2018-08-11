@@ -95,15 +95,16 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     private var playersSaidDone: Int = 0
     private var isPlayerTaking: Boolean = false
     private val random = SecureRandom()
-    private val outOfPlay : BooleanArray
+    private val outOfPlay: BooleanArray
     private val discardPile = ArrayList<Card>()
     private var gameState = DRAWING
     private var oldGameState = FINISHED
     private val sortingMode: Player.SortingMode
     private var throwLimit = DEAL_LIMIT
-    private var playerDoneStatuses : BooleanArray
+    private var playerDoneStatuses: BooleanArray
     internal var ruleSet = RuleSet(game.preferences)
         private set
+    internal var places = IntArray(DEAL_LIMIT) { 0 }
 
     init {
         // Initialise the stage
@@ -323,22 +324,22 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 endTurn(if (isPlayerTaking) currentDefender.index else -1)
                 if (isGameOver) {
                     println("GAME OVER")
-                    return
-                }
-                currentAttackerIndex += if (playerTook) 2 else 1
-                currentAttackerIndex %= ruleSet.playerCount
-                if (!ruleSet.teamPlay)
+                } else {
+                    currentAttackerIndex += if (playerTook) 2 else 1
+                    currentAttackerIndex %= ruleSet.playerCount
+                    if (!ruleSet.teamPlay)
                     // Defender who took cannot attack anyway!
-                    while (outOfPlay[currentAttackerIndex] ||
-                            (playerTook && currentAttackerIndex == currentDefenderIndex)) {
-                        currentAttackerIndex++
-                        if (currentAttackerIndex == ruleSet.playerCount)
-                            currentAttackerIndex = 0
-                        if (isGameOver) break
-                    }
-                currentThrowerIndex = currentAttackerIndex
-                System.out.printf("%s (%d) -> %s (%d)\n", currentAttacker.name, currentAttacker.index,
-                        currentDefender.name, currentDefender.index)
+                        while (outOfPlay[currentAttackerIndex] ||
+                                (playerTook && currentAttackerIndex == currentDefenderIndex)) {
+                            currentAttackerIndex++
+                            if (currentAttackerIndex == ruleSet.playerCount)
+                                currentAttackerIndex = 0
+                            if (isGameOver) break
+                        }
+                    currentThrowerIndex = currentAttackerIndex
+                    System.out.printf("%s (%d) -> %s (%d)\n", currentAttacker.name, currentAttacker.index,
+                            currentDefender.name, currentDefender.index)
+                }
             }
         }
         // Draw background
@@ -380,12 +381,13 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         // Check if the game is over
         if (isGameOver) {
             var gameResult: ResultScreen.Result = if (outOfPlay[0]) WON else LOST
-            if(outOfPlay.all { it })
+            if (outOfPlay.all { it })
                 gameResult = DRAW
-            if(ruleSet.teamPlay) gameResult = if (outOfPlay[0]) TEAM_WON else TEAM_LOST
+            if (ruleSet.teamPlay) gameResult = if (outOfPlay[0]) TEAM_WON else TEAM_LOST
             if (ruleSet.teamPlay && outOfPlay[1] && outOfPlay[3] && gameResult == TEAM_WON)
                 gameResult = if (outOfPlay[2]) TEAM_DRAW else TEAM_PARTNER_LOST
-            game.screen = ResultScreen(game, gameResult)
+            val playersPlaces: Map<Int, String> = players.map { (if (places[it.index] == 0) players.size else places[it.index]) to it.name }.toMap()
+            game.screen = ResultScreen(game, gameResult, playersPlaces)
             dispose()
         }
     }
@@ -476,7 +478,11 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         // Check if someone is out of play
         if (deck.cards?.isEmpty() != false) {
             for (i in 0 until ruleSet.playerCount) {
+                val oldOutOfPlay = outOfPlay[i]
                 outOfPlay[i] = players[i].hand.size == 0
+                if (outOfPlay[i] && !oldOutOfPlay) {
+                    places[i] = outOfPlay.count { it }
+                }
             }
         }
         isPlayerTaking = false
