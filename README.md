@@ -5,9 +5,12 @@
 ![GitHub release](https://img.shields.io/github/release/hyst329/OpenFool.svg)
 [![Gitter](https://img.shields.io/gitter/room/OpenFoolCommunity/Lobby.svg)](https://gitter.im/OpenFoolCommunity/Lobby)
 
-
 OpenFool - free and open source (MIT licensed) Fool (Durak) card game implementation for desktop and Android.
 
+[<img src="https://gitlab.com/fdroid/artwork/raw/master/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/ru.hyst329.openfool/)
+     
 ## Features
 ### Implemented
 - 4-players partnership game
