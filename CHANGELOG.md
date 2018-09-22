@@ -1,4 +1,8 @@
 # Changelog
+## 0.2.7 (2018-09-22)
+- Cards which cannot be used now are greyed out (highly experimental)
+- Stripped decks (24, 32 or 36 cards) cas be used along with 52-card deck
+- Fixed issue #34 (team play checkbox was inaccessible when using Russian)
 ## 0.2.6 (2018-08-11)
 - Fixed issue #32 when individual play could not finish sometimes
 - Added information about places taken by the players onto the result screen.

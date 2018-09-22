@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.kotcrab.vis.ui.widget.VisCheckBox
 import com.kotcrab.vis.ui.widget.VisLabel
+import com.kotcrab.vis.ui.widget.VisSelectBox
 import com.kotcrab.vis.ui.widget.VisTextButton
 import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel
 import com.kotcrab.vis.ui.widget.spinner.Spinner
@@ -23,6 +24,8 @@ internal class NewGameScreen(private val game: OpenFoolGame) : Screen {
     private val limitCheckBox: VisCheckBox
     private val playerCountSpinner: Spinner
     private val teamCheckBox: VisCheckBox
+    private val cardCountLabel: VisLabel
+    private val cardCountSelectBox: VisSelectBox<Int>
     private val ruleSet: RuleSet = RuleSet(game.preferences)
 
     init {
@@ -37,19 +40,19 @@ internal class NewGameScreen(private val game: OpenFoolGame) : Screen {
         })
         stage.addActor(singlePlayerButton)
         gameplayLabel = VisLabel(game.localeBundle.get("GameplaySettings"))
-        gameplayLabel.setBounds(390f, 350f, 320f, 40f)
+        gameplayLabel.setBounds(340f, 350f, 400f, 40f)
         stage.addActor(gameplayLabel)
         deuceCheckBox = VisCheckBox(game.localeBundle.get("DeuceBeatsAce"))
-        deuceCheckBox.setBounds(390f, 300f, 320f, 40f)
+        deuceCheckBox.setBounds(340f, 300f, 400f, 40f)
         deuceCheckBox.isChecked = ruleSet.deuceBeatsAce
         stage.addActor(deuceCheckBox)
         limitCheckBox = VisCheckBox(game.localeBundle.get("LimitTo5Cards"))
-        limitCheckBox.setBounds(390f, 250f, 320f, 40f)
+        limitCheckBox.setBounds(340f, 250f, 400f, 40f)
         stage.addActor(limitCheckBox)
         limitCheckBox.isChecked = ruleSet.loweredFirstDiscardLimit
         val intSpinnerModel = IntSpinnerModel(ruleSet.playerCount, 2, 5, 1)
         playerCountSpinner = Spinner(game.localeBundle.get("PlayerCount"), intSpinnerModel)
-        playerCountSpinner.setBounds(390f, 200f, 320f, 40f)
+        playerCountSpinner.setBounds(340f, 200f, 400f, 40f)
         playerCountSpinner.addListener(object : ChangeListener() {
             override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
                 ruleSet.playerCount = intSpinnerModel.value
@@ -57,9 +60,19 @@ internal class NewGameScreen(private val game: OpenFoolGame) : Screen {
         })
         stage.addActor(playerCountSpinner)
         teamCheckBox = VisCheckBox(game.localeBundle.get("TeamPlay"))
-        teamCheckBox.setBounds(390f, 150f, 320f, 40f)
+        teamCheckBox.setBounds(340f, 150f, 400f, 40f)
         stage.addActor(teamCheckBox)
         teamCheckBox.isChecked = ruleSet.teamPlay
+        cardCountLabel = VisLabel(game.localeBundle.get("DeckCardsCount"))
+        cardCountLabel.setBounds(340f, 100f, 180f, 40f)
+        stage.addActor(cardCountLabel)
+        cardCountSelectBox = VisSelectBox()
+        cardCountSelectBox.setItems(24, 32, 36, 52)
+        println("card count is ${ruleSet.cardCount}")
+        cardCountSelectBox.selected = ruleSet.cardCount
+        println("selected is ${cardCountSelectBox.selected}")
+        cardCountSelectBox.setBounds(540f, 100f, 200f, 40f)
+        stage.addActor(cardCountSelectBox)
     }
 
 
@@ -97,6 +110,7 @@ internal class NewGameScreen(private val game: OpenFoolGame) : Screen {
         ruleSet.loweredFirstDiscardLimit = limitCheckBox.isChecked
         ruleSet.teamPlay = teamCheckBox.isChecked
         ruleSet.playerCount = (playerCountSpinner.model as IntSpinnerModel).value
+        ruleSet.cardCount = cardCountSelectBox.selected
         ruleSet.save(game.preferences)
         game.screen = GameScreen(game)
         dispose()

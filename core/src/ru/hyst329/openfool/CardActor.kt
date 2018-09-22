@@ -1,5 +1,6 @@
 package ru.hyst329.openfool
 
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.graphics.g2d.Sprite
@@ -47,5 +48,13 @@ internal class CardActor(game: OpenFoolGame, val card: Card, deckStyle: String) 
         back.setScale(this.scaleX, this.scaleY)
         // System.out.printf("actor %s %s %s %s\n", getX(), getY(), getWidth(), getHeight());
         (if (isFaceUp) face else back).draw(batch!!)
+    }
+
+    fun tint(color: Color) {
+        face.color = color
+    }
+
+    fun untint() {
+        face.color = Color.WHITE
     }
 }

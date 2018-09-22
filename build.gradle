@@ -21,7 +21,7 @@ allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
-    version = '0.2.6'
+    version = '0.2.7'
     ext {
         appName = "OpenFool"
         gdxVersion = '1.9.9-SNAPSHOT'

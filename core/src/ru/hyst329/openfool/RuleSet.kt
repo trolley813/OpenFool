@@ -6,7 +6,7 @@ package ru.hyst329.openfool
  */
 
 import com.badlogic.gdx.Preferences
-import kotlin.math.min
+import kotlin.math.max
 
 class RuleSet(var deuceBeatsAce: Boolean = false,
               var loweredFirstDiscardLimit: Boolean = false,
@@ -29,7 +29,7 @@ class RuleSet(var deuceBeatsAce: Boolean = false,
         // Team play only for even number of players (4 or 6 actually)
         teamPlay = teamPlay && (playerCount > 2 && playerCount % 2 == 0)
         // Card count must be a multiple of 4 and not less than 6 * cardCount
-        cardCount = min(6 * playerCount, (cardCount + 3) / 4 * 4)
+        cardCount = max(6 * playerCount, (cardCount + 3) / 4 * 4)
     }
 
     fun save(preferences: Preferences) {

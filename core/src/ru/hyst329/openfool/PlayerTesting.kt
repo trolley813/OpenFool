@@ -309,5 +309,4 @@ class PlayerTesting(val gameId: Int, val ruleSet: RuleSet, val lowestRank: Rank)
         gameState = READY
         println("[$gameId] Turn ended, remaining ${cardsRemaining()} cards, $isGameOver")
     }
-
 }

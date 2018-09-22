@@ -147,7 +147,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
 
         })
         stage.addActor(backgroundSpinner)
-        deckSelectBox = VisSelectBox<String>()
+        deckSelectBox = VisSelectBox()
         deckSelectBox.setBounds(530f, 300f, 230f, 40f)
         deckSelectBox.setItems(*DECKS.keys.toTypedArray())
         deckSelectBox.addListener(object : ChangeListener() {

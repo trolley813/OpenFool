@@ -89,7 +89,9 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     internal var defenseCards = arrayOfNulls<Card>(DEAL_LIMIT)
         private set
     private val cardActors = HashMap<Card, CardActor>()
-    private val deck = Deck()
+    internal var ruleSet = RuleSet(game.preferences)
+        private set
+    private val deck = Deck(ruleSet.lowestRank)
     private var currentAttackerIndex: Int = 0
     private var currentThrowerIndex: Int = 0
     private var playersSaidDone: Int = 0
@@ -102,8 +104,6 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     private val sortingMode: Player.SortingMode
     private var throwLimit = DEAL_LIMIT
     private var playerDoneStatuses: BooleanArray
-    internal var ruleSet = RuleSet(game.preferences)
-        private set
     internal var places = IntArray(DEAL_LIMIT) { 0 }
 
     init {
@@ -131,7 +131,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         stage.addActor(deckGroup)
         discardPileGroup = Group()
         stage.addActor(discardPileGroup)
-        playerGroups = Array(ruleSet.playerCount, { Group() })
+        playerGroups = Array(ruleSet.playerCount) { Group() }
         for (i in 0 until ruleSet.playerCount) {
             playerGroups[i] = Group()
             stage.addActor(playerGroups[i])
@@ -277,6 +277,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         }
         if (oldGameState != gameState) {
             System.out.printf("Game state is %s\n", gameState)
+            tintCards()
             oldGameState = gameState
         }
         when (gameState) {
@@ -487,6 +488,33 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         }
         isPlayerTaking = false
         gameState = READY
+    }
+
+    fun tintCards() {
+        // Tint the available cards for throwing/beating
+        for (a in cardActors.values) {
+            a.untint()
+        }
+        when {
+            currentThrower === players[0] && attackCards[0] != null -> {
+                for (c in players[0].hand) {
+                    val actor = cardActors[c]
+                    // If the card cannot be thrown, grey it out
+                    if (!players[0].cardCanBeThrown(c, attackCards, defenseCards))
+                        actor?.tint(Color.GRAY)
+                }
+            }
+            currentDefender === players[0] -> {
+                for (c in players[0].hand) {
+                    val actor = cardActors[c]
+                    // If the card cannot beat, grey it out
+                    if (!players[0].cardCanBeBeaten(c, attackCards, defenseCards, trumpSuit))
+                        actor?.tint(Color.GRAY)
+                }
+            }
+            else -> {
+            }
+        }
     }
 
     private // TODO: Generalise

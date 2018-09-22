@@ -240,10 +240,9 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
         hand.clear()
     }
 
-    fun throwCard(c: Card,
-                  attackCards: Array<Card?>,
-                  defenseCards: Array<Card?>,
-                  trumpSuit: Suit) {
+    fun cardCanBeThrown(c: Card,
+                        attackCards: Array<Card?>,
+                        defenseCards: Array<Card?>): Boolean {
         val ranksPresent = BooleanArray(13)
         for (card in attackCards) {
             if (card != null)
@@ -253,18 +252,32 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
             if (card != null)
                 ranksPresent[card.rank.value - 1] = true
         }
-        if (hand.contains(c) && (ranksPresent[c.rank.value - 1] || Arrays.equals(attackCards, arrayOfNulls<Card>(6)))) {
+        return hand.contains(c) && (ranksPresent[c.rank.value - 1] || Arrays.equals(attackCards, arrayOfNulls<Card>(6)))
+    }
+
+    fun throwCard(c: Card,
+                  attackCards: Array<Card?>,
+                  defenseCards: Array<Card?>,
+                  trumpSuit: Suit) {
+        if (cardCanBeThrown(c, attackCards, defenseCards)) {
             hand.remove(c)
             fire(CardThrownEvent(c))
         }
+    }
+
+    fun cardCanBeBeaten(c: Card,
+                        attackCards: Array<Card?>,
+                        defenseCards: Array<Card?>,
+                        trumpSuit: Suit) : Boolean {
+        val attack = attackCards[Arrays.asList<Card>(*defenseCards).indexOf(null)] ?: return false
+        return hand.contains(c) && c.beats(attack, trumpSuit, ruleSet.deuceBeatsAce)
     }
 
     fun beatWithCard(c: Card,
                      attackCards: Array<Card?>,
                      defenseCards: Array<Card?>,
                      trumpSuit: Suit) {
-        val attack = attackCards[Arrays.asList<Card>(*defenseCards).indexOf(null)] ?: return
-        if (hand.contains(c) && c.beats(attack, trumpSuit, ruleSet.deuceBeatsAce)) {
+        if (cardCanBeBeaten(c, attackCards, defenseCards, trumpSuit)) {
             hand.remove(c)
             fire(CardBeatenEvent(c))
         }
