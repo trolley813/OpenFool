@@ -20,6 +20,8 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
 
     internal inner class CardBeatenEvent(val card: Card) : Event()
 
+    internal inner class CardPassedEvent(val card: Card) : Event()
+
     internal inner class DoneEvent : Event()
 
     internal inner class TakeEvent : Event()
@@ -283,6 +285,29 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
         }
     }
 
+    fun cardCanBePassed(c: Card,
+                        attackCards: Array<Card?>,
+                        defenseCards: Array<Card?>,
+                        nextPlayerHandSize: Int) : Boolean {
+        val ranks = attackCards.map { it?.rank }.toSet()
+        return ruleSet.allowPass
+                && defenseCards.all { it == null }
+                && attackCards.any { it != null }
+                && ranks.size == 1
+                && c.rank == ranks.first()
+                && attackCards.count { it == null } < nextPlayerHandSize
+    }
+
+    fun passWithCard(c: Card,
+                     attackCards: Array<Card?>,
+                     defenseCards: Array<Card?>,
+                     nextPlayerHandSize: Int) {
+        if (cardCanBePassed(c, attackCards, defenseCards, nextPlayerHandSize)) {
+            hand.remove(c)
+            fire(CardPassedEvent(c))
+        }
+    }
+
     fun sayDone() {
         fire(DoneEvent())
     }
@@ -333,10 +358,10 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
 
     companion object {
 
-        private val RANK_MULTIPLIER = 100
-        private val UNBALANCED_HAND_PENALTY = 200
-        private val MANY_CARDS_PENALTY = 600
-        private val OUT_OF_PLAY = 30000
+        private const val RANK_MULTIPLIER = 100
+        private const val UNBALANCED_HAND_PENALTY = 200
+        private const val MANY_CARDS_PENALTY = 600
+        private const val OUT_OF_PLAY = 30000
     }
 
     fun relativeCardValue(rankValue: Int): Double {
