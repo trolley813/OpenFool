@@ -168,6 +168,8 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         val cards = deck.cards
         val listener = object : InputListener() {
             override fun touchDown(event: InputEvent?, x: Float, y: Float, pointer: Int, button: Int): Boolean {
+                // don't allow to act while throwing/beating
+                if (gameState == THROWING || gameState == BEATING) return true
                 if (event!!.target is CardActor) {
                     val cardActor = event.target as CardActor
                     System.out.printf("Trying to click %s\n", cardActor.card)
@@ -182,7 +184,10 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                         return true
                     }
                     if (currentDefender === user) {
-                        user.beatWithCard(card, attackCards, defenseCards, trumpSuit)
+                        val nextPlayerHandSize = nextDefender.hand.size
+                        if (user.cardCanBePassed(card, attackCards, defenseCards, nextPlayerHandSize))
+                            user.passWithCard(card, attackCards, defenseCards, nextPlayerHandSize)
+                        else user.beatWithCard(card, attackCards, defenseCards, trumpSuit)
                         return true
                     }
                     return false
@@ -510,6 +515,9 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     // If the card cannot beat, grey it out
                     if (!players[0].cardCanBeBeaten(c, attackCards, defenseCards, trumpSuit))
                         actor?.tint(Color.GRAY)
+                    // If the card can be passed, tint it green
+                    if (players[0].cardCanBePassed(c, attackCards, defenseCards, nextDefender.hand.size))
+                        actor?.tint(Color.GREEN)
                 }
             }
             else -> {
@@ -593,10 +601,10 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             val beatPos = TABLE_POSITION.clone()
             beatPos[0] += (90 * beatIndex).toFloat()
             beatCardActor?.addAction(Actions.sequence(
-                    GameStateChangedAction(GameState.BEATING),
+                    GameStateChangedAction(BEATING),
                     Actions.moveTo(beatPos[0] + TABLE_DELTA[0], beatPos[1] + TABLE_DELTA[1], 0.4f),
                     Actions.delay(0.2f),
-                    GameStateChangedAction(GameState.BEATEN)))
+                    GameStateChangedAction(if (areAllCardsBeaten) BEATEN else THROWN)))
             val beater = event.getTarget() as Player
             System.out.printf("%s (%s) beats with %s\n", beater.name, beater.index, beatCard)
             for (i in 0 until beater.hand.size) {
@@ -614,6 +622,50 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 cardActor?.zIndex = i
             }
             return true
+        }
+        if (event is Player.CardPassedEvent) {
+            //TODO("Passing not yet implemented")
+            // Handle when player passes
+            playersSaidDone = 0
+            playerDoneStatuses = BooleanArray(ruleSet.playerCount)
+            var passIndex = 0
+            while (attackCards[passIndex] != null) passIndex++
+            val passCard = event.card
+            attackCards[passIndex] = passCard
+            val passCardActor = cardActors[passCard]
+            passCardActor?.isFaceUp = true
+            tableGroup.addActor(passCardActor)
+            passCardActor?.zIndex = 2 * passIndex
+            passCardActor?.setScale(CARD_SCALE_TABLE)
+            val passPos = TABLE_POSITION.clone()
+            passPos[0] += (90 * passIndex).toFloat()
+            passCardActor?.addAction(Actions.sequence(
+                    GameStateChangedAction(GameState.THROWING),
+                    Actions.moveTo(passPos[0], passPos[1], 0.4f),
+                    Actions.delay(0.2f),
+                    GameStateChangedAction(GameState.THROWN)))
+            val thrower = event.getTarget() as Player
+            System.out.printf("%s (%s) passes with %s\n", thrower.name, thrower.index, passCard)
+            for (i in 0 until thrower.hand.size) {
+                val cardActor = cardActors[thrower.hand[i]]
+                val position = (if (thrower.index == 0) PLAYER_POSITION else AI_POSITION).clone()
+                val delta = (if (thrower.index == 0) PLAYER_DELTA else AI_DELTA).clone()
+                if (thrower.index > 0 && ruleSet.playerCount > 2)
+                    position[0] += ((thrower.index - 1) * 640 / (ruleSet.playerCount - 2)).toFloat()
+                val posX = position[0] + i * delta[0]
+                val posY = position[1] + i * delta[1]
+                //cardActor.addAction(Actions.moveTo(posX, posY, 0.1f));
+                cardActor?.setPosition(posX, posY)
+                cardActor?.rotation = 0.0f
+                cardActor?.setScale(if (thrower.index == 0) CARD_SCALE_PLAYER else CARD_SCALE_AI)
+                cardActor?.zIndex = i
+            }
+            do {
+                currentAttackerIndex++
+                if (currentAttackerIndex == players.size) currentAttackerIndex = 0
+            } while (outOfPlay[currentAttackerIndex])
+            currentThrowerIndex = currentAttackerIndex
+            println("Passed to: ${currentAttacker.name} -> ${currentDefender.name}")
         }
         if (event is Player.TakeEvent) {
             // Handle when player takes
@@ -694,6 +746,22 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             }
             return players[currentDefenderIndex]
         }
+
+    private val nextDefender: Player
+        get() {
+            var nextDefenderIndex = (currentDefender.index + 1) % ruleSet.playerCount
+            if (!ruleSet.teamPlay)
+                while (outOfPlay[nextDefenderIndex]) {
+                    nextDefenderIndex++
+                    if (nextDefenderIndex == ruleSet.playerCount)
+                        nextDefenderIndex = 0
+                }
+            else if (outOfPlay[nextDefenderIndex]) {
+                return players[(nextDefenderIndex + 2) % ruleSet.playerCount]
+            }
+            return players[nextDefenderIndex]
+        }
+
 
     private val currentThrower: Player
         get() {

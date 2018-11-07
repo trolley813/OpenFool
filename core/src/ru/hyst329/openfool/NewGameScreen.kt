@@ -22,6 +22,7 @@ internal class NewGameScreen(private val game: OpenFoolGame) : Screen {
     private val gameplayLabel: VisLabel
     private val deuceCheckBox: VisCheckBox
     private val limitCheckBox: VisCheckBox
+    private val passCheckBox: VisCheckBox
     private val playerCountSpinner: Spinner
     private val teamCheckBox: VisCheckBox
     private val cardCountLabel: VisLabel
@@ -40,16 +41,20 @@ internal class NewGameScreen(private val game: OpenFoolGame) : Screen {
         })
         stage.addActor(singlePlayerButton)
         gameplayLabel = VisLabel(game.localeBundle.get("GameplaySettings"))
-        gameplayLabel.setBounds(340f, 350f, 400f, 40f)
+        gameplayLabel.setBounds(340f, 400f, 400f, 40f)
         stage.addActor(gameplayLabel)
         deuceCheckBox = VisCheckBox(game.localeBundle.get("DeuceBeatsAce"))
-        deuceCheckBox.setBounds(340f, 300f, 400f, 40f)
+        deuceCheckBox.setBounds(340f, 350f, 400f, 40f)
         deuceCheckBox.isChecked = ruleSet.deuceBeatsAce
         stage.addActor(deuceCheckBox)
         limitCheckBox = VisCheckBox(game.localeBundle.get("LimitTo5Cards"))
-        limitCheckBox.setBounds(340f, 250f, 400f, 40f)
+        limitCheckBox.setBounds(340f, 300f, 400f, 40f)
         stage.addActor(limitCheckBox)
         limitCheckBox.isChecked = ruleSet.loweredFirstDiscardLimit
+        passCheckBox = VisCheckBox(game.localeBundle.get("PassingGame"))
+        passCheckBox.setBounds(340f, 250f, 400f, 40f)
+        stage.addActor(passCheckBox)
+        passCheckBox.isChecked = ruleSet.allowPass
         val intSpinnerModel = IntSpinnerModel(ruleSet.playerCount, 2, 5, 1)
         playerCountSpinner = Spinner(game.localeBundle.get("PlayerCount"), intSpinnerModel)
         playerCountSpinner.setBounds(340f, 200f, 400f, 40f)
@@ -109,6 +114,7 @@ internal class NewGameScreen(private val game: OpenFoolGame) : Screen {
         ruleSet.deuceBeatsAce = deuceCheckBox.isChecked
         ruleSet.loweredFirstDiscardLimit = limitCheckBox.isChecked
         ruleSet.teamPlay = teamCheckBox.isChecked
+        ruleSet.allowPass = passCheckBox.isChecked
         ruleSet.playerCount = (playerCountSpinner.model as IntSpinnerModel).value
         ruleSet.cardCount = cardCountSelectBox.selected
         ruleSet.save(game.preferences)

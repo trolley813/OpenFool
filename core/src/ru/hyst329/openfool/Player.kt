@@ -137,7 +137,7 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
                     trumpSuit: Suit,
                     cardsRemaining: Int,
                     playerHands: Array<Int>
-                    ) {
+    ) {
         val ranksPresent = BooleanArray(13)
         for (c in attackCards) {
             if (c != null)
@@ -201,6 +201,10 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
                 handIfTake.add(c)
             }
         }
+        val canPass = hand.any {
+            cardCanBePassed(it, attackCards, defenseCards, playerHands[(index + 1) % playerHands.size])
+        }
+        println("Can${if(canPass) "" else "not"} pass")
         var maxVal = Integer.MIN_VALUE
         var cardIdx = -1
         print("Attack cards: ")
@@ -228,6 +232,23 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
         val PENALTY = 800
         val TAKE_PENALTY_BASE = 2000
         val TAKE_PENALTY_DELTA = 40
+        val PASS_PENALTY = -400
+
+        if (canPass) {
+            // try to pass if can
+            val handIfPass = ArrayList(hand.filter { it.rank != attack?.rank })
+            val handIfPassNoTrump = ArrayList(hand.filter { it.rank != attack?.rank || it.suit == trumpSuit })
+            val betterHandValue = Math.max(handValue(handIfPass, trumpSuit, cardsRemaining, playerHands),
+                    handValue(handIfPassNoTrump, trumpSuit, cardsRemaining, playerHands))
+            if(betterHandValue > currentHandValue(trumpSuit, cardsRemaining, playerHands) + PASS_PENALTY) {
+                // pass with non-trump if possible
+                val passableCards = hand.filter { it.rank == attack?.rank }
+                val passedCard = passableCards.firstOrNull { it.suit != trumpSuit } ?: passableCards.first()
+                hand.remove(passedCard)
+                fire(CardPassedEvent(passedCard))
+                return
+            }
+        }
         if ((currentHandValue(trumpSuit, cardsRemaining, playerHands) - maxVal < PENALTY
                         || handValue(handIfTake, trumpSuit, cardsRemaining, playerHands) - maxVal < TAKE_PENALTY_BASE - TAKE_PENALTY_DELTA * cardsRemaining || cardsRemaining == 0) && cardIdx >= 0) {
             val c = hand[cardIdx]
@@ -270,7 +291,7 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
     fun cardCanBeBeaten(c: Card,
                         attackCards: Array<Card?>,
                         defenseCards: Array<Card?>,
-                        trumpSuit: Suit) : Boolean {
+                        trumpSuit: Suit): Boolean {
         val attack = attackCards[Arrays.asList<Card>(*defenseCards).indexOf(null)] ?: return false
         return hand.contains(c) && c.beats(attack, trumpSuit, ruleSet.deuceBeatsAce)
     }
@@ -288,8 +309,14 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
     fun cardCanBePassed(c: Card,
                         attackCards: Array<Card?>,
                         defenseCards: Array<Card?>,
-                        nextPlayerHandSize: Int) : Boolean {
-        val ranks = attackCards.map { it?.rank }.toSet()
+                        nextPlayerHandSize: Int): Boolean {
+        val ranks = attackCards.map { it?.rank }.filter { it != null }.toSet()
+//        if (!ruleSet.allowPass) println("Passing disabled by rules")
+//        else if (!defenseCards.all { it == null }) println("Passing impossible because started to defend")
+//        else if (!attackCards.any { it != null }) println("Passing impossible because no attack cards")
+//        else if (ranks.size != 1) println("Passing impossible because more than one attacking rank")
+//        else if (c.rank != ranks.first()) println("Passing impossible due to unsuitable rank")
+//        else if (attackCards.count { it == null } >= nextPlayerHandSize) println("Passing impossible due to card excess")
         return ruleSet.allowPass
                 && defenseCards.all { it == null }
                 && attackCards.any { it != null }

@@ -1,4 +1,7 @@
 # Changelog
+## 0.2.8 (2018-11-07)
+- Added passing
+- Now click on a card while passing/throwing causes no action.
 ## 0.2.7 (2018-09-22)
 - Cards which cannot be used now are greyed out (highly experimental)
 - Stripped decks (24, 32 or 36 cards) cas be used along with 52-card deck
