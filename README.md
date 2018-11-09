@@ -13,16 +13,23 @@ OpenFool - free and open source (MIT licensed) Fool (Durak) card game implementa
      
 ## Features
 ### Implemented
-- 4-players partnership game
+- 4-players partnership game (2 vs 2), individual game for 2-5 players 
 - 52-card decks: Standard Russian (designed by A. Charlemagne in 19th century, public domain - from Wikimedia),
-    international (by Chris Aguilar - LGPL v3), French deck (by David Bellot - LGPL v3)
-- Standard rules for throwing in
+    international (by Chris Aguilar - LGPL v3), French deck (by David Bellot - LGPL v3), stripped deck variants (24, 32 and 36 cards)
+- Standard rules for throwing in and passing (the latter is optional)
+- Some conventions may be customised
 
 ### Planned
-- Individual game, arbitrary number of players (2-6)
+- Individual and partnership play for 6 players (3 vs 3)
 - Customisable player names (both AI and human)
 - Statistics
-- Ability to change conventions
+- Online play (via custom server)
+- More deck designs
+- More customisable rules (e.g. Japanese fool or spade-on-spade)
 
 ## How to build
-It's a Gradle project.
+It's a Gradle project. Run
+```bash
+./gradlew :desktop:run
+```
+to run the desktop version
