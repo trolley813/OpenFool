@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.Touchable
 import com.badlogic.gdx.scenes.scene2d.actions.Actions
 import com.badlogic.gdx.utils.viewport.FitViewport
+import mu.KotlinLogging
 
 import java.security.SecureRandom
 import java.util.ArrayList
@@ -35,11 +36,15 @@ import ru.hyst329.openfool.ResultScreen.Result.TEAM_WON
 import ru.hyst329.openfool.ResultScreen.Result.DRAW
 import ru.hyst329.openfool.ResultScreen.Result.LOST
 import ru.hyst329.openfool.ResultScreen.Result.WON
+import kotlin.math.min
+
 
 /**
  * Created by main on 13.03.2017.
  * Licensed under MIT License.
  */
+
+private val logger = KotlinLogging.logger {}
 
 class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
     private val background: Texture
@@ -172,11 +177,11 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 if (gameState == THROWING || gameState == BEATING) return true
                 if (event!!.target is CardActor) {
                     val cardActor = event.target as CardActor
-                    System.out.printf("Trying to click %s\n", cardActor.card)
+                    logger.debug("Trying to click ${cardActor.card}\n")
                     val card = cardActor.card
                     val user = players[0]
                     if (!user.hand.contains(card)) {
-                        System.out.printf("%s is not a user's card\n", cardActor.card)
+                        System.out.printf("$card is not a user's card\n")
                         return true
                     }
                     if (currentThrower === user) {
@@ -219,7 +224,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         trump?.isFaceUp = true
         trump?.moveBy(90 * CARD_SCALE_TABLE, 0f)
         trumpSuit = trumpCard!!.suit
-        println("Trump suit is $trumpSuit")
+        logger.debug("Trump suit is $trumpSuit")
         // Draw cards
         for (i in 0 until ruleSet.playerCount) {
             drawCardsToPlayer(i, DEAL_LIMIT)
@@ -255,7 +260,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 }
             }))
         }
-        println(players[firstAttacker].name +
+        logger.debug(players[firstAttacker].name +
                 " (${players[firstAttacker].index})" +
                 " has the lowest trump $lowestTrump")
         currentAttackerIndex = firstAttacker
@@ -277,20 +282,19 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 }
         if (playersSaidDone == opponents && gameState != DRAWING
                 && gameState != BEATING && gameState != THROWING) {
-            System.out.println("Done - all players said done!")
+            logger.debug("Done - all players said done!")
             gameState = FINISHED
         }
         if (oldGameState != gameState) {
-            System.out.printf("Game state is %s\n", gameState)
+            logger.debug("Game state is $gameState")
             tintCards()
             oldGameState = gameState
         }
         when (gameState) {
             READY -> if (currentAttacker.index != 0) {
-                throwLimit = Math.min((if (ruleSet.loweredFirstDiscardLimit
+                throwLimit = min((if (ruleSet.loweredFirstDiscardLimit
                         && discardPile.isEmpty())
-                    DEAL_LIMIT else DEAL_LIMIT - 1)
-                        , currentDefender.hand.size)
+                    DEAL_LIMIT else DEAL_LIMIT - 1), currentDefender.hand.size)
                 currentAttacker.startTurn(trumpSuit, cardsRemaining(), players.map { it.hand.size }.toTypedArray())
             }
             DRAWING -> {
@@ -313,7 +317,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             BEATEN -> {
                 val forcedFinish =
                         if (currentDefender.hand.size == 0 || attackCards[throwLimit - 1] != null) {
-                            println("Forced to finish the turn")
+                            logger.debug("Forced to finish the turn")
                             gameState = FINISHED
                             true
                         } else false
@@ -329,7 +333,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 val currentDefenderIndex = currentDefender.index
                 endTurn(if (isPlayerTaking) currentDefender.index else -1)
                 if (isGameOver) {
-                    println("GAME OVER")
+                    logger.debug("GAME OVER")
                 } else {
                     currentAttackerIndex += if (playerTook) 2 else 1
                     currentAttackerIndex %= ruleSet.playerCount
@@ -343,8 +347,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                             if (isGameOver) break
                         }
                     currentThrowerIndex = currentAttackerIndex
-                    System.out.printf("%s (%d) -> %s (%d)\n", currentAttacker.name, currentAttacker.index,
-                            currentDefender.name, currentDefender.index)
+                    logger.debug("${currentAttacker.name} (${currentAttacker.index}) -> ${currentDefender.name} (${currentDefender.index})")
                 }
             }
         }
@@ -568,7 +571,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     Actions.delay(0.2f),
                     GameStateChangedAction(GameState.THROWN)))
             val thrower = event.getTarget() as Player
-            System.out.printf("%s (%s) throws %s\n", thrower.name, thrower.index, throwCard)
+            logger.debug("${thrower.name} (${thrower.index}) throws $throwCard")
             for (i in 0 until thrower.hand.size) {
                 val cardActor = cardActors[thrower.hand[i]]
                 val position = (if (thrower.index == 0) PLAYER_POSITION else AI_POSITION).clone()
@@ -606,7 +609,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     Actions.delay(0.2f),
                     GameStateChangedAction(if (areAllCardsBeaten) BEATEN else THROWN)))
             val beater = event.getTarget() as Player
-            System.out.printf("%s (%s) beats with %s\n", beater.name, beater.index, beatCard)
+            logger.debug("${beater.name} (${beater.index}) beats with $beatCard\n")
             for (i in 0 until beater.hand.size) {
                 val cardActor = cardActors[beater.hand[i]]
                 val position = (if (beater.index == 0) PLAYER_POSITION else AI_POSITION).clone()
@@ -645,7 +648,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                     Actions.delay(0.2f),
                     GameStateChangedAction(GameState.THROWN)))
             val thrower = event.getTarget() as Player
-            System.out.printf("%s (%s) passes with %s\n", thrower.name, thrower.index, passCard)
+            logger.debug("${thrower.name} (${thrower.index}) passes with $passCard\n")
             for (i in 0 until thrower.hand.size) {
                 val cardActor = cardActors[thrower.hand[i]]
                 val position = (if (thrower.index == 0) PLAYER_POSITION else AI_POSITION).clone()
@@ -665,7 +668,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
                 if (currentAttackerIndex == players.size) currentAttackerIndex = 0
             } while (outOfPlay[currentAttackerIndex])
             currentThrowerIndex = currentAttackerIndex
-            println("Passed to: ${currentAttacker.name} -> ${currentDefender.name}")
+            logger.debug("Passed to: ${currentAttacker.name} -> ${currentDefender.name}")
         }
         if (event is Player.TakeEvent) {
             // Handle when player takes
@@ -673,8 +676,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             playerDoneStatuses = BooleanArray(ruleSet.playerCount)
             isPlayerTaking = true
             val player = event.getTarget() as Player
-            System.out.printf("%s (%s) decides to take\n",
-                    player.name, player.index)
+            logger.debug("${player.name} (${player.index}) decides to take")
             return true
 
         }
@@ -685,8 +687,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
             currentThrowerIndex %= ruleSet.playerCount
             val player = event.getTarget() as Player
             playerDoneStatuses[player.index] = true
-            System.out.printf("%s (%s) says done\n",
-                    player.name, player.index)
+            logger.debug("${player.name} (${player.index}) says done\n")
             return true
         }
         return false

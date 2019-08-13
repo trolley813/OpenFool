@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.9 (unreleased, 2019-08-20?)
+- New deck (WIP)
+- UI rework (WIP)
+- Updated library versions
+- Logging
+
 ## 0.2.8 (2018-11-07)
   - Added passing
   - Now click on a card while passing/throwing causes no action.

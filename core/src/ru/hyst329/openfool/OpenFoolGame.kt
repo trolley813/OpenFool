@@ -62,7 +62,7 @@ class OpenFoolGame : Game() {
             preferences.putString("Language", localeString)
             preferences.flush()
         }
-        assetManager.finishLoadingAsset("i18n/OpenFool")
+        assetManager.finishLoadingAsset<I18NBundle>("i18n/OpenFool")
         localeBundle = assetManager.get("i18n/OpenFool", I18NBundle::class.java)
         val param: TextureLoader.TextureParameter = TextureLoader.TextureParameter()
         param.minFilter = Texture.TextureFilter.MipMap

@@ -277,7 +277,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         game.assetManager.unload("i18n/OpenFool")
         game.assetManager.load("i18n/OpenFool", I18NBundle::class.java,
                 I18NBundleLoader.I18NBundleParameter(Locale(language)))
-        game.assetManager.finishLoadingAsset("i18n/OpenFool")
+        game.assetManager.finishLoadingAsset<I18NBundle>("i18n/OpenFool")
         game.localeBundle = game.assetManager.get("i18n/OpenFool", I18NBundle::class.java)
     }
 
