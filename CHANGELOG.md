@@ -3,6 +3,7 @@
 ## 0.2.9 (unreleased, 2019-08-20?)
 - New deck (WIP)
 - UI rework (WIP)
+- New localisations: German, Polish (WIP), French (WIP)
 - Updated library versions
 - Logging
 

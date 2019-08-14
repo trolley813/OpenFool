@@ -65,6 +65,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         LANGUAGES.put(game.localeBundle.get("LanguageRussian"), "ru")
         LANGUAGES.put(game.localeBundle.get("LanguageEnglish"), "en")
         LANGUAGES.put(game.localeBundle.get("LanguageCzech"), "cs")
+        LANGUAGES.put(game.localeBundle.get("LanguageGerman"), "de")
         // Initialise SORTING_MODES
         val SORTING_MODES = ArrayList<String>()
         SORTING_MODES.add(game.localeBundle.get("SortingUnsorted"))
@@ -78,7 +79,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
 
         backgroundColor = Color(game.preferences.getInteger(BACKGROUND_COLOR, 0x33cc4dff))
         deck = game.preferences.getString(DECK, "rus")
-        language = game.preferences.getString(LANGUAGE, "ru")
+        language = game.preferences.getString(LANGUAGE, "en")
         sortingMode = Player.SortingMode.fromInt(game.preferences.getInteger(SORTING_MODE, 0))
         background = game.preferences.getInteger(BACKGROUND, 1)
         picker = ColorPicker("Choose background color", object : ColorPickerAdapter() {
