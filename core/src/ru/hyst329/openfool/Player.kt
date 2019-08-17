@@ -13,6 +13,8 @@ import java.util.Comparator
  * Licensed under MIT License.
  */
 
+import mu.KotlinLogging
+
 private val logger = KotlinLogging.logger {}
 
 class Player internal constructor(private val ruleSet: RuleSet, private var name: String?, val index: Int) : Actor() {
