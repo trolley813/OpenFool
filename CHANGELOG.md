@@ -1,9 +1,13 @@
 # Changelog
 
-## 0.2.9 (unreleased, 2019-08-20?)
-- New deck (WIP)
+## 0.3.0 (unreleased, 2019-09-20?)
 - UI rework (WIP)
-- New localisations: German, Polish (WIP), French (WIP)
+- New localisations: Polish (WIP), French (WIP)
+- Online mode preview (not yet started)
+
+## 0.2.9 (2019-08-17)
+- New deck
+- New localisations: German
 - Updated library versions
 - Logging
 

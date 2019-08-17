@@ -67,7 +67,7 @@ class OpenFoolGame : Game() {
         val param: TextureLoader.TextureParameter = TextureLoader.TextureParameter()
         param.minFilter = Texture.TextureFilter.MipMap
         param.genMipMaps = true
-        val decks = arrayOf("fra", "int", "rus")
+        val decks = arrayOf("fra", "int", "rus", "psu")
         val suits = "cdhs"
         val fullSuits = arrayOf("clubs", "diamonds", "hearts", "spades")
         for (d in decks) {

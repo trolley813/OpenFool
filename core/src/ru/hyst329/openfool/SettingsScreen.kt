@@ -60,6 +60,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         DECKS.put(game.localeBundle.get("CardsRussian"), "rus")
         DECKS.put(game.localeBundle.get("CardsInternational"), "int")
         DECKS.put(game.localeBundle.get("CardsFrench"), "fra")
+        DECKS.put(game.localeBundle.get("CardsPeoples"), "psu")
         // Initialise LANGUAGES
         LANGUAGES = HashMap<String, String>()
         LANGUAGES.put(game.localeBundle.get("LanguageRussian"), "ru")

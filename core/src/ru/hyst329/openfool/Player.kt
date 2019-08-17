@@ -13,6 +13,8 @@ import java.util.Comparator
  * Licensed under MIT License.
  */
 
+private val logger = KotlinLogging.logger {}
+
 class Player internal constructor(private val ruleSet: RuleSet, private var name: String?, val index: Int) : Actor() {
     val hand = ArrayList<Card>()
 
@@ -204,18 +206,17 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
         val canPass = hand.any {
             cardCanBePassed(it, attackCards, defenseCards, playerHands[(index + 1) % playerHands.size])
         }
-        println("Can${if(canPass) "" else "not"} pass")
+        logger.debug("Can${if(canPass) "" else "not"} pass")
         var maxVal = Integer.MIN_VALUE
         var cardIdx = -1
         print("Attack cards: ")
         for (i in 0..attackCards.size - 1) {
             val card = attackCards[i]
-            System.out.printf("%s ", card ?: "null")
+            logger.debug("${card ?: "null"} ")
         }
-        println()
         val index = Arrays.asList<Card>(*defenseCards).indexOf(null)
         val attack = attackCards[index]
-        System.out.printf("Index = %s attack is %s\n", index, attack ?: "null")
+        logger.debug("Index = ${index} attack is ${attack ?: "null"}")
         for (i in hand.indices) {
             val c = hand[i]
             if (c.beats(attack!!, trumpSuit, ruleSet.deuceBeatsAce)) {
@@ -311,12 +312,12 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
                         defenseCards: Array<Card?>,
                         nextPlayerHandSize: Int): Boolean {
         val ranks = attackCards.map { it?.rank }.filter { it != null }.toSet()
-//        if (!ruleSet.allowPass) println("Passing disabled by rules")
-//        else if (!defenseCards.all { it == null }) println("Passing impossible because started to defend")
-//        else if (!attackCards.any { it != null }) println("Passing impossible because no attack cards")
-//        else if (ranks.size != 1) println("Passing impossible because more than one attacking rank")
-//        else if (c.rank != ranks.first()) println("Passing impossible due to unsuitable rank")
-//        else if (attackCards.count { it == null } >= nextPlayerHandSize) println("Passing impossible due to card excess")
+//        if (!ruleSet.allowPass) logger.debug("Passing disabled by rules")
+//        else if (!defenseCards.all { it == null }) logger.debug("Passing impossible because started to defend")
+//        else if (!attackCards.any { it != null }) logger.debug("Passing impossible because no attack cards")
+//        else if (ranks.size != 1) logger.debug("Passing impossible because more than one attacking rank")
+//        else if (c.rank != ranks.first()) logger.debug("Passing impossible due to unsuitable rank")
+//        else if (attackCards.count { it == null } >= nextPlayerHandSize) logger.debug("Passing impossible due to card excess")
         return ruleSet.allowPass
                 && defenseCards.all { it == null }
                 && attackCards.any { it != null }
