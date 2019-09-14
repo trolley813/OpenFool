@@ -1,7 +1,14 @@
 apply plugin: "kotlin"
+apply plugin: "com.palantir.graal"
 
 sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = [ "src/" ]
+
+
+graal {
+    graalVersion "19.2.0"
+}
+
 
 project.ext.mainClassName = "ru.hyst329.openfool.desktop.DesktopLauncher"
 project.ext.assetsDir = new File("../android/assets");
