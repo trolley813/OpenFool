@@ -1,9 +1,14 @@
 # Changelog
 
-## 0.3.0 (unreleased, 2019-09-20?)
-- UI rework (WIP)
+## 0.3.1 (unreleased, planned 2019-12-25)
 - New localisations: Polish (WIP), French (WIP)
 - Online mode preview (not yet started)
+
+## 0.3.0 (2019-12-15)
+- Bug fixes
+- New portrait orientation layout (useful for phones)
+- Some UI reworks (changed main font)
+- Localisation fixes
 
 ## 0.2.9 (2019-08-17)
 - New deck

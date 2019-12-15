@@ -35,10 +35,10 @@ object DesktopLauncher {
         config.title = "OpenFool"
         config.width = 800
         config.height = 480
-        config.resizable = false
+        //config.resizable = false
         config.addIcon("logos/logo_128.png", Files.FileType.Internal)
         config.addIcon("logos/logo_32.png", Files.FileType.Internal)
         config.addIcon("logos/logo_16.png", Files.FileType.Internal)
-        LwjglApplication(OpenFoolGame(), config)
+        LwjglApplication(OpenFoolGame(DesktopOrientationHelper()), config)
     }
 }

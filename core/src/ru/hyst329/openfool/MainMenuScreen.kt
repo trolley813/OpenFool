@@ -33,7 +33,7 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
     init {
         // Initialise the stage
         Gdx.input.inputProcessor = stage
-
+        game.orientationHelper.requestOrientation(OrientationHelper.Orientation.LANDSCAPE)
 
         newGameButton = VisTextButton(game.localeBundle.get("NewGame"))
         newGameButton.setBounds(40f, 300f, 250f, 80f)
@@ -83,19 +83,21 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         stage.act(delta)
         stage.draw()
+        game.batch.transformMatrix = stage.viewport.camera.view
+        game.batch.projectionMatrix = stage.viewport.camera.projection
         game.batch.begin()
         if (game.assetManager.update()) {
             canStart = true
-            logo.setCenter(Gdx.graphics.width * 560f / 840f, Gdx.graphics.height * 250f / 480f)
+            logo.setCenter(stage.viewport.worldWidth * 560f / 840f, stage.viewport.worldHeight * 250f / 480f)
             logo.draw(game.batch)
             when (getCurrentHoliday()) {
                 Holiday.OCTOBER_REVOLUTION -> {
-                    hammerAndSickle.setCenter(Gdx.graphics.width * 165f / 840f, Gdx.graphics.height * 430f / 480f)
+                    hammerAndSickle.setCenter(stage.viewport.worldWidth * 165f / 840f, stage.viewport.worldHeight * 430f / 480f)
                     hammerAndSickle.setScale(0.35f)
                     hammerAndSickle.draw(game.batch)
                 }
                 Holiday.NEW_YEAR -> {
-                    santaHat.setCenter(Gdx.graphics.width * 165f / 840f, Gdx.graphics.height * 430f / 480f)
+                    santaHat.setCenter(stage.viewport.worldWidth * 165f / 840f, stage.viewport.worldHeight * 430f / 480f)
                     santaHat.setScale(0.3f)
                     santaHat.draw(game.batch)
                 }
@@ -107,7 +109,7 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
         } else {
             val progress = game.assetManager.progress
             game.font.draw(game.batch, game.localeBundle.format("LoadingAssets",
-                    Math.round(progress * 100)), Gdx.graphics.width / 2.8f, Gdx.graphics.height / 4.4f)
+                    Math.round(progress * 100)), stage.viewport.worldWidth / 2.8f, stage.viewport.worldHeight / 4.4f)
             progressBar.value = progress
         }
         game.batch.end()
@@ -123,6 +125,7 @@ internal class MainMenuScreen(private val game: OpenFoolGame) : Screen {
 
     override fun resize(width: Int, height: Int) {
         stage.viewport.update(width, height, true)
+        stage.viewport.camera.update()
     }
 
     override fun pause() {

@@ -6,6 +6,8 @@ import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.GlyphLayout
+import com.badlogic.gdx.scenes.scene2d.Stage
+import com.badlogic.gdx.utils.viewport.FitViewport
 
 /**
  * Created by main on 18.03.2017.
@@ -15,6 +17,8 @@ internal class ResultScreen(private val game: OpenFoolGame,
                             private val result: ResultScreen.Result,
                             private val playersPlaces: Map<Int, String>) : Screen {
 
+    private val stage: Stage
+
     internal enum class Result {
         TEAM_WON,
         TEAM_LOST,
@@ -23,6 +27,11 @@ internal class ResultScreen(private val game: OpenFoolGame,
         WON,
         LOST,
         DRAW
+    }
+
+    init {
+        game.orientationHelper.requestOrientation(OrientationHelper.Orientation.LANDSCAPE)
+        stage = Stage(FitViewport(800f, 480f))
     }
 
     override fun show() {
@@ -71,7 +80,7 @@ internal class ResultScreen(private val game: OpenFoolGame,
             }
         }
         var places = ""
-        for ((p, n) in playersPlaces) {
+        for ((p, n) in playersPlaces.entries.toList().sortedBy { it.key }) {
             places += game.localeBundle.format("PlayerPlace", n, p) + "\n"
         }
         val headerLayout = GlyphLayout(game.font, header)
@@ -79,16 +88,18 @@ internal class ResultScreen(private val game: OpenFoolGame,
         val placesLayout = GlyphLayout(game.font, places)
         Gdx.gl.glClearColor(color.r, color.g, color.b, color.a)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        game.batch.transformMatrix = stage.viewport.camera.view
+        game.batch.projectionMatrix = stage.viewport.camera.projection
         game.batch.begin()
         game.font.draw(game.batch, headerLayout,
-                Gdx.graphics.width * 0.5f - headerLayout.width / 2,
-                Gdx.graphics.height * 0.833f - headerLayout.height / 2)
+                stage.viewport.worldWidth * 0.5f - headerLayout.width / 2,
+                stage.viewport.worldHeight * 0.833f - headerLayout.height / 2)
         game.font.draw(game.batch, textLayout,
-                Gdx.graphics.width * 0.5f - textLayout.width / 2,
-                Gdx.graphics.width * 0.58f - textLayout.height / 2)
+                stage.viewport.worldWidth * 0.5f - textLayout.width / 2,
+                stage.viewport.worldHeight * 0.58f - textLayout.height / 2)
         game.font.draw(game.batch, placesLayout,
-                Gdx.graphics.width * 0.5f - textLayout.width / 2,
-                Gdx.graphics.width * 0.4f - textLayout.height / 2)
+                stage.viewport.worldWidth * 0.5f - textLayout.width / 2,
+                stage.viewport.worldHeight * 0.4f - textLayout.height / 2)
         game.batch.end()
         if (Gdx.input.isKeyJustPressed(Input.Keys.BACK) || Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             game.screen = MainMenuScreen(game)

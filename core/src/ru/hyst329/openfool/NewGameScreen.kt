@@ -31,6 +31,7 @@ internal class NewGameScreen(private val game: OpenFoolGame) : Screen {
 
     init {
         Gdx.input.inputProcessor = stage
+        game.orientationHelper.requestOrientation(OrientationHelper.Orientation.LANDSCAPE)
         singlePlayerButton = VisTextButton(game.localeBundle.get("SinglePlayer"))
         singlePlayerButton.setBounds(40f, 300f, 250f, 80f)
         singlePlayerButton.addListener(object : ClickListener() {
@@ -104,6 +105,7 @@ internal class NewGameScreen(private val game: OpenFoolGame) : Screen {
 
     override fun resize(width: Int, height: Int) {
         stage.viewport.update(width, height, true)
+        stage.viewport.camera.update()
     }
 
     override fun dispose() {

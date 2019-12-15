@@ -1,5 +1,6 @@
 package ru.hyst329.openfool
 
+import OrientationHelper
 import com.badlogic.gdx.Game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Preferences
@@ -26,7 +27,7 @@ import java.nio.file.Files.size
  * Licensed under MIT License.
  */
 
-class OpenFoolGame : Game() {
+class OpenFoolGame(val orientationHelper: OrientationHelper) : Game() {
     internal var batch: SpriteBatch by Delegates.notNull()
     internal var assetManager: AssetManager by Delegates.notNull()
     internal var font: BitmapFont by Delegates.notNull()

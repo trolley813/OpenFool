@@ -15,10 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.utils.I18NBundle
 import com.badlogic.gdx.utils.viewport.FitViewport
-import com.kotcrab.vis.ui.widget.VisLabel
-import com.kotcrab.vis.ui.widget.VisSelectBox
-import com.kotcrab.vis.ui.widget.VisTextButton
-import com.kotcrab.vis.ui.widget.VisDialog
+import com.kotcrab.vis.ui.widget.*
 import com.kotcrab.vis.ui.widget.color.ColorPicker
 import com.kotcrab.vis.ui.widget.color.ColorPickerAdapter
 import com.kotcrab.vis.ui.widget.spinner.IntSpinnerModel
@@ -42,11 +39,13 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
     private var language: String? = null
     private var sortingMode: Player.SortingMode? = null
     private var background: Int
+    private var orientation: Boolean
     private val picker: ColorPicker
     private val deckSelectBox: VisSelectBox<String>
     private val languageSelectBox: VisSelectBox<String>
     private val sortingSelectBox: VisSelectBox<String>
     private val backgroundSpinner: Spinner
+    private val portraitOrientationCheckBox: VisCheckBox
     private var back: Sprite by Delegates.notNull()
     private var ace: Sprite by Delegates.notNull()
     private var queen: Sprite by Delegates.notNull()
@@ -55,6 +54,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
 
 
     init {
+        game.orientationHelper.requestOrientation(OrientationHelper.Orientation.LANDSCAPE)
         // Initialise DECKS
         DECKS = HashMap<String, String>()
         DECKS.put(game.localeBundle.get("CardsRussian"), "rus")
@@ -83,6 +83,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         language = game.preferences.getString(LANGUAGE, "en")
         sortingMode = Player.SortingMode.fromInt(game.preferences.getInteger(SORTING_MODE, 0))
         background = game.preferences.getInteger(BACKGROUND, 1)
+        orientation = game.preferences.getBoolean(ORIENTATION, false)
         picker = ColorPicker("Choose background color", object : ColorPickerAdapter() {
             override fun finished(newColor: Color?) {
                 backgroundColor = newColor
@@ -110,21 +111,21 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
             }
         })
         stage.addActor(saveButton)
-        val gameplaySettingsButton = VisTextButton(game.localeBundle.get("GameplaySettings"))
-        gameplaySettingsButton.setBounds(40f, 150f, 250f, 80f)
-        gameplaySettingsButton.addListener(object : ClickListener() {
-            override fun clicked(event: InputEvent?, x: Float, y: Float) {
-                // super.clicked(event, x, y);
-                // TODO: Add real gameplay settings
-                val win = VisDialog(game.localeBundle.get("GameplaySettings"))
-                win.button(game.localeBundle.get("OK"), true)
-                win.button(game.localeBundle.get("Cancel"), false)
-                win.key(Input.Keys.ENTER, true).key(Input.Keys.ESCAPE, false)
-                // Adding checkboxes for rules
-                win.show(stage)
-            }
-        })
-        stage.addActor(gameplaySettingsButton)
+//        val gameplaySettingsButton = VisTextButton(game.localeBundle.get("GameplaySettings"))
+//        gameplaySettingsButton.setBounds(40f, 150f, 250f, 80f)
+//        gameplaySettingsButton.addListener(object : ClickListener() {
+//            override fun clicked(event: InputEvent?, x: Float, y: Float) {
+//                // super.clicked(event, x, y);
+//                // TODO: Add real gameplay settings
+//                val win = VisDialog(game.localeBundle.get("GameplaySettings"))
+//                win.button(game.localeBundle.get("OK"), true)
+//                win.button(game.localeBundle.get("Cancel"), false)
+//                win.key(Input.Keys.ENTER, true).key(Input.Keys.ESCAPE, false)
+//                // Adding checkboxes for rules
+//                win.show(stage)
+//            }
+//        })
+//        stage.addActor(gameplaySettingsButton)
         val backgroundSelectLabel = VisLabel(game.localeBundle.get("Background"))
         backgroundSelectLabel.setBounds(340f, 250f, 100f, 40f)
         stage.addActor(backgroundSelectLabel)
@@ -137,6 +138,16 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         val sortingSelectLabel = VisLabel(game.localeBundle.get("Sorting"))
         sortingSelectLabel.setBounds(340f, 400f, 100f, 40f)
         stage.addActor(sortingSelectLabel)
+        portraitOrientationCheckBox = VisCheckBox(game.localeBundle.get("PortraitOrientation"))
+        portraitOrientationCheckBox.setBounds(340f, 200f, 400f, 40f)
+        portraitOrientationCheckBox.isChecked = orientation
+        portraitOrientationCheckBox.addListener(object : ChangeListener() {
+            override fun changed(event: ChangeListener.ChangeEvent, actor: Actor) {
+                orientation = portraitOrientationCheckBox.isChecked
+                // updateSprites()
+            }
+        })
+        stage.addActor(portraitOrientationCheckBox)
         val intSpinnerModel = IntSpinnerModel(background, 1, 2, 1)
         backgroundSpinner = Spinner("", intSpinnerModel)
         backgroundSpinner.setBounds(530f, 250f, 230f, 40f)
@@ -212,6 +223,8 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
         stage.act(delta)
         stage.draw()
+        game.batch.transformMatrix = stage.viewport.camera.view
+        game.batch.projectionMatrix = stage.viewport.camera.projection
         game.batch.begin()
         if (!stage.actors.contains(picker, true)) {
             back.draw(game.batch)
@@ -253,6 +266,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         game.preferences.putString(LANGUAGE, language)
         game.preferences.putInteger(SORTING_MODE, sortingMode!!.value)
         game.preferences.putInteger(BACKGROUND, background)
+        game.preferences.putBoolean(ORIENTATION, orientation)
         game.preferences.flush()
         game.screen = MainMenuScreen(game)
         dispose()
@@ -289,6 +303,7 @@ internal class SettingsScreen(private val game: OpenFoolGame) : Screen {
         private val LANGUAGE = "Language"
         val SORTING_MODE = "SortingMode"
         val BACKGROUND = "Background"
+        val ORIENTATION = "Orientation"
         private val CARD_SCALE = 0.25f
     }
 }
