@@ -1,8 +1,8 @@
 # OpenFool
-![Travis](https://img.shields.io/travis/hyst329/OpenFool.svg)
-![Github All Releases](https://img.shields.io/github/downloads/hyst329/OpenFool/total.svg)
-![Github Releases](https://img.shields.io/github/downloads/hyst329/OpenFool/latest/total.svg)
-![GitHub release](https://img.shields.io/github/release/hyst329/OpenFool.svg)
+![Travis](https://img.shields.io/travis/trolley813/OpenFool)
+![Github All Releases](https://img.shields.io/github/downloads/trolley813/OpenFool/total.svg)
+![Github Releases](https://img.shields.io/github/downloads/trolley813/OpenFool/latest/total.svg)
+![GitHub release](https://img.shields.io/github/release/trolley813/OpenFool.svg)
 [![Gitter](https://img.shields.io/gitter/room/OpenFoolCommunity/Lobby.svg)](https://gitter.im/OpenFoolCommunity/Lobby)
 
 OpenFool - free and open source (MIT licensed) Fool (Durak) card game implementation for desktop and Android.
