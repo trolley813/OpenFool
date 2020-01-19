@@ -254,6 +254,7 @@ class GameScreen(private val game: OpenFoolGame) : Screen, EventListener {
         for (i in 0 until ruleSet.playerCount) {
             drawCardsToPlayer(i, DEAL_LIMIT)
         }
+        // TODO: Check for redeal
         // Determine the first attacker and thrower
         var lowestTrump = Rank.ACE
         var lowestTrumpCard = Card(Suit.SPADES, Rank.ACE)

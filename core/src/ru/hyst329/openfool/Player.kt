@@ -386,6 +386,11 @@ class Player internal constructor(private val ruleSet: RuleSet, private var name
         })
     }
 
+    fun requireRedeal(trump: Suit): Boolean {
+        return hand.find { it.suit == trump } == null &&
+                hand.groupBy { it.suit }.map { it.value.size }.max() ?: 0 >= hand.size - 1
+    }
+
     companion object {
 
         private const val RANK_MULTIPLIER = 100
